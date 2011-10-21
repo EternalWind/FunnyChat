@@ -2,7 +2,7 @@ package com.funnyChat.plugin;
 
 import java.awt.Panel;
 
-import com.funnyChat.event.LocalEvent;
+import com.funnyChat.event.Event;
 
 public abstract class Plugin {
 	private Integer mID;
@@ -13,8 +13,8 @@ public abstract class Plugin {
 	public abstract void onDestroy();
 	public abstract void onEnable();
 	public abstract void onDisable();
-	public abstract void handleEvent(LocalEvent localEvent);
-	public Object getID() {
+	public abstract void handleEvent(Event localEvent);
+	public Integer getID() {
 		return mID;
 	}
 }

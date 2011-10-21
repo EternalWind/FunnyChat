@@ -2,7 +2,7 @@ package com.funnyChat.plugin;
 
 import java.awt.Panel;
 
-import com.funnyChat.event.LocalEvent;
+import com.funnyChat.event.Event;
 
 public class PluginAdapter extends Plugin{
 
@@ -31,7 +31,7 @@ public class PluginAdapter extends Plugin{
 	}
 
 	@Override
-	public void handleEvent(LocalEvent localEvent) {
+	public void handleEvent(Event localEvent) {
 		// TODO Auto-generated method stub
 		
 	}
