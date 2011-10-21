@@ -1,76 +1,85 @@
 package com.funnyChat.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class PluginManager {
-	private List<Plugin> mPlugins;
+	private HashMap<Integer, Plugin> mPlugins;
 	private static PluginManager mPluginManager;
 	private PluginManager(){
-		mPlugins = new ArrayList<Plugin>();
+		mPlugins = new HashMap<Integer, Plugin>();
 	}
-	public static PluginManager getInstance(){
+	public static void initialzie(){
 		if(mPluginManager == null){
 			mPluginManager = new PluginManager();
 		}
+	}
+	public void deInitialize(){
+		
+	}
+	public static PluginManager getInstance(){
 		return mPluginManager;
 	}
 	public Boolean insert(Plugin _plugin){
-		mPlugins.add(_plugin);
+		if(_plugin.getID() == null)
+		    mPlugins.put(_plugin.getID(), _plugin);
+		else
+			mPlugins.put(_plugin.getID(), _plugin);
 		return true;
 	}
 	public Boolean remove(Integer _id){
-		for(int i=0;i<mPlugins.size();i++){
-			if(mPlugins.get(i).getID().equals(_id)){
-				mPlugins.remove(i);
+		for(Integer key : mPlugins.keySet()){
+			if(mPlugins.get(key).getID().equals(_id)){
+				mPlugins.remove(key);;
 				return true;
 			}
 		}
 		return false;
 	}
 	public Boolean removeAll(){
-		return mPlugins.removeAll(new ArrayList());
+		mPlugins.clear();
+		return true;
 	}
 	public Plugin get(Integer _id){
-		for(int i=0;i<mPlugins.size();i++){
-			if(mPlugins.get(i).getID().equals(_id)){
-				return mPlugins.get(i);
+		for(Integer key : mPlugins.keySet()){
+			if(mPlugins.get(key).getID().equals(_id)){
+				return mPlugins.get(key);
 			}
 		}
 		return null;
 	}
-	public List<Plugin> getmPlugins() {
+	public HashMap<Integer, Plugin> getPlugins() {
 		return mPlugins;
 	}
 	public Boolean set(Integer _id, Plugin _plugin){
-		remove(_id);
-		insert(_plugin);
+		mPlugins.put(_id, _plugin);
 		return true;
 	}
 	public void enable(Integer[] _ids){
 		for(int i=0;i<_ids.length;i++){
-			for(int j=0;j<mPlugins.size();j++){
-				if(mPlugins.get(j).getID().equals(_ids[i]))
-					mPlugins.get(j).onDisable();
+			for(Integer key : mPlugins.keySet()){
+				if(mPlugins.get(key).getID().equals(_ids[i])){
+					mPlugins.get(key).onEnable();
+				}
 			}
 		}
 	}
 	public void enableAll(){
-		for(int j=0;j<mPlugins.size();j++){
-			mPlugins.get(j).onEnable();
+		for(Integer key : mPlugins.keySet()){
+				mPlugins.get(key).onEnable();
 		}
 	}
 	public void disable(Integer[] _ids){
 		for(int i=0;i<_ids.length;i++){
-			for(int j=0;j<mPlugins.size();j++){
-				if(mPlugins.get(j).getID().equals(_ids[i]))
-					mPlugins.get(j).onDisable();
+			for(Integer key : mPlugins.keySet()){
+				if(mPlugins.get(key).getID().equals(_ids[i])){
+					mPlugins.get(key).onDisable();
+				}
 			}
 		}
 	}
 	public void disableAll(){
-		for(int j=0;j<mPlugins.size();j++){
-			mPlugins.get(j).onDisable();
-		}
+		for(Integer key : mPlugins.keySet()){
+			mPlugins.get(key).onDisable();
+	    }
 	}
 }
