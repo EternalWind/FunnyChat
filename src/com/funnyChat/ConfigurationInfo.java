@@ -1,4 +1,4 @@
-package com.funnyChat.configuration;
+package com.funnyChat;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,15 +7,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.funnyChat.Log.LogType;
+
 public final class ConfigurationInfo {
 	public static final String SEPERATOR = ";";
-	public static String getString(String[] strs) {
+	private static String getString(String[] strs) {
 		String s ="";
 		for(String i:strs) {
 			s += i + SEPERATOR;
 		}
 		return s;
 	}
+	private Log log;
+	
 	private File mConfFile;
 	private int mWinWidth;
 	private int mWinHeight;
@@ -30,57 +34,59 @@ public final class ConfigurationInfo {
 	private String[] mDefaultPlugins;
 	
 	public ConfigurationInfo() {
+		log = new Log();
+		log.setLogFile("Config_Log.txt");
+		mConfFile = new File("Config.txt");
 	}
 
-	public boolean createConfFile() throws IOException {
+	public boolean createConfFile() throws IOException {		
 		return mConfFile.createNewFile();
 	}
 
-	public boolean loadConfFile(File _file) throws IOException {
-		if (!_file.isFile()) {
-			System.out.println("error: not a file: " + _file.getPath());
+	public boolean loadConfFile() throws IOException {
+		if (!mConfFile.isFile()) {
+			log.addLog("error: not a file: " + mConfFile.getPath(),LogType.ERROR);
 			return false;
 		}
-		if (!_file.exists()) {
-			System.out.println("error: configuration file not found: "
-					+ _file.getPath());
+		if (!mConfFile.exists()) {
+			log.addLog("error: configuration file not found: "
+					+ mConfFile.getPath(),LogType.ERROR);
 			return false;
 		}
-		mConfFile = _file;
 
 		// get information from configuration file
-		BufferedReader read = new BufferedReader(new InputStreamReader(
-				new FileInputStream(_file)));
+		BufferedReader _read = new BufferedReader(new InputStreamReader(
+				new FileInputStream(mConfFile)));
 
-		String date = "";
+		String _data = "";
 
-		date = read.readLine();
-		String[] wnd_size = date.split(" ");
-		mWinWidth = Integer.parseInt(wnd_size[0]);
-		mWinHeight = Integer.parseInt(wnd_size[1]);
+		_data = _read.readLine();
+		String[] _wnd_size = _data.split(" ");
+		mWinWidth = Integer.parseInt(_wnd_size[0]);
+		mWinHeight = Integer.parseInt(_wnd_size[1]);
 
-		date = read.readLine();
-		String[] wnd_loc = date.split(" ");
+		_data = _read.readLine();
+		String[] wnd_loc = _data.split(" ");
 		mWinX = Integer.parseInt(wnd_loc[0]);
 		mWinY = Integer.parseInt(wnd_loc[1]);
 
-		date = read.readLine();
-		String is_full_screen = date.trim();
-		mIsFullScreen = Boolean.parseBoolean(is_full_screen);
+		_data = _read.readLine();
+		String _is_full_screen = _data.trim();
+		mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
 
-		date = read.readLine();
-		mLayoutFilePath = date.split(SEPERATOR);
-		date = read.readLine();
-		mSkinFilePath = date.split(SEPERATOR);
-		date = read.readLine();
-		mPluginFilePath = date.split(SEPERATOR);
+		_data = _read.readLine();
+		mLayoutFilePath = _data.split(SEPERATOR);
+		_data = _read.readLine();
+		mSkinFilePath = _data.split(SEPERATOR);
+		_data = _read.readLine();
+		mPluginFilePath = _data.split(SEPERATOR);
 
-		date = read.readLine();
-		mDefaultLayout = date.trim();
-		date = read.readLine();
-		mDefaultSkin = date.trim();
-		date = read.readLine();
-		mDefaultPlugins = date.trim().split(SEPERATOR);
+		_data = _read.readLine();
+		mDefaultLayout = _data.trim();
+		_data = _read.readLine();
+		mDefaultSkin = _data.trim();
+		_data = _read.readLine();
+		mDefaultPlugins = _data.trim().split(SEPERATOR);
 
 		return true;
 	}
@@ -92,51 +98,47 @@ public final class ConfigurationInfo {
 			mConfFile.setWritable(true, true);
 
 		// set information to configuration file
-		FileWriter fw = new FileWriter(mConfFile);
+		FileWriter _fw = new FileWriter(mConfFile);
 		
 		String LFP = getString(mLayoutFilePath);
 		String SFP = getString(mSkinFilePath);
 		String PFP = getString(mPluginFilePath);
 		String DP = getString(mDefaultPlugins);
 		
-		fw.write(mWinWidth + " " + mWinHeight + "\n" +
-				mWinX + " " + mWinY + "\n" +
-				mIsFullScreen + "\n" +
-				LFP + "\n" +
-				SFP + "\n" +
-				PFP + "\n" +
-				mDefaultLayout + "\n" +
-				mDefaultSkin + "\n" +
+		_fw.write(mWinWidth + " " + mWinHeight + "\r\n" +
+				mWinX + " " + mWinY + "\r\n" +
+				mIsFullScreen + "\r\n" +
+				LFP + "\r\n" +
+				SFP + "\r\n" +
+				PFP + "\r\n" +
+				mDefaultLayout + "\r\n" +
+				mDefaultSkin + "\r\n" +
 				DP);
-		fw.flush();
-		fw.close();
+		_fw.flush();
+		_fw.close();
 		
 		mConfFile.setReadOnly();
 		return;
 	}
 
 	public int[] getWindowSize() {
-		int[] size = { mWinWidth, mWinHeight };
-		return size;
+		int[] _size = { mWinWidth, mWinHeight };
+		return _size;
 	}
 
-	public void setWindowSize(int[] _size) {
-		if (_size.length != 2)
-			return;
-		mWinWidth = _size[0];
-		mWinHeight = _size[1];
+	public void setWindowSize(int _width, int _height) {
+		mWinWidth = _width;
+		mWinHeight = _height;
 	}
 
 	public int[] getWindowLocation() {
-		int[] location = { mWinX, mWinY };
-		return location;
+		int[] _location = { mWinX, mWinY };
+		return _location;
 	}
 
-	public void setWindowLocation(int[] _location) {
-		if (_location.length != 2)
-			return;
-		mWinX = _location[0];
-		mWinY = _location[1];
+	public void setWindowLocation(int _x, int _y) {
+		mWinX = _x;
+		mWinY = _y;
 	}
 
 	public boolean isFullScreen() {
