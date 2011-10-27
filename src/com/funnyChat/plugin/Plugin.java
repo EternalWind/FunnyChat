@@ -1,20 +1,63 @@
 package com.funnyChat.plugin;
 
 import java.awt.Panel;
-
+import com.funnyChat.Thread.*;
 import com.funnyChat.event.Event;
 
-public abstract class Plugin {
-	private Integer mID;
-	Plugin(Integer _id){
-		mID = _id;
-	} 
-	public abstract void onCreate(Panel _ref);
-	public abstract void onDestroy();
-	public abstract void onEnable();
-	public abstract void onDisable();
-	public abstract void handleEvent(Event localEvent);
-	public Integer getID() {
-		return mID;
+public abstract class Plugin extends FCThread {
+	private boolean mIsEnabled;
+	private boolean mIsBusy;
+	protected Event mEvent;
+	public Plugin(Panel _ref){
+		mIsEnabled = true;
+		mEvent = null;
+		mIsBusy = false;
+		onCreate(_ref);
+	}
+	protected abstract void onEnable();
+	protected abstract void onDisable();
+	protected abstract boolean isInterested(Event _event);
+	public void enable(){
+		if(mIsEnabled == false){
+			mIsEnabled = true;
+			onEnable();
+		}
+	}
+	public void disable(){
+		if(mIsEnabled == true){
+			mIsEnabled = false;
+			onDisable();
+		}
+	}
+	public boolean isEnabled(){
+		return mIsEnabled;
+	}
+	public void destroy(){
+		onDestroy();
+	}
+	protected abstract void onCreate(Panel _ref);
+	protected abstract void onDestroy();
+	//处理事件前应先检查是否有事件要处理
+	protected boolean hasWork(){
+		return mIsBusy;
+	}
+	//完成事件的处理后应调用此函数告知插件管理器处理已完成
+	protected void doneWork(){
+		mIsBusy = false;
+	}
+	public boolean handleEvent(Event _localEvent){
+		if(isInterested(_localEvent) && !_localEvent.equals(mEvent)){  //确保本插件对该事件感兴趣且还未处理过
+			if(mIsBusy){
+				return false;
+			}
+			else{
+				mIsBusy = true;
+				mEvent = _localEvent;
+				return true;
+			}
+		}
+		else{
+			return true;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.funnyChat;
+package com.funnyChat.utils;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;

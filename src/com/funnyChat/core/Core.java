@@ -1,4 +1,4 @@
-package com.funnyChat;
+package com.funnyChat.core;
 
 import com.funnyChat.Thread.ThreadManager;
 import com.funnyChat.event.EventManager;
@@ -11,11 +11,11 @@ public class Core {
 	private MainWindow mMainWnd;
 
 	public void initialize() {
-		MemoryManager.getInstance().initialize();
-		ThreadManager.getInstance().initialize();
-		EventManager.getInstance().initialize();
-		NetworkManager.getInstance().initialize();
-		PluginManager.getInstance().initialize();
+		MemoryManager.initialize();
+		ThreadManager.initialize();
+		EventManager.initialize();
+		NetworkManager.initialize();
+		PluginManager.initialize();
 	}
 
 	public void deinitialize() {

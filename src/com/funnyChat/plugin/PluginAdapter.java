@@ -6,37 +6,42 @@ import com.funnyChat.event.Event;
 
 public class PluginAdapter extends Plugin{
 
+	public PluginAdapter(Panel _ref){
+		super(_ref);
+	}
 	@Override
-	public void onCreate(Panel _ref) {
+	protected void onCreate(Panel _ref) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onDestroy() {
+	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onEnable() {
+	protected void onEnable() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onDisable() {
+	protected void onDisable() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void handleEvent(Event localEvent) {
-		// TODO Auto-generated method stub
-		
-	}
-	public PluginAdapter(Integer _id){
-		super(_id);
+	protected void onRun() {
+		// TODO Add your processing logic here
 	}
 
+	@Override
+	protected boolean isInterested(Event _event){
+		//Always interested
+		return true;
+	}
+	
 }

@@ -1,4 +1,4 @@
-package com.funnyChat;
+package com.funnyChat.core;
 
 import javax.swing.JFrame;
 

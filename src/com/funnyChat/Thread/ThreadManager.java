@@ -3,7 +3,7 @@ package com.funnyChat.Thread;
 import java.util.*;
 
 public class ThreadManager {
-	private HashMap<Integer, Thread> mThreads;
+	private HashMap<Integer, FCThread> mThreads;
 	private static ThreadManager mInstance;
 	private int mIdCount;
 	private int mMaxCount;
@@ -11,7 +11,7 @@ public class ThreadManager {
 	private ThreadManager(int _max_count){
 		mMaxCount = _max_count;
 		mIdCount = 0;
-		mThreads = new HashMap<Integer, Thread>();
+		mThreads = new HashMap<Integer, FCThread>();
 	}
 	
 	public static boolean initialize(int _max_count){
@@ -44,10 +44,11 @@ public class ThreadManager {
 		return mIdCount++;
 	}
 	
-	public int add(Thread _thread){
+	public int add(FCThread _thread){
 		if(mThreads.size() < mMaxCount){
 			int _id = generateId();
 			mThreads.put(_id, _thread);
+			_thread.start();
 			return _id;
 		}
 		else{
@@ -56,15 +57,22 @@ public class ThreadManager {
 	}
 	
 	public boolean remove(int _id){
-		if(mThreads.remove(_id) == null){
+		FCThread _thread;
+		
+		if((_thread = mThreads.remove(_id)) == null){
 			return false;
 		}
 		else{
+			_thread.terminate();   //Terminate the thread before remove it.
+			
 			return true;
 		}
 	}
 	
 	public void removeAll(){
+		for(FCThread _thread : mThreads.values())
+			_thread.terminate();       //Terminate all the threads before remove them.
+		
 		mThreads.clear();
 	}
 	

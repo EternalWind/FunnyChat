@@ -1,4 +1,4 @@
-package com.funnyChat;
+package com.funnyChat.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.funnyChat.Log.LogType;
+import com.funnyChat.utils.Log.LogType;
 
 public final class ConfigurationInfo {
 	public static final String SEPERATOR = ";";

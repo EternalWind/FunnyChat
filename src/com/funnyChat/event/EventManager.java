@@ -2,64 +2,118 @@ package com.funnyChat.event;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import com.funnyChat.network.*;
+import com.funnyChat.Thread.*;
 
 import com.funnyChat.plugin.PluginManager;
 
-public class EventManager extends Thread{
+public class EventManager extends FCThread{
 	private Queue<Event> mLEvent;
 	private Queue<Event> mNEvent;
-	private static EventManager mEventManager;
+	private LinkedList<Event> mEventPrototype;
+	private static EventManager mInstance;
 	public static void initialize(){
-		if(mEventManager == null){
-			mEventManager = new EventManager();
-			mEventManager.start();
+		ThreadManager _thread_manager = ThreadManager.getInstance();
+		
+		if(mInstance == null && _thread_manager != null){
+			mInstance = new EventManager();
+			_thread_manager.add(mInstance);
 		}
 	}
-	public void deinitialize(){
+	public synchronized void deinitialize(){
+		ThreadManager _thread_manager = ThreadManager.getInstance();
 		
+		if(mInstance != null && _thread_manager != null){
+			mLEvent.clear();
+			mNEvent.clear();
+			mEventPrototype.clear();
+			mLEvent = null;
+			mNEvent = null;
+			mInstance = null;
+			mEventPrototype = null;
+		}
 	}
 	public static EventManager getInstance(){
-		return mEventManager;
+		return mInstance;
 	}
 	private EventManager(){
 		mLEvent = new LinkedList<Event>();
 		mNEvent = new LinkedList<Event>();
+		mEventPrototype = new LinkedList<Event>();
 	}
-	public void run(){
-		while(true){
-			try {
-				handleLocalEvent();
-				sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	protected void onRun(){
+		try {
+			handleLocalEvent();
+			handleNetworkEvent();
+			sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	public  void queue(Event _event){
+	public synchronized void enqueue(Event _event){
 		if(_event.isLocal()){
 			mLEvent.add(_event);
 		}else{
 			mNEvent.add(_event);
 		}
 	}
-	/**
-	 * 本方法只返回NetworkEvent
-	 * @return
-	 */
-	public Event dequeue(){
-		return mNEvent.poll();
+	public synchronized void enqueue(byte[] _byte_arr){
+		Event _event = getEventInstance(_byte_arr);
+		
+		if(_event != null){
+			enqueue(_event);
+		}
 	}
-	public synchronized void handleLocalEvent(){
-		for(int i=0;i<mLEvent.size();i++){
-			/**
-			 * 将LocalEvent发送至 Plugin
-			 */
-			PluginManager.initialzie();
-			PluginManager pluginManager = PluginManager.getInstance();
-			for(int j=0;j<pluginManager.getPlugins().size();j++)
-				pluginManager.getPlugins().get(j).handleEvent(mLEvent.poll());
+	private synchronized void handleNetworkEvent(){
+		/**
+		 * 将NetworkEvent通过NetworkManager发送
+		 */
+		NetworkManager _networkManager = NetworkManager.getInstance();
+		Event _event = mNEvent.poll();
+		if(_event != null){
+			_networkManager.send(_event);
+		}
+	}
+	private synchronized void handleLocalEvent(){
+		/**
+		 * 将LocalEvent发送至 Plugin
+		 */
+		PluginManager _pluginManager = PluginManager.getInstance();
+		Event _event = mLEvent.poll();
+		if(_event != null && !_pluginManager.handleEvent(_event)){
+			mLEvent.add(_event);
 		}
 	}
 
+	public boolean register(Event _event){
+		for(Event _e : mEventPrototype){
+			if(_e.getEventType().equals( _event.getEventType())){
+				//Already registered
+				return false;
+			}
+		}
+		
+		mEventPrototype.add(_event);
+		return true;
+	}
+	
+	public Event getEventInstance(byte[] _byte_arr){
+		try{
+			Event _event = null;
+
+			for(Event _e : mEventPrototype){
+				_event = _e.getClass().newInstance();
+				if(_event.unserialize(_byte_arr)){
+					return _event;
+				}
+			}
+			return null;
+		}
+		catch(Exception e){
+			//Wait for logger...
+			return null;
+		}
+	}
+	
 }

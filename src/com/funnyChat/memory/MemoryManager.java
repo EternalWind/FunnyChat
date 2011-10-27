@@ -4,58 +4,60 @@ import java.util.HashMap;
 
 public class MemoryManager {
 	private HashMap<Integer, Memory> mMemorys;
-	private static MemoryManager mMemoryManager;
-	private int counter = 1;
+	private static MemoryManager mInstance;
+	private int counter = 0;
 	
 	private MemoryManager(){
 		mMemorys = new HashMap<Integer, Memory>();
 	}
 	
 	public static void initialize(){
-		if(mMemoryManager == null){
-			mMemoryManager = new MemoryManager();
+		if(mInstance == null){
+			mInstance = new MemoryManager();
 		}
 	}
-	public void deInitialize(){
-
+	public void deinitialize(){
+		if(mInstance != null){
+			removeAll();
+			mMemorys = null;
+			mInstance = null;
+		}
 	}
 	
-	public synchronized Integer generateld(){
+	private synchronized Integer generateId(){
 		return counter++;
 	}
 	public static MemoryManager getInstance(){
-		return mMemoryManager;
+		return mInstance;
 	}
 	public Boolean insert(Memory _memory){
-		_memory.setID(generateld());
-		mMemorys.put(_memory.getID(), _memory);
-		return true;
+		if(mMemorys.containsValue(_memory)){
+			return false;
+		}
+		else{
+			mMemorys.put(generateId(), _memory);
+			return true;
+		}
 	}
 	public Boolean remove(Integer _id){
-		for(Integer key : mMemorys.keySet()){
-			if(mMemorys.get(key).getID().equals(_id)){
-				mMemorys.remove(key);
-				return true;
-			}
+		if(mMemorys.remove(_id) == null){
+			return false;
 		}
-		return false;
+		return true;
+	}
+	public void removeAll(){
+		mMemorys.clear();
 	}
 	public Memory get(Integer _id){
-		for(Integer key : mMemorys.keySet()){
-			if(mMemorys.get(key).getID().equals(_id)){
-				return mMemorys.get(key);
-			}
-		}
-		return null;
+		return mMemorys.get(_id);
 	}
 	public Boolean set(Integer _id, Memory _memory){
-		for(Integer key : mMemorys.keySet()){
-			if(mMemorys.get(key).getID().equals(_id)){
-				_memory.setID(_id);
-				mMemorys.put(_memory.getID(), _memory);
-				return true;
-			}
+		if(!remove(_id)){
+			return false;
 		}
-		return false;
+		else{
+			mMemorys.put(_id, _memory);
+			return true;
+		}
 	}
 }

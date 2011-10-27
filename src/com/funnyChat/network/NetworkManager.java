@@ -143,7 +143,7 @@ public class NetworkManager {
 		}
 	}
 	
-	public void send(Event _event, int _id){
+	public void send(Event _event){
 		Connection _connection = mConnections.get(_id);
 		MemoryManager _mm = MemoryManager.getInstance();
 		int _length = 0;
