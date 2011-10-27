@@ -6,19 +6,24 @@ import java.util.Queue;
 import com.funnyChat.plugin.PluginManager;
 
 public class EventManager extends Thread{
-	private Queue<LocalEvent> mLEvent;
-	private Queue<NetworkEvent> mNEvent;
+	private Queue<Event> mLEvent;
+	private Queue<Event> mNEvent;
 	private static EventManager mEventManager;
-	private static EventManager getInstance(){
+	public static void initialize(){
 		if(mEventManager == null){
 			mEventManager = new EventManager();
 			mEventManager.start();
 		}
+	}
+	public void deinitialize(){
+		
+	}
+	public static EventManager getInstance(){
 		return mEventManager;
 	}
 	private EventManager(){
-		mLEvent = new LinkedList<LocalEvent>();
-		mNEvent = new LinkedList<NetworkEvent>();
+		mLEvent = new LinkedList<Event>();
+		mNEvent = new LinkedList<Event>();
 	}
 	public void run(){
 		while(true){
@@ -33,9 +38,9 @@ public class EventManager extends Thread{
 	}
 	public  void queue(Event _event){
 		if(_event.isLocal()){
-			mLEvent.add((LocalEvent)_event);
+			mLEvent.add(_event);
 		}else{
-			mNEvent.add((NetworkEvent)_event);
+			mNEvent.add(_event);
 		}
 	}
 	/**
@@ -50,9 +55,10 @@ public class EventManager extends Thread{
 			/**
 			 * ½«LocalEvent·¢ËÍÖÁ Plugin
 			 */
+			PluginManager.initialzie();
 			PluginManager pluginManager = PluginManager.getInstance();
-			for(int j=0;j<pluginManager.getmPlugins().size();j++)
-				pluginManager.getmPlugins().get(j).handleEvent(mLEvent.poll());
+			for(int j=0;j<pluginManager.getPlugins().size();j++)
+				pluginManager.getPlugins().get(j).handleEvent(mLEvent.poll());
 		}
 	}
 

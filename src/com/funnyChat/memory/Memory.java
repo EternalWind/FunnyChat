@@ -11,26 +11,26 @@ public class Memory {
 	public Memory(Integer _id){
 		mID = _id;
 	}
-	public Byte[] getmContent() {
+	public Byte[] getContent() {
 		return mContent;
 	}
-	public void setmContent(Byte[] mContent) {
+	public void setContent(Byte[] mContent) {
 		this.mContent = mContent;
 	}
-	public Boolean getmIsAvaliable() {
+	public Boolean getIsAvaliable() {
 		return mIsAvaliable;
 	}
-	public void setmIsAvaliable(Boolean mIsAvaliable) {
+	public void setIsAvaliable(Boolean mIsAvaliable) {
 		this.mIsAvaliable = mIsAvaliable;
 	}
-	public Integer getmID() {
+	public Integer getID() {
 		return mID;
 	}
 	/**
 	 * 限定为包内访问
 	 * @param _id
 	 */
-	void setmID(Integer _id){
+	void setID(Integer _id){
 		mID = _id;
 	}
 	
