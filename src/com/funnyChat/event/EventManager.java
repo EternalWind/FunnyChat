@@ -52,10 +52,21 @@ public class EventManager extends FCThread{
 		}
 	}
 	public synchronized void enqueue(Event _event){
-		if(_event.isLocal()){
-			mLEvent.add(_event);
-		}else{
-			mNEvent.add(_event);
+		boolean _is_registered = false;
+		
+		//Check if has registered or not
+		for(Event _e : mEventPrototype){
+			if(_event.getClass() == _e.getClass()){
+				_is_registered = true;
+			}
+		}
+		
+		if(_is_registered){
+			if(_event.isLocal()){
+				mLEvent.add(_event);
+			}else{
+				mNEvent.add(_event);
+			}
 		}
 	}
 	public synchronized void enqueue(byte[] _byte_arr){
