@@ -1,25 +1,65 @@
 package com.funnyChat.plugin;
 
 import java.util.HashMap;
+import java.io.*;
 import com.funnyChat.event.*;
 
 public class PluginManager {
 	private HashMap<Integer, Plugin> mPlugins;
 	private static PluginManager mInstance;
 	private Integer mIdCount;
-	private PluginManager(){
+	private String mDir;
+	
+	private static class PluginFilter implements FileFilter{
+		private static String mSuffix = "plu";
+		
+		public boolean accept(File _path_name){
+			return _path_name.getName().endsWith(mSuffix);
+		}
+		
+		public static String getSuffix(){
+			return mSuffix;
+		}
+	}
+	
+	private PluginManager(String _directory){
 		mPlugins = new HashMap<Integer, Plugin>();
 		mIdCount = 0;
+		mDir = _directory;
 	}
 	
 	private Integer generateId(){
 		return mIdCount++;
 	}
 	
-	public static void initialize(){
-		if(mInstance == null){
-			mInstance = new PluginManager();
+	public void scan(){
+		try{
+			File _plugin_dir = new File(mDir);
+			String _plugin_name;
+			
+			for(File _plugin_file : _plugin_dir.listFiles(new PluginFilter())){
+				_plugin_name = _plugin_file.getName();
+				_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
+						PluginFilter.getSuffix().length());
+				Plugin _plugin = (Plugin)Class.forName(_plugin_name).newInstance();
+				if(!mPlugins.containsValue(_plugin))
+					mPlugins.put(generateId(), _plugin);
+			}
 		}
+		catch(Exception e){
+			//Logger...
+		}
+	}
+	
+	public static void initialize(String _directory){
+		if(mInstance == null){
+			mInstance = new PluginManager(_directory);
+
+			mInstance.scan();
+		}
+	}
+	public int getCount(){
+		return mIdCount;
 	}
 	public void deinitialize(){
 		if(mInstance != null){
@@ -41,12 +81,18 @@ public class PluginManager {
 		}
 	}
 	public Boolean remove(Integer _id){
-		if(mPlugins.remove(_id) == null){
+		Plugin _plugin = mPlugins.remove(_id);
+		if(_plugin == null){
 			return false;
 		}
+		_plugin.destroy();
+		
 		return true;
 	}
 	public Boolean removeAll(){
+		for(Plugin _plugin : mPlugins.values()){
+			_plugin.destroy();
+		}
 		mPlugins.clear();
 		return true;
 	}
