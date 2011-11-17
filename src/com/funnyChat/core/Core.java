@@ -11,24 +11,24 @@ public class Core {
 	private MainWindow mMainWnd;
 
 	public void initialize() {
-		MemoryManager.initialize();
 		ThreadManager.initialize();
+		MemoryManager.initialize();
 		EventManager.initialize();
 		NetworkManager.initialize();
 		PluginManager.initialize();
 	}
 
 	public void deinitialize() {
-		MemoryManager.getInstance().deinitialize();
 		ThreadManager.getInstance().deinitialize();
+		MemoryManager.getInstance().deinitialize();
 		EventManager.getInstance().deinitialize();
 		NetworkManager.getInstance().deinitialize();
 		PluginManager.getInstance().deinitialize();
 	}
 
 	public void run() {
-		EventManager.getInstance().run();
-		NetworkManager.getInstance().run();
+		EventManager.getInstance().start();
+		NetworkManager.getInstance().start();
 		PluginManager.getInstance().enableAll();
 	}
 

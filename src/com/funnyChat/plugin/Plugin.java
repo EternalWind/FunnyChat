@@ -18,10 +18,18 @@ public abstract class Plugin extends FCThread {
 	}
 	protected abstract void onEnable();
 	protected abstract void onDisable();
+	protected abstract void execute();
 	protected abstract boolean isInterested(Event _event);
+	final protected void onRun(){
+		if(mIsEnabled){
+			execute();
+		}
+	}
 	public void enable(){
 		if(mIsEnabled == false){
 			mIsEnabled = true;
+			if(!this.isAlive())
+				this.start();
 			onEnable();
 		}
 	}
@@ -35,6 +43,7 @@ public abstract class Plugin extends FCThread {
 		return mIsEnabled;
 	}
 	public void destroy(){
+		terminate();
 		onDestroy();
 	}
 	public Panel getPanel(){

@@ -58,6 +58,9 @@ public class PluginManager {
 			mInstance.scan();
 		}
 	}
+	public static void initialize(){
+		initialize("Plugin");
+	}
 	public int getCount(){
 		return mIdCount;
 	}
@@ -118,7 +121,7 @@ public class PluginManager {
 	}
 	public void enableAll(){
 		for(Plugin _plugin : mPlugins.values()){
-				_plugin.enable();
+			_plugin.enable();
 		}
 	}
 	public void disable(Integer[] _ids){

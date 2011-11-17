@@ -7,8 +7,9 @@ import java.net.*;
 import java.util.*;
 import com.funnyChat.event.*;
 import com.funnyChat.memory.*;
+import com.funnyChat.Thread.*;
 
-public class NetworkManager {
+public class NetworkManager extends FCThread{
 	private int mIdCount;
 	private static NetworkManager mInstance;
 	private HashMap<Integer, Connection> mConnections;
@@ -51,6 +52,7 @@ public class NetworkManager {
 	public boolean deinitialize(){
 		try{
 			if(mInstance != null){
+				terminate();
 				removeAll();
 				mConnections = null;
 				mServerSocketChannel.socket().close();
@@ -163,7 +165,7 @@ public class NetworkManager {
 		}
 	}
 	
-	public void run(){
+	public void onRun(){
 		try{
 			mSelector.select();
 			Set<SelectionKey> _selectedKeys = mSelector.selectedKeys();
