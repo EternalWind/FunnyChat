@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import com.funnyChat.utils.Log.LogType;
 
 public final class ConfigurationInfo {
+	
 	public static final String SEPERATOR = ";";
 	private static String getString(String[] strs) {
 		String s ="";
@@ -173,12 +174,12 @@ public final class ConfigurationInfo {
 		this.mPluginFilePath = _pluginFilePath;
 	}
 
-	public boolean getDefaultLayout(File _layoutFile) {
+	public File getDefaultLayout() {
 		if (this.mDefaultLayout != "") {
-			_layoutFile = new File(this.mDefaultLayout);
-			return true;
+			File _layoutFile = new File(this.mDefaultLayout);
+			return _layoutFile;
 		} else
-			return false;
+			return null;
 	}
 
 	public void setDefaultLayout(String _layoutFilePath) {

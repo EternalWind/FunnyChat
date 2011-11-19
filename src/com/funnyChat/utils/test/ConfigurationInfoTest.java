@@ -20,7 +20,7 @@ public class ConfigurationInfoTest {
 		String[] _plugin = new String[5];
 		String[] _skin = new String[5];
 
-		if (_cfg.loadConfFile()) {
+		if (!_cfg.loadConfFile()) {
 			_cfg.createConfFile();
 			_cfg.loadConfFile();
 		} else {
