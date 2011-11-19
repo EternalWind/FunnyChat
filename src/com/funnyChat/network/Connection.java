@@ -6,7 +6,7 @@ import java.net.*;
 public class Connection {
 	private int mType;
 	private SocketChannel mSocketCh;
-	private int mLastActiveTime;
+	private long mLastActiveTime;
 	
 	public Connection(SocketChannel _socket_channel){
 		mType = 0;
@@ -26,11 +26,11 @@ public class Connection {
 		return mSocketCh;
 	}
 	
-	public int getLastActiveTime(){
+	public long getLastActiveTime(){
 		return mLastActiveTime;
 	}
 	
-	public void setLastActiveTime(int _time){
+	public void setLastActiveTime(long _time){
 		mLastActiveTime = _time;
 	}
 	

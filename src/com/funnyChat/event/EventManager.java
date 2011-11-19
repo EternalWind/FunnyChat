@@ -65,8 +65,26 @@ public class EventManager extends FCThread{
 			}
 		}
 	}
-	public synchronized void enqueue(byte[] _byte_arr){
+	public synchronized void enqueue(byte[] _byte_arr, Integer _source){
 		Event _event = getEventInstance(_byte_arr);
+		//Deals with the PingEvent.
+		if(_event.getEventType().equals("PingEvent")){
+			PingEvent _ping_event = (PingEvent)_event;
+			if(!_ping_event.isFinished()){
+				//Need to send it back.
+				_ping_event.setIsLocal(false);
+				_ping_event.setTarget(_source);
+				_ping_event.finishPing();
+			}
+			else{
+				//Done ping. Just kill it.
+				_event = null;
+			}
+		}
+		else{
+			_event.setSource(_source);
+			_event.setIsLocal(true);
+		}
 		
 		if(_event != null){
 			enqueue(_event);

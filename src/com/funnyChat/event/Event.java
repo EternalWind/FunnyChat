@@ -5,9 +5,10 @@ import java.util.*;
 public abstract class Event {
 	//private String mEventType;
 	//private Integer[] mMemoryIds;
-	private boolean mIsLocal;
-	private Integer mTarget = null;          //The target host id. Only used for network event.
-	private UUID mId = UUID.randomUUID();    //For local usage.
+	protected boolean mIsLocal;
+	protected Integer mSource = null;
+	protected Integer mTarget = null;          //The target host id. Only used for network event.
+	protected UUID mId = UUID.randomUUID();    //For local usage.
 	public boolean equals(Event _event){
 		return mId.equals(_event.mId);
 	}
@@ -57,6 +58,12 @@ public abstract class Event {
 		
 		//Type not matched!
 		return false;
+	}
+	public Integer getSource(){
+		return mSource;
+	}
+	public void setSource(Integer _source){
+		mSource = _source;
 	}
 	protected abstract String onSerialize();
 	protected abstract void onUnserialize(String _data_str);
