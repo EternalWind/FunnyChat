@@ -2,43 +2,45 @@ package com.funnyChat.memory;
 
 public class Memory {
 	private byte[] mContent;
-	private Boolean mIsAvaliable;
+	private Boolean mIsAvailable;
 	private Integer mSize;       //A virtual size.
 	
 	public Memory(Integer _size){
-		mIsAvaliable = true;
+		mIsAvailable = true;
 		mSize = _size;
 		mContent = new byte[mSize];
 	}
 	public Integer getSize() {
 		return mSize;
 	}
-	public boolean setSize(Integer _size) {
-		if(mContent.length >= _size) {
+	public boolean allocate(Integer _size) {
+		if(mIsAvailable && mContent.length >= _size) {
 			mSize = _size;
+			mIsAvailable = false;
 			return true;
 		}
 		return false;
 	}
-	public void regenerate(Integer _size) {
-		if(mIsAvaliable){
+	public Memory regenerate(Integer _size) {
+		if(mIsAvailable){
 			mContent = new byte[_size];
 			mSize = _size;
 		}
+		
+		return this;
 	}
 	public byte[] getContent() {
-		if(!mIsAvaliable){
+		if(!mIsAvailable){
 			return mContent;
 		}
 		return null;
 	}
-	public Boolean getIsAvaliable() {
-		return mIsAvaliable;
+	public Boolean getIsAvailable() {
+		return mIsAvailable;
 	}
 	public void release() {
-		mIsAvaliable = true;
-	}
-	public void use() {
-		mIsAvaliable = false;
+		if(!mIsAvailable){
+			mIsAvailable = true;
+		}
 	}
 }

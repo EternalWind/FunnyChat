@@ -5,13 +5,13 @@ public abstract class FCThread extends Thread {
 	
 	protected abstract void onRun();
 	
-	public void run(){
+	final public void run(){
 		while(isAlive){
 			onRun();
 		}
 	}
 	
-	public void terminate(){
+	final public void terminate(){
 		isAlive = false;
 	}
 }

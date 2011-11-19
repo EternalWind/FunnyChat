@@ -13,17 +13,13 @@ public class EventManager extends FCThread{
 	private LinkedList<Event> mEventPrototype;
 	private static EventManager mInstance;
 	public static void initialize(){
-		ThreadManager _thread_manager = ThreadManager.getInstance();
-		
-		if(mInstance == null && _thread_manager != null){
+		if(mInstance == null){
 			mInstance = new EventManager();
-			_thread_manager.add(mInstance);
 		}
 	}
 	public synchronized void deinitialize(){
-		ThreadManager _thread_manager = ThreadManager.getInstance();
-		
-		if(mInstance != null && _thread_manager != null){
+		if(mInstance != null){
+			terminate();
 			mLEvent.clear();
 			mNEvent.clear();
 			mEventPrototype.clear();

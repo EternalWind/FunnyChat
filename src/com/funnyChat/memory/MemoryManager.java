@@ -48,14 +48,29 @@ public class MemoryManager {
 		}
 	}*/
 	public Integer allocate(Integer _size){
+		Integer _reallocatable = null;
 		//Check if there's a available buffer already existed.
 		for(Entry<Integer, Memory> _entry : mMemories.entrySet()){
-			if(_entry.getValue().getIsAvaliable() && _entry.getValue().setSize(_size)){
-				return _entry.getKey();
+			if(_entry.getValue().getIsAvailable()){            //Available?
+				if(_entry.getValue().allocate(_size)){         //Large enough?
+					return _entry.getKey();
+				}
+				else if(_reallocatable == null){
+					/*Too small but available. We can regenerate it with a large capacity later 
+				    if no suitable memory is found.*/
+					_reallocatable = _entry.getKey();
+				}
 			}
 		}
 		
-		//Not exist? Check if we can have more slots
+		//If we can regenerate a buffer, just do it.
+		if(_reallocatable != null){
+			if(get(_reallocatable).regenerate(_size).allocate(_size)){
+				return _reallocatable;
+			}
+		}
+		
+		//Available buffer not exist and no one can be regenarated? Check if we can have more buffers.
 		if(mCount < mMaxCount){
 			Integer _id = generateId();
 			mCount++;

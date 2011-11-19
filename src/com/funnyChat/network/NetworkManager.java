@@ -7,8 +7,9 @@ import java.net.*;
 import java.util.*;
 import com.funnyChat.event.*;
 import com.funnyChat.memory.*;
+import com.funnyChat.Thread.*;
 
-public class NetworkManager {
+public class NetworkManager extends FCThread{
 	private int mIdCount;
 	private static NetworkManager mInstance;
 	private HashMap<Integer, Connection> mConnections;
@@ -51,6 +52,7 @@ public class NetworkManager {
 	public boolean deinitialize(){
 		try{
 			if(mInstance != null){
+				terminate();
 				removeAll();
 				mConnections = null;
 				mServerSocketChannel.socket().close();
@@ -144,39 +146,36 @@ public class NetworkManager {
 	}
 	
 	public void send(Event _event){
-		Connection _connection = mConnections.get(_id);
-		MemoryManager _mm = MemoryManager.getInstance();
-		int _length = 0;
-		int _count = _event.getmMemoryIds().length;
-		
-		for(int i = 0;i < _count;i++){
-			_length += _mm.get(_event.getmMemoryIds()[i]).getmContent().length;
+		try{
+			Connection _connection = mConnections.get(_event.getTarget());
+			MemoryManager _mm = MemoryManager.getInstance();
+			int _length = 0;
+			byte[] _data = _event.serialize();
+
+			ByteBuffer _buffer = ByteBuffer.allocate(Integer.SIZE / 8 + _data.length * Byte.SIZE / 8);
+
+			_buffer.putInt(_data.length);
+			_buffer.put(_data);
+			_buffer.clear();
+
+			_connection.getSocketChannel().write(_buffer);
 		}
-		
-		ByteBuffer _buffer = ByteBuffer.allocate(_length + (_count + 1) * Integer.SIZE);
-		
-		_buffer.put(_event.getmEventType().getBytes());
-		_buffer.put(new Integer(_count).toString().getBytes());
-		
-		for(int i = 0;i < _count;i++){
-			_buffer.put(new Integer(_mm.get(_event.getmMemoryIds()[i]).getmContent().length).toString().getBytes());
-			_buffer.put(_mm.get(_event.getmMemoryIds()[i]));
+		catch(IOException e){
+			//Logger...
 		}
-		
-		_buffer.clear();
-		_connection.getSocketChannel().write(_buffer);
 	}
 	
-	public void run(){
+	public void onRun(){
 		try{
 			mSelector.select();
 			Set<SelectionKey> _selectedKeys = mSelector.selectedKeys();
 			Iterator<SelectionKey> _iter = _selectedKeys.iterator();
-			ByteBuffer _buffer = ByteBuffer.allocate(20);
 			SocketChannel _sc;
+			EventManager _eventManager = EventManager.getInstance();
 			
 			while(_iter.hasNext()){
 				SelectionKey _key = _iter.next();
+				ByteBuffer _buffer = ByteBuffer.allocate(Integer.SIZE / 8);
 				
 				if((_key.readyOps() & SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT){
 					ServerSocketChannel _ssc = (ServerSocketChannel)_key.channel();
@@ -190,10 +189,21 @@ public class NetworkManager {
 				else if((_key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ){
 					_sc = (SocketChannel)_key.channel();
 					
-					_buffer.clear();
 					_sc.read(_buffer);
+					_buffer.clear();
+					
+					int _size = _buffer.getInt();
+					_buffer = ByteBuffer.allocate(_size);
+					
+					_sc.read(_buffer);
+					_buffer.clear();
+					
+					_eventManager.enqueue(_buffer.array());
 				}
 			}
+		}
+		catch(IOException e){
+			//Logger...
 		}
 	}
 }

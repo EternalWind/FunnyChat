@@ -8,18 +8,28 @@ public abstract class Plugin extends FCThread {
 	private boolean mIsEnabled;
 	private boolean mIsBusy;
 	protected Event mEvent;
-	public Plugin(Panel _ref){
+	protected Panel mPanel;
+	public Plugin(){
 		mIsEnabled = true;
 		mEvent = null;
 		mIsBusy = false;
-		onCreate(_ref);
+		mPanel = null;
+		onCreate();
 	}
 	protected abstract void onEnable();
 	protected abstract void onDisable();
+	protected abstract void execute();
 	protected abstract boolean isInterested(Event _event);
+	final protected void onRun(){
+		if(mIsEnabled){
+			execute();
+		}
+	}
 	public void enable(){
 		if(mIsEnabled == false){
 			mIsEnabled = true;
+			if(!this.isAlive())
+				this.start();
 			onEnable();
 		}
 	}
@@ -33,9 +43,16 @@ public abstract class Plugin extends FCThread {
 		return mIsEnabled;
 	}
 	public void destroy(){
+		terminate();
 		onDestroy();
 	}
-	protected abstract void onCreate(Panel _ref);
+	public Panel getPanel(){
+		return mPanel;
+	}
+	public void setPanel(Panel _panel){
+		mPanel = _panel;
+	}
+	protected abstract void onCreate();
 	protected abstract void onDestroy();
 	//处理事件前应先检查是否有事件要处理
 	protected boolean hasWork(){

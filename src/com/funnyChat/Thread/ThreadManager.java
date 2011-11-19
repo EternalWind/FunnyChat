@@ -1,7 +1,7 @@
-package com.funnyChat.Thread;
+/*package com.funnyChat.Thread;
 
 import java.util.*;
-
+//Aborted
 public class ThreadManager {
 	private HashMap<Integer, FCThread> mThreads;
 	private static ThreadManager mInstance;
@@ -72,7 +72,6 @@ public class ThreadManager {
 	public void removeAll(){
 		for(FCThread _thread : mThreads.values())
 			_thread.terminate();       //Terminate all the threads before remove them.
-		
 		mThreads.clear();
 	}
 	
@@ -87,4 +86,4 @@ public class ThreadManager {
 	public void setMaxCount(int _max_count){
 		mMaxCount = _max_count;
 	}
-}
+}*/
