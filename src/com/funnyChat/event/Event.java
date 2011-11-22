@@ -3,8 +3,8 @@ package com.funnyChat.event;
 import java.util.*;
 
 public abstract class Event {
-	//private String mEventType;
-	//private Integer[] mMemoryIds;
+	//private String mEventType;           Aborted
+	//private Integer[] mMemoryIds;        Aborted
 	protected boolean mIsLocal;
 	protected Integer mSource = null;
 	protected Integer mTarget = null;          //The target host id. Only used for network event.
@@ -13,7 +13,8 @@ public abstract class Event {
 		return mId.equals(_event.mId);
 	}
 	public abstract String getEventType();
-	/*public String getEventType() {
+	/*  Aborted
+	 * public String getEventType() {
 		return mEventType;
 	}
 	public void setEventType(String _eventType) {

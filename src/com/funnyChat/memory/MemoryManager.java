@@ -38,7 +38,8 @@ public class MemoryManager {
 	public static MemoryManager getInstance(){
 		return mInstance;
 	}
-	/*public Boolean insert(Memory _memory){
+	/*   Aborted
+	public Boolean insert(Memory _memory){
 		if(mMemorys.containsValue(_memory)){
 			return false;
 		}
@@ -46,7 +47,8 @@ public class MemoryManager {
 			mMemorys.put(generateId(), _memory);
 			return true;
 		}
-	}*/
+	}
+	*/
 	public Integer allocate(Integer _size){
 		Integer _reallocatable = null;
 		//Check if there's a available buffer already existed.
@@ -93,7 +95,8 @@ public class MemoryManager {
 	public Memory get(Integer _id){
 		return mMemories.get(_id);
 	}
-	/*public Boolean set(Integer _id, Memory _memory){
+	/*     Aborted
+	public Boolean set(Integer _id, Memory _memory){
 		if(!remove(_id)){
 			return false;
 		}
@@ -101,5 +104,6 @@ public class MemoryManager {
 			mMemories.put(_id, _memory);
 			return true;
 		}
-	}*/
+	}
+    */
 }

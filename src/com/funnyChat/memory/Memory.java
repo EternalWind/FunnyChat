@@ -1,14 +1,14 @@
 package com.funnyChat.memory;
 
 public class Memory {
-	private byte[] mContent;
+	private Byte[] mContent;
 	private Boolean mIsAvailable;
 	private Integer mSize;       //A virtual size.
 	
 	public Memory(Integer _size){
 		mIsAvailable = true;
 		mSize = _size;
-		mContent = new byte[mSize];
+		mContent = new Byte[mSize];
 	}
 	public Integer getSize() {
 		return mSize;
@@ -23,13 +23,13 @@ public class Memory {
 	}
 	public Memory regenerate(Integer _size) {
 		if(mIsAvailable){
-			mContent = new byte[_size];
+			mContent = new Byte[_size];
 			mSize = _size;
 		}
 		
 		return this;
 	}
-	public byte[] getContent() {
+	public Byte[] getContent() {
 		if(!mIsAvailable){
 			return mContent;
 		}

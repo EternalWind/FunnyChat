@@ -6,7 +6,6 @@ import java.nio.channels.*;
 import java.net.*;
 import java.util.*;
 import com.funnyChat.event.*;
-import com.funnyChat.memory.*;
 import com.funnyChat.Thread.*;
 
 public class NetworkManager extends FCThread{
@@ -171,9 +170,9 @@ public class NetworkManager extends FCThread{
 		}
 	}
 	
-	public Integer connect(InetAddress ip, int port){
+	public Integer connect(InetAddress _ip, int _port){
 		try{
-			SocketAddress _address = new InetSocketAddress(ip, port);
+			SocketAddress _address = new InetSocketAddress(_ip, _port);
 			SocketChannel _socket_channel = SocketChannel.open();
 			_socket_channel.configureBlocking(true);
 			_socket_channel.connect(_address);
@@ -204,8 +203,6 @@ public class NetworkManager extends FCThread{
 		try{
 			Connection _connection = mConnections.get(_event.getTarget());
 			if(_connection != null){
-				MemoryManager _mm = MemoryManager.getInstance();
-				int _length = 0;
 				byte[] _data = _event.serialize();
 
 				ByteBuffer _buffer = ByteBuffer.allocate(Integer.SIZE / 8 + _data.length * Byte.SIZE / 8);
@@ -273,5 +270,19 @@ public class NetworkManager extends FCThread{
 		catch(IOException e){
 			//Logger...
 		}
+	}
+	
+	public Collection<Connection> getConnections(){
+		return mConnections.values();
+	}
+	
+	public Integer getId(Connection _connection){
+		for(Map.Entry<Integer, Connection> _item : mConnections.entrySet()){
+			if(_item.getValue() == _connection){
+				return _item.getKey();
+			}
+		}
+		
+		return -1;
 	}
 }

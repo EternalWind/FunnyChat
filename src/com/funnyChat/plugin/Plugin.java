@@ -10,7 +10,7 @@ public abstract class Plugin extends FCThread {
 	protected Event mEvent;
 	protected Panel mPanel;
 	public Plugin(){
-		mIsEnabled = true;
+		mIsEnabled = false;
 		mEvent = null;
 		mIsBusy = false;
 		mPanel = null;
@@ -23,6 +23,14 @@ public abstract class Plugin extends FCThread {
 	final protected void onRun(){
 		if(mIsEnabled){
 			execute();
+		}
+	}
+	final public boolean equals(Object _obj){
+		if(_obj.getClass() == this.getClass()){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	public void enable(){

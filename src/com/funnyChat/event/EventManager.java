@@ -90,6 +90,9 @@ public class EventManager extends FCThread{
 			enqueue(_event);
 		}
 	}
+	/* Aborted
+	public void dequeue();
+	*/
 	private synchronized void handleNetworkEvent(){
 		/**
 		 * 将NetworkEvent通过NetworkManager发送

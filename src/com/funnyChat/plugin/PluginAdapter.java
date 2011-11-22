@@ -1,7 +1,5 @@
 package com.funnyChat.plugin;
 
-import java.awt.Panel;
-
 import com.funnyChat.event.Event;
 
 public class PluginAdapter extends Plugin{

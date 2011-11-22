@@ -4,12 +4,11 @@ import java.nio.channels.*;
 import java.net.*;
 
 public class Connection {
-	private int mType;
+	//private int mType;        Aborted
 	private SocketChannel mSocketCh;
 	private long mLastActiveTime;
 	
 	public Connection(SocketChannel _socket_channel){
-		mType = 0;
 		mSocketCh = _socket_channel;
 		mLastActiveTime = 0;
 	}
@@ -33,8 +32,9 @@ public class Connection {
 	public void setLastActiveTime(long _time){
 		mLastActiveTime = _time;
 	}
-	
+	/* Aborted
 	public int getType(){
 		return mType;
 	}
+	*/
 }
