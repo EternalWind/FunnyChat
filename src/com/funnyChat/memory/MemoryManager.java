@@ -2,6 +2,8 @@ package com.funnyChat.memory;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import com.funnyChat.core.*;
+import com.funnyChat.utils.Log.LogType;
 
 public class MemoryManager {
 	private HashMap<Integer, Memory> mMemories;
@@ -81,6 +83,7 @@ public class MemoryManager {
 		}
 		
 		//All failed
+		Core.getLogger().addLog("No buffer available.", LogType.DEBUG);
 		return -1;
 	}
 	public Boolean remove(Integer _id){

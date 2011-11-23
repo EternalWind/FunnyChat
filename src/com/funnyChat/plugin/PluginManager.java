@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
 import com.funnyChat.event.*;
+import com.funnyChat.utils.Log.LogType;
+import com.funnyChat.core.*;
 
 public class PluginManager {
 	private HashMap<Integer, Plugin> mPlugins;
@@ -35,22 +37,23 @@ public class PluginManager {
 	}
 	
 	public void scan(){
-		try{
-			File _plugin_dir = new File(mDir);
-			String _plugin_name;
-			
-			for(File _plugin_file : _plugin_dir.listFiles(new PluginFilter())){
-				_plugin_name = _plugin_file.getName();
-				_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
-						PluginFilter.getSuffix().length());
-				Plugin _plugin = (Plugin)Class.forName(_plugin_name).newInstance();
-				if(!mPlugins.containsValue(_plugin)){
-					mPlugins.put(generateId(), _plugin);
-				}
+		File _plugin_dir = new File(mDir);
+		String _plugin_name;
+
+		for(File _plugin_file : _plugin_dir.listFiles(new PluginFilter())){
+			_plugin_name = _plugin_file.getName();
+			_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
+					PluginFilter.getSuffix().length());
+			Plugin _plugin = null;
+			try{
+				_plugin = (Plugin)Class.forName(_plugin_name).newInstance();
 			}
-		}
-		catch(Exception e){
-			//Logger...
+			catch(Exception e){
+				Core.getLogger().addLog("Failed to instantiate plugin " + _plugin_name + ".", LogType.WARNING);
+			}
+			if(_plugin == null || !mPlugins.containsValue(_plugin)){
+				mPlugins.put(generateId(), _plugin);
+			}
 		}
 	}
 	

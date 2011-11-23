@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 import com.funnyChat.network.*;
 import com.funnyChat.Thread.*;
+import com.funnyChat.core.*;
 
 import com.funnyChat.plugin.PluginManager;
+import com.funnyChat.utils.Log.LogType;
 
 public class EventManager extends FCThread{
 	private Queue<Event> mLEvent;
@@ -15,6 +17,9 @@ public class EventManager extends FCThread{
 	public static void initialize(){
 		if(mInstance == null){
 			mInstance = new EventManager();
+		}
+		else{
+			Core.getLogger().addLog("Duplicative initialization for the EventManager.", LogType.WARNING);
 		}
 	}
 	public synchronized void deinitialize(){
@@ -44,6 +49,7 @@ public class EventManager extends FCThread{
 			sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
+			Core.getLogger().addLog("The EventManager has been inerrupted.", LogType.DEBUG);
 			e.printStackTrace();
 		}
 	}
@@ -139,7 +145,7 @@ public class EventManager extends FCThread{
 			return null;
 		}
 		catch(Exception e){
-			//Wait for logger...
+			Core.getLogger().addLog("Failed to instantiate the an event.", LogType.ERROR);
 			return null;
 		}
 	}

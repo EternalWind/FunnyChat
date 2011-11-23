@@ -6,7 +6,9 @@ import java.nio.channels.*;
 import java.net.*;
 import java.util.*;
 import com.funnyChat.event.*;
+import com.funnyChat.utils.Log.LogType;
 import com.funnyChat.Thread.*;
+import com.funnyChat.core.*;
 
 public class NetworkManager extends FCThread{
 	private static class ConnectionChecker extends FCThread{
@@ -76,7 +78,7 @@ public class NetworkManager extends FCThread{
 			mChecker = new ConnectionChecker(11000, 5000, mConnections);
 		}
 		catch(IOException e){
-			//Wait for logger...
+			Core.getLogger().addLog("Failed to initialize the NetworkManager.", LogType.ERROR);
 		}
 	}
 	
@@ -110,7 +112,7 @@ public class NetworkManager extends FCThread{
 			return false;
 		}
 		catch(IOException e){
-			//Wait for logger...
+			Core.getLogger().addLog("Failed to close the ServerSocketChannel or the ServerSocket.", LogType.ERROR);
 			return false;
 		}
 	}
@@ -165,7 +167,7 @@ public class NetworkManager extends FCThread{
 			}
 		}
 		catch(IOException e){
-			//Wait for logger...
+			Core.getLogger().addLog("Failed to close connection " + _id + ".", LogType.WARNING);
 			return false;
 		}
 	}
@@ -190,11 +192,12 @@ public class NetworkManager extends FCThread{
 				return _id;
 			}
 			else{
+				Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Timeout)", LogType.DEBUG);
 				return -1;
 			}
 		}
 		catch(IOException e){
-			//Wait for logger...
+			Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Exception)", LogType.WARNING);
 			return -1;
 		}
 	}
@@ -215,7 +218,7 @@ public class NetworkManager extends FCThread{
 			}
 		}
 		catch(IOException e){
-			//Logger...
+			Core.getLogger().addLog("Failed to send event to " + _event.getTarget() + ".", LogType.WARNING);
 		}
 	}
 	
@@ -268,7 +271,7 @@ public class NetworkManager extends FCThread{
 			}
 		}
 		catch(IOException e){
-			//Logger...
+			Core.getLogger().addLog("Exception occured within the NetworkManager's general activity.", LogType.ERROR);
 		}
 	}
 	
