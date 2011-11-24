@@ -10,7 +10,7 @@ public class Connection {
 	
 	public Connection(SocketChannel _socket_channel){
 		mSocketCh = _socket_channel;
-		mLastActiveTime = 0;
+		mLastActiveTime = System.currentTimeMillis();
 	}
 	
 	public InetAddress getIP(){

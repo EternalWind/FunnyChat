@@ -172,14 +172,14 @@ public class NetworkManager extends FCThread{
 		}
 	}
 	
-	public Integer connect(InetAddress _ip, int _port){
+	public void connect(InetAddress _ip, int _port){
 		try{
 			SocketAddress _address = new InetSocketAddress(_ip, _port);
 			SocketChannel _socket_channel = SocketChannel.open();
-			_socket_channel.configureBlocking(true);
+			_socket_channel.configureBlocking(false);
+			_socket_channel.register(mSelector, SelectionKey.OP_CONNECT);
 			_socket_channel.connect(_address);
-			if(_socket_channel.isConnected()){
-				_socket_channel.configureBlocking(false);
+			/*if(_socket_channel.isConnected()){
 				Integer _id = generateId();
 				_socket_channel.register(mSelector, SelectionKey.OP_READ).attach(_id);
 				Connection _connection = new Connection(_socket_channel);
@@ -194,11 +194,10 @@ public class NetworkManager extends FCThread{
 			else{
 				Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Timeout)", LogType.DEBUG);
 				return -1;
-			}
+			}*/
 		}
 		catch(IOException e){
-			Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Exception)", LogType.WARNING);
-			return -1;
+			Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".", LogType.WARNING);
 		}
 	}
 	
@@ -238,17 +237,35 @@ public class NetworkManager extends FCThread{
 					ServerSocketChannel _ssc = (ServerSocketChannel)_key.channel();
 					_sc = _ssc.accept();
 					Connection _connection = new Connection(_sc);
-					_connection.setLastActiveTime(System.currentTimeMillis());
 					Integer _id = generateId();
 					
 					_sc.configureBlocking(false);
-					_sc.register(mSelector, SelectionKey.OP_READ).attach(_id);
+					_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
 					mConnections.put(_id, _connection);
 					
-					_iter.remove();
+					ConnectedEvent _event = new ConnectedEvent(false);
+					_event.setSource(_connection);
+					_eventManager.enqueue(_event);
+				}
+				else if((_key.readyOps() & SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT){
+					_sc = (SocketChannel)_key.channel();
+					try{
+						_sc.finishConnect();
+						Integer _id = generateId();
+						Connection _connection = new Connection(_sc);
+						_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
+						mConnections.put(_id, _connection);
+						
+						ConnectedEvent _event = new ConnectedEvent(true);
+						_event.setSource(_connection);
+						_eventManager.enqueue(_event);
+					}
+					catch(Exception e){
+						Core.getLogger().addLog("Connection is denied.", LogType.DEBUG);
+					}
 				}
 				else if((_key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ){
-					Connection _connection = mConnections.get(_key.attachment());
+					Connection _connection = (Connection)_key.attachment();
 					if(_connection != null){
 						_connection.setLastActiveTime(System.currentTimeMillis());
 						_sc = (SocketChannel)_key.channel();
@@ -261,13 +278,11 @@ public class NetworkManager extends FCThread{
 
 						_sc.read(_buffer);
 						_buffer.clear();
-						
-						Integer _id = (Integer)_key.attachment();
-						mConnections.get(_id).setLastActiveTime(System.currentTimeMillis());
 
-						_eventManager.enqueue(_buffer.array(), _id);
+						_eventManager.enqueue(_buffer.array(), _connection);
 					}
 				}
+				_iter.remove();
 			}
 		}
 		catch(IOException e){

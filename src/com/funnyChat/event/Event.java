@@ -1,13 +1,14 @@
 package com.funnyChat.event;
 
 import java.util.*;
+import com.funnyChat.network.*;
 
 public abstract class Event {
 	//private String mEventType;           Aborted
 	//private Integer[] mMemoryIds;        Aborted
 	protected boolean mIsLocal;
-	protected Integer mSource = null;
-	protected Integer mTarget = null;          //The target host id. Only used for network event.
+	protected Connection mSource = null;
+	protected Connection mTarget = null;          //The target host id. Only used for network event.
 	protected UUID mId = UUID.randomUUID();    //For local usage.
 	public boolean equals(Event _event){
 		return mId.equals(_event.mId);
@@ -29,10 +30,10 @@ public abstract class Event {
 	public boolean isLocal(){
 		return mIsLocal;
 	}
-	public Integer getTarget(){
+	public Connection getTarget(){
 		return mTarget;
 	}
-	public void setTarget(Integer _target){
+	public void setTarget(Connection _target){
 		mTarget = _target;
 	}
 	public void setIsLocal(boolean _isLocal){
@@ -60,10 +61,10 @@ public abstract class Event {
 		//Type not matched!
 		return false;
 	}
-	public Integer getSource(){
+	public Connection getSource(){
 		return mSource;
 	}
-	public void setSource(Integer _source){
+	public void setSource(Connection _source){
 		mSource = _source;
 	}
 	protected abstract String onSerialize();

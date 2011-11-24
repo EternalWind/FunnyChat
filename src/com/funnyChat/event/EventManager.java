@@ -71,7 +71,7 @@ public class EventManager extends FCThread{
 			}
 		}
 	}
-	public synchronized void enqueue(byte[] _byte_arr, Integer _source){
+	public synchronized void enqueue(byte[] _byte_arr, Connection _source){
 		Event _event = getEventInstance(_byte_arr);
 		//Deals with the PingEvent.
 		if(_event.getEventType().equals("PingEvent")){
