@@ -12,9 +12,9 @@ import com.funnyChat.utils.Log.LogType;
 public final class ConfigurationInfo {
 	
 	public static final String SEPERATOR = ";";
-	private static String getString(String[] strs) {
+	private static String getString(String[] _strs) {
 		String s ="";
-		for(String i:strs) {
+		for(String i:_strs) {
 			s += i + SEPERATOR;
 		}
 		return s;
@@ -32,7 +32,7 @@ public final class ConfigurationInfo {
 	private String[] mPluginFilePath;
 	private String mDefaultLayout;
 	private String mDefaultSkin;
-	private String[] mDefaultPlugins;
+	private String mDefaultPlugins;
 	
 	public ConfigurationInfo() {
 		log = new Log();
@@ -87,7 +87,7 @@ public final class ConfigurationInfo {
 		_data = _read.readLine();
 		mDefaultSkin = _data.trim();
 		_data = _read.readLine();
-		mDefaultPlugins = _data.trim().split(SEPERATOR);
+		mDefaultPlugins = _data.trim();
 
 		return true;
 	}
@@ -104,7 +104,6 @@ public final class ConfigurationInfo {
 		String LFP = getString(mLayoutFilePath);
 		String SFP = getString(mSkinFilePath);
 		String PFP = getString(mPluginFilePath);
-		String DP = getString(mDefaultPlugins);
 		
 		_fw.write(mWinWidth + " " + mWinHeight + "\r\n" +
 				mWinX + " " + mWinY + "\r\n" +
@@ -114,7 +113,7 @@ public final class ConfigurationInfo {
 				PFP + "\r\n" +
 				mDefaultLayout + "\r\n" +
 				mDefaultSkin + "\r\n" +
-				DP);
+				mDefaultPlugins);
 		_fw.flush();
 		_fw.close();
 		
@@ -146,68 +145,63 @@ public final class ConfigurationInfo {
 		return mIsFullScreen;
 	}
 
-	public void setIsFullScreen(boolean _isFullScreen) {
-		this.mIsFullScreen = _isFullScreen;
+	public void setIsFullScreen(boolean _is_full_screen) {
+		this.mIsFullScreen = _is_full_screen;
 	}
 
 	public String[] getLayoutFilePath() {
 		return mLayoutFilePath;
 	}
 
-	public void setLayoutFilePath(String[] _layoutFilePath) {
-		this.mLayoutFilePath = _layoutFilePath;
+	public void setLayoutFilePath(String[] _layout_file_path) {
+		this.mLayoutFilePath = _layout_file_path;
 	}
 
 	public String[] getSkinFilePath() {
 		return mSkinFilePath;
 	}
 
-	public void setSkinFilePath(String[] _skinFilePath) {
-		this.mSkinFilePath = _skinFilePath;
+	public void setSkinFilePath(String[] _skin_file_path) {
+		this.mSkinFilePath = _skin_file_path;
 	}
 
 	public String[] getPluginFilePath() {
 		return mPluginFilePath;
 	}
 
-	public void setPluginFilePath(String[] _pluginFilePath) {
-		this.mPluginFilePath = _pluginFilePath;
+	public void setPluginFilePath(String[] _plugin_file_path) {
+		this.mPluginFilePath = _plugin_file_path;
 	}
 
 	public File getDefaultLayout() {
 		if (this.mDefaultLayout != "") {
-			File _layoutFile = new File(this.mDefaultLayout);
-			return _layoutFile;
+			File _layout_file = new File(this.mDefaultLayout);
+			return _layout_file;
 		} else
 			return null;
 	}
 
-	public void setDefaultLayout(String _layoutFilePath) {
-		this.mDefaultLayout = _layoutFilePath;
+	public void setDefaultLayout(String _layout_file_path) {
+		this.mDefaultLayout = _layout_file_path;
 	}
 
-	public boolean getDefaultSkin(File _skinFile) {
+	public File getDefaultSkin() {
 		if (this.mDefaultSkin != "") {
-			_skinFile = new File(this.mDefaultSkin);
-			return true;
+			File _skin_file = new File(this.mDefaultSkin);
+			return _skin_file;
 		} else
-			return false;
+			return null;
 	}
 
-	public void setDefaultSkin(String _skinFilePath) {
-		this.mDefaultSkin = _skinFilePath;
+	public void setDefaultSkin(String _skin_file_path) {
+		this.mDefaultSkin = _skin_file_path;
 	}
 
-	public boolean getDefaultPlugins(File[] _pluginFiles) {
-		if (mDefaultPlugins.length != 0) {
-			for (int i = 0; i < mDefaultPlugins.length; ++i)
-				_pluginFiles[i] = new File(mDefaultPlugins[i]);
-			return true;
-		} else
-			return false;
+	public String getDefaultPlugins() {
+		return this.mDefaultPlugins;
 	}
 
-	public void setDefaultPlugins(String[] _pluginFilesPath) {
-		this.mDefaultPlugins = _pluginFilesPath;
+	public void setDefaultPlugins(String _plugin_files_path) {
+		this.mDefaultPlugins = _plugin_files_path;
 	}
 }
