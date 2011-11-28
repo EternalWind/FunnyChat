@@ -2,31 +2,55 @@ package com.funnyChat.core;
 
 import java.io.IOException;
 
+import com.funnyChat.event.EventManager;
+import com.funnyChat.memory.MemoryManager;
+import com.funnyChat.network.NetworkManager;
 import com.funnyChat.plugin.PluginManager;
 import com.funnyChat.utils.ConfigurationInfo;
+import com.funnyChat.utils.Log;
+import com.funnyChat.utils.Log.LogType;
 
 public class Core {
 
 	private MainWindow mMainWnd;
 	private ConfigurationInfo mConfInfo;
+	static private Log mLogger = null;
+	static private Core mInstance = null;
+	static private String mDEAFAULTLOGPATH = "Log.txt";
 
-	public boolean initialize() {
-		mConfInfo = new ConfigurationInfo();
-		mMainWnd = new MainWindow();
-		
-		try {
-			if(!mConfInfo.loadConfFile()) {
-				mConfInfo.createConfFile();
-				mConfInfo.loadConfFile();
+	public boolean initialize(String _log_path) {
+		if (mInstance == null) {
+			// ThreadManager.initialize();
+			mInstance = new Core();
+			mLogger = new Log();
+			if (_log_path == null) {
+				_log_path = mDEAFAULTLOGPATH;
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			mConfInfo = new ConfigurationInfo();
+			mMainWnd = new MainWindow();
+
+			try {
+				if (!mConfInfo.loadConfFile()) {
+					mConfInfo.createConfFile();
+					mConfInfo.loadConfFile();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String _default_plugin = null;
+			if ((_default_plugin = mConfInfo.getDefaultPlugins()) == null)
+				return false;
+			PluginManager.initialize(_default_plugin);
+			mMainWnd.initWindow("FunnyChat", mConfInfo);
+
+			MemoryManager.initialize();
+			EventManager.initialize();
+			NetworkManager.initialize();
+			PluginManager.initialize();
+		} else {
+			mLogger.addLog("Duplicative initialization for the Core.",
+					LogType.WARNING);
 		}
-		String _default_plugin = null;
-		if ((_default_plugin = mConfInfo.getDefaultPlugins()) == null)
-			return false;
-		PluginManager.initialize(_default_plugin);
-		mMainWnd.initWindow("FunnyChat", mConfInfo);
 		return true;
 	}
 
@@ -37,6 +61,12 @@ public class Core {
 			e.printStackTrace();
 		}
 		PluginManager.getInstance().deinitialize();
+		MemoryManager.getInstance().deinitialize();
+		EventManager.getInstance().deinitialize();
+		NetworkManager.getInstance().deinitialize();
+		mLogger.saveLog();
+		mInstance = null;
+		mLogger = null;
 	}
 
 	public void run() {
@@ -45,13 +75,10 @@ public class Core {
 	}
 
 	// Abort
-	/*public boolean registerMainWnd(MainWindow _mainWnd) {
-		if (_mainWnd != null) {
-			mMainWnd = _mainWnd;
-			return true;
-		} else
-			return false;
-	}*/
+	/*
+	 * public boolean registerMainWnd(MainWindow _mainWnd) { if (_mainWnd !=
+	 * null) { mMainWnd = _mainWnd; return true; } else return false; }
+	 */
 
 	public MainWindow getMainWindow() {
 		return mMainWnd;
