@@ -12,7 +12,7 @@ import com.funnyChat.utils.Log.LogType;
 
 public class Core {
 
-	private MainWindow mMainWnd;
+	static private MainWindow mMainWnd;
 	private ConfigurationInfo mConfInfo;
 	static private Log mLogger = null;
 	static private Core mInstance = null;
@@ -46,7 +46,6 @@ public class Core {
 			MemoryManager.initialize();
 			EventManager.initialize();
 			NetworkManager.initialize();
-			PluginManager.initialize();
 		} else {
 			mLogger.addLog("Duplicative initialization for the Core.",
 					LogType.WARNING);
@@ -70,6 +69,8 @@ public class Core {
 	}
 
 	public void run() {
+		EventManager.getInstance().start();
+		NetworkManager.getInstance().start();
 		PluginManager.getInstance().enableAll();
 		mMainWnd.run();
 	}
@@ -80,7 +81,15 @@ public class Core {
 	 * null) { mMainWnd = _mainWnd; return true; } else return false; }
 	 */
 
-	public MainWindow getMainWindow() {
+	static public MainWindow getMainWindow() {
 		return mMainWnd;
+	}
+
+	static public Core getInstance() {
+		return mInstance;
+	}
+
+	static public Log getLogger() {
+		return mLogger;
 	}
 }
