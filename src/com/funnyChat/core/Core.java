@@ -92,4 +92,10 @@ public class Core {
 	static public Log getLogger() {
 		return mLogger;
 	}
+	
+	public static void main(String[] args) {
+		Core core = new Core();
+		core.initialize(mDEAFAULTLOGPATH);
+		core.run();
+	}
 }
