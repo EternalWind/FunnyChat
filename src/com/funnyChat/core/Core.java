@@ -18,6 +18,10 @@ public class Core {
 	static private Core mInstance = null;
 	static private String mDEAFAULTLOGPATH = "Log.txt";
 
+	public boolean initialize() {
+		return initialize(Core.mDEAFAULTLOGPATH);
+	}
+	
 	public boolean initialize(String _log_path) {
 		if (mInstance == null) {
 			// ThreadManager.initialize();
