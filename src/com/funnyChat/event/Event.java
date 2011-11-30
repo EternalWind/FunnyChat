@@ -11,7 +11,10 @@ public abstract class Event {
 	protected Connection mTarget = null;          //The target host id. Only used for network event.
 	protected UUID mId = UUID.randomUUID();    //For local usage.
 	public boolean equals(Event _event){
-		return mId.equals(_event.mId);
+		if(_event != null)
+			return mId.equals(_event.mId);
+		else
+			return false;
 	}
 	public abstract String getEventType();
 	/*  Aborted

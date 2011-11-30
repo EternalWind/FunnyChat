@@ -1,4 +1,4 @@
-package com.funnyChat;
+
 
 import com.funnyChat.core.Core;
 

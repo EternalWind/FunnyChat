@@ -45,51 +45,60 @@ public final class ConfigurationInfo {
 	}
 
 	public boolean loadConfFile() throws IOException {
-		if (!mConfFile.isFile()) {
-			log.addLog("error: not a file: " + mConfFile.getPath(),LogType.ERROR);
+		if (!mConfFile.isFile() || !mConfFile.exists()) {
+			log.addLog("Debug: Not a file: " + mConfFile.getPath(),LogType.DEBUG);
+			
+			mWinWidth = 400;
+			mWinHeight = 200;
+			mWinX = 100;
+			mWinY = 200;
+			mIsFullScreen = false;
+			mLayoutFilePath = null;
+			mSkinFilePath = null;
+			mPluginFilePath = null;
+			mDefaultLayout = null;
+			mDefaultSkin = null;
+			mDefaultPlugins = null;
+			
 			return false;
 		}
-		if (!mConfFile.exists()) {
-			log.addLog("error: configuration file not found: "
-					+ mConfFile.getPath(),LogType.ERROR);
-			return false;
+		else {
+			// get information from configuration file
+			BufferedReader _read = new BufferedReader(new InputStreamReader(
+					new FileInputStream(mConfFile)));
+
+			String _data = "";
+
+			_data = _read.readLine();
+			String[] _wnd_size = _data.split(" ");
+			mWinWidth = Integer.parseInt(_wnd_size[0]);
+			mWinHeight = Integer.parseInt(_wnd_size[1]);
+
+			_data = _read.readLine();
+			String[] wnd_loc = _data.split(" ");
+			mWinX = Integer.parseInt(wnd_loc[0]);
+			mWinY = Integer.parseInt(wnd_loc[1]);
+
+			_data = _read.readLine();
+			String _is_full_screen = _data.trim();
+			mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
+
+			_data = _read.readLine();
+			mLayoutFilePath = _data.split(SEPERATOR);
+			_data = _read.readLine();
+			mSkinFilePath = _data.split(SEPERATOR);
+			_data = _read.readLine();
+			mPluginFilePath = _data.split(SEPERATOR);
+
+			_data = _read.readLine();
+			mDefaultLayout = _data.trim();
+			_data = _read.readLine();
+			mDefaultSkin = _data.trim();
+			_data = _read.readLine();
+			mDefaultPlugins = _data.trim();
+			
+			return true;
 		}
-
-		// get information from configuration file
-		BufferedReader _read = new BufferedReader(new InputStreamReader(
-				new FileInputStream(mConfFile)));
-
-		String _data = "";
-
-		_data = _read.readLine();
-		String[] _wnd_size = _data.split(" ");
-		mWinWidth = Integer.parseInt(_wnd_size[0]);
-		mWinHeight = Integer.parseInt(_wnd_size[1]);
-
-		_data = _read.readLine();
-		String[] wnd_loc = _data.split(" ");
-		mWinX = Integer.parseInt(wnd_loc[0]);
-		mWinY = Integer.parseInt(wnd_loc[1]);
-
-		_data = _read.readLine();
-		String _is_full_screen = _data.trim();
-		mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
-
-		_data = _read.readLine();
-		mLayoutFilePath = _data.split(SEPERATOR);
-		_data = _read.readLine();
-		mSkinFilePath = _data.split(SEPERATOR);
-		_data = _read.readLine();
-		mPluginFilePath = _data.split(SEPERATOR);
-
-		_data = _read.readLine();
-		mDefaultLayout = _data.trim();
-		_data = _read.readLine();
-		mDefaultSkin = _data.trim();
-		_data = _read.readLine();
-		mDefaultPlugins = _data.trim();
-
-		return true;
 	}
 
 	public void saveConfFile() throws IOException {
@@ -174,7 +183,7 @@ public final class ConfigurationInfo {
 	}
 
 	public File getDefaultLayout() {
-		if (this.mDefaultLayout != "") {
+		if (this.mDefaultLayout != "" && this.mDefaultLayout != null) {
 			File _layout_file = new File(this.mDefaultLayout);
 			return _layout_file;
 		} else
@@ -186,7 +195,7 @@ public final class ConfigurationInfo {
 	}
 
 	public File getDefaultSkin() {
-		if (this.mDefaultSkin != "") {
+		if (this.mDefaultSkin != "" && this.mDefaultSkin != null) {
 			File _skin_file = new File(this.mDefaultSkin);
 			return _skin_file;
 		} else

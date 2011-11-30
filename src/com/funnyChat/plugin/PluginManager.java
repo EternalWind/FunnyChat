@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
+import java.net.*;
 import com.funnyChat.event.*;
+import com.funnyChat.utils.Log;
 import com.funnyChat.utils.Log.LogType;
 import com.funnyChat.core.*;
 
@@ -13,9 +15,10 @@ public class PluginManager {
 	private static PluginManager mInstance;
 	private Integer mIdCount;
 	private String mDir;
+	private Log mLog;
 	
 	private static class PluginFilter implements FileFilter{
-		private static String mSuffix = "plu";
+		private static String mSuffix = "class";
 		
 		public boolean accept(File _path_name){
 			return _path_name.getName().endsWith(mSuffix);
@@ -30,6 +33,8 @@ public class PluginManager {
 		mPlugins = new HashMap<Integer, Plugin>();
 		mIdCount = 0;
 		mDir = _directory;
+		mLog = new Log();
+		mLog.setLogFile("plu_log.txt");
 	}
 	
 	private Integer generateId(){
@@ -39,19 +44,26 @@ public class PluginManager {
 	public void scan(){
 		File _plugin_dir = new File(mDir);
 		String _plugin_name;
+		
+		if(!_plugin_dir.exists()) {
+			_plugin_dir.mkdir();
+		}
 
 		for(File _plugin_file : _plugin_dir.listFiles(new PluginFilter())){
 			_plugin_name = _plugin_file.getName();
 			_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
-					PluginFilter.getSuffix().length());
+					PluginFilter.getSuffix().length() - 1);
 			Plugin _plugin = null;
 			try{
-				_plugin = (Plugin)Class.forName(_plugin_name).newInstance();
+				URL[] url = new URL[1];
+				url[0] = new URL("file:///" + _plugin_dir.getAbsolutePath() + "/");
+				_plugin = (Plugin)Class.forName(_plugin_name, true, new URLClassLoader(url)).newInstance();
 			}
 			catch(Exception e){
+				mLog.addLog("Debug: Failed to istantiate plugin: " + _plugin_name,LogType.DEBUG);
 				Core.getLogger().addLog("Failed to instantiate plugin " + _plugin_name + ".", LogType.WARNING);
 			}
-			if(_plugin == null || !mPlugins.containsValue(_plugin)){
+			if(_plugin != null && !mPlugins.containsValue(_plugin)){
 				mPlugins.put(generateId(), _plugin);
 			}
 		}

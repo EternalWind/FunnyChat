@@ -1,9 +1,11 @@
 package com.funnyChat.event;
 
+import com.funnyChat.network.*;
+
 public class PingEvent extends Event {
 	private Boolean mIsDone;
 	
-	public PingEvent(int _target) {
+	public PingEvent(Connection _target) {
 		mIsLocal = false;
 		mIsDone = false;
 		mTarget = _target;

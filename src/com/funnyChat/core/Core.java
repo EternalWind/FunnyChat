@@ -36,20 +36,22 @@ public class Core {
 			try {
 				if (!mConfInfo.loadConfFile()) {
 					mConfInfo.createConfFile();
-					mConfInfo.loadConfFile();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			String _default_plugin = null;
 			if ((_default_plugin = mConfInfo.getDefaultPlugins()) == null)
-				return false;
-			PluginManager.initialize(_default_plugin);
+				PluginManager.initialize();
+			else
+				PluginManager.initialize(_default_plugin);
 			mMainWnd.initWindow("FunnyChat", mConfInfo);
 
 			MemoryManager.initialize();
 			EventManager.initialize();
 			NetworkManager.initialize();
+			
+			PluginManager.getInstance().enableAll();
 		} else {
 			mLogger.addLog("Duplicative initialization for the Core.",
 					LogType.WARNING);
@@ -59,6 +61,7 @@ public class Core {
 
 	public void deinitialize() {
 		try {
+			mConfInfo.saveConfFile();
 			mMainWnd.deinitWindow();
 		} catch (Throwable e) {
 			e.printStackTrace();

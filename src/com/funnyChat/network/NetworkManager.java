@@ -47,7 +47,7 @@ public class NetworkManager extends FCThread{
 				
 				if(System.currentTimeMillis() - _connection.getLastActiveTime()
 						> mPingInterval){					
-					EventManager.getInstance().enqueue(new PingEvent(i));
+					EventManager.getInstance().enqueue(new PingEvent(_connection));
 				}
 				else if(System.currentTimeMillis() - 
 						mConnections.get(i).getLastActiveTime() > mTimeout){
@@ -86,7 +86,8 @@ public class NetworkManager extends FCThread{
 		if(mInstance == null){
 			mInstance = new NetworkManager(_max_count, _port);
 			//Register the PingEvent.
-			EventManager.getInstance().register(new PingEvent(-1));
+			EventManager.getInstance().register(new PingEvent(null));
+			EventManager.getInstance().register(new ConnectedEvent(true));
 			//Launch the checker.
 			mInstance.mChecker.start();
 			return true;

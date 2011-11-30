@@ -58,7 +58,6 @@ public class MainWindow {
 				mLayoutInfo.addPanel(new Panel());
 			p.setPanel(mLayoutInfo.getPanel(_it++));
 		}
-		_pm.enableAll();
 
 		mWindow.setTitle(_window_title);
 		mWindow.setSize(_size[0], _size[1]);
@@ -72,5 +71,6 @@ public class MainWindow {
 
 	public void run() {
 		mWindow.setVisible(true);
+		mWindow.show();
 	}
 }
