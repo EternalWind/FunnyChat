@@ -4,7 +4,7 @@ import com.funnyChat.event.Event;
 
 public class PluginAdapter extends Plugin{
 	@Override
-	protected void onCreate() {}
+	public void onCreate() {}
 
 	@Override
 	protected void onDestroy() {}

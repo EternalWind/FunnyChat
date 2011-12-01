@@ -14,7 +14,6 @@ public abstract class Plugin extends FCThread {
 		mEvent = null;
 		mIsBusy = false;
 		mPanel = null;
-		onCreate();
 	}
 	protected abstract void onEnable();
 	protected abstract void onDisable();
@@ -60,7 +59,7 @@ public abstract class Plugin extends FCThread {
 	public void setPanel(Panel _panel){
 		mPanel = _panel;
 	}
-	protected abstract void onCreate();
+	public abstract void onCreate();
 	protected abstract void onDestroy();
 	//处理事件前应先检查是否有事件要处理
 	protected boolean hasWork(){
