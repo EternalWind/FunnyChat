@@ -71,7 +71,7 @@ public abstract class Plugin extends FCThread {
 		mIsBusy = false;
 	}
 	public boolean handleEvent(Event _localEvent){
-		if(isInterested(_localEvent) && !_localEvent.equals(mEvent)){  //确保本插件对该事件感兴趣且还未处理过
+		if(isInterested(_localEvent) && !_localEvent.equals(mEvent) && mIsEnabled){  //确保本插件对该事件感兴趣且还未处理过
 			if(mIsBusy){
 				return false;
 			}
