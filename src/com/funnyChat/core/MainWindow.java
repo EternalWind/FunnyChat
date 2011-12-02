@@ -1,10 +1,14 @@
 package com.funnyChat.core;
 
+import java.awt.GridLayout;
 import java.awt.Panel;
+import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Collection;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 
 import com.funnyChat.plugin.Plugin;
@@ -19,6 +23,8 @@ public class MainWindow {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JFrame mWindow;
+	private JFrame mPluginChooser;
+	private JCheckBox[] mPluginSwitches;
 	private ConfigurationInfo mConfInfo;
 	private LayoutInfo mLayoutInfo;
 
@@ -71,7 +77,39 @@ public class MainWindow {
 	}
 
 	public void run() {
-		mWindow.setVisible(true);
-		mWindow.show();
+		mPluginChooser = new JFrame();
+		Collection<Plugin> _plugins = PluginManager.getInstance().getPlugins();
+		int _panel_count = _plugins.size();
+		mPluginChooser.setLayout(new GridLayout(1,_panel_count));
+		mPluginSwitches = new JCheckBox[_panel_count];
+		int i = 0;
+		for (Plugin _plugin : _plugins) {
+			mPluginSwitches[i].setDoubleBuffered(true);
+			mPluginSwitches[i].setText(_plugin.getName());
+			mPluginSwitches[i].addMouseListener(new MouseAdapter() {
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					updatePluginState();
+				}
+			});
+			mPluginChooser.add(mPluginSwitches[i]);
+			i++;
+		}
+		mPluginChooser.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				mWindow.setVisible(true);
+			}
+		});
+		mPluginChooser.setVisible(true);
+	}
+	
+	private void updatePluginState() {
+		Collection<Plugin> _plugins = PluginManager.getInstance().getPlugins();
+		int i = 0;
+		for (Plugin _plugin : _plugins) {
+			if(mPluginSwitches[i].isSelected() && !_plugin.isEnabled())
+				_plugin.enable();
+			else if(!mPluginSwitches[i].isSelected() && _plugin.isEnabled())
+				_plugin.disable();
+		}
 	}
 }
