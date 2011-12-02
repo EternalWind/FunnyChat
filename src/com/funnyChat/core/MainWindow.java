@@ -63,6 +63,7 @@ public class MainWindow {
 			if (_it >= mLayoutInfo.getPanelCount())
 				mLayoutInfo.addPanel(new Panel());
 			p.setPanel(mLayoutInfo.getPanel(_it++));
+			p.onCreate();
 		}
 
 		mWindow.setTitle(_window_title);
