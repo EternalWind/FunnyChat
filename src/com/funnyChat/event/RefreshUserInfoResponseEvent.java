@@ -1,23 +1,36 @@
 package com.funnyChat.event;
 
 import com.funnyChat.db.UserInfo;
-import com.funnyChat.network.Connection;
 import com.funnyChat.server.Server;
 
-public class RefreshUserInfoResponseEvent extends MessageEvent {
+public class RefreshUserInfoResponseEvent extends Event {
 
-	public RefreshUserInfoResponseEvent(Connection _target, Server _server,
+	private String mResult;
+	
+	public RefreshUserInfoResponseEvent(Server _server,
 			UserInfo _user_info) {
-		super(_target);
-		data.put("MessageType", "RefreshUserInfoResponseEvent");
 		if (_server.refreshUserInfo(_user_info))
-			data.put("Result", "Succeed");
+			mResult = "Succeed";
 		else
-			data.put("Result", "Failed");
+			mResult = "Failed";
+	}
+
+	public String getResult() {
+		return mResult;
 	}
 
 	@Override
 	public String getEventType() {
 		return "RefreshUserInfoResponseEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		return mResult;
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
+		mResult = dataStr;
 	}
 }

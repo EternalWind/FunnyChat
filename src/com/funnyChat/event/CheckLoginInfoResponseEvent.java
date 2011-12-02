@@ -1,22 +1,35 @@
 package com.funnyChat.event;
 
-import com.funnyChat.network.Connection;
 import com.funnyChat.server.Server;
 
-public class CheckLoginInfoResponseEvent extends MessageEvent {
+public class CheckLoginInfoResponseEvent extends Event {
 
-	public CheckLoginInfoResponseEvent(Connection _target, Server _server,
-			String _name, String _password) {
-		super(_target);
-		data.put("MessageType", "CheckLoginInfoResponseEvent");
+	private String mResult;
+
+	public CheckLoginInfoResponseEvent(Server _server, String _name,
+			String _password) {
 		if (_server.checkLoginInfo(_name, _password))
-			data.put("Result", "Succeed");
+			mResult = "Succeed";
 		else
-			data.put("Result", "Failed");
+			mResult = "Failed";
+	}
+
+	public String getResult() {
+		return mResult;
 	}
 
 	@Override
 	public String getEventType() {
 		return "CheckLoginInfoResponseEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		return mResult;
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
+		mResult = dataStr;
 	}
 }

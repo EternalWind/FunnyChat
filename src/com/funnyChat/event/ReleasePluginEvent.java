@@ -1,17 +1,34 @@
 package com.funnyChat.event;
 
-import com.funnyChat.network.Connection;
 
-public class ReleasePluginEvent extends MessageEvent {
+public class ReleasePluginEvent extends Event {
 
-	public ReleasePluginEvent(Connection _target, byte[] _plugins) {
-		super(_target);
-		data.put("MessageType", "ReleasePluginEvent");
-		data.put("Plugins", String.valueOf(_plugins));
+	private byte[] mPlugins;
+	
+	public ReleasePluginEvent(byte[] _plugins) {
+		mPlugins = _plugins;
+	}
+
+	public byte[] getPlugins() {
+		return mPlugins;
+	}
+
+	public void setPlugins(byte[] _plugins) {
+		this.mPlugins = _plugins;
 	}
 
 	@Override
 	public String getEventType() {
 		return "ReleasePluginEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		return String.valueOf(mPlugins);
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
+		mPlugins = dataStr.getBytes();
 	}
 }

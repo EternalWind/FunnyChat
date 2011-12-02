@@ -1,22 +1,35 @@
 package com.funnyChat.event;
 
-import com.funnyChat.network.Connection;
 import com.funnyChat.server.Server;
 
-public class AddFriendResponseEvent extends MessageEvent {
+public class AddFriendResponseEvent extends Event {
 
-	public AddFriendResponseEvent(Connection _target, Server _server,
+	private String mResult;
+	
+	public AddFriendResponseEvent(Server _server,
 			long _uid1, long _uid2) {
-		super(_target);
-		data.put("MessageType", "AddFriendResponseEvent");
 		if (_server.addFriend(_uid1, _uid2))
-			data.put("Result", "Succeed");
+			mResult = "Succeed";
 		else
-			data.put("Result", "Failed");
+			mResult = "Failed";
+	}
+
+	public String getResult() {
+		return mResult;
 	}
 
 	@Override
 	public String getEventType() {
 		return "AddFriendResponseEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		return mResult;
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
+		mResult = dataStr;
 	}
 }

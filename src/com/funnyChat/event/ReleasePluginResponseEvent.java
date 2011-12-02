@@ -1,18 +1,25 @@
 package com.funnyChat.event;
 
-import com.funnyChat.network.Connection;
-import com.funnyChat.server.Server;
 
-public class ReleasePluginResponseEvent extends MessageEvent {
+public class ReleasePluginResponseEvent extends Event {
 	
-	public ReleasePluginResponseEvent(Connection _target, Server _server) {
-		super(_target);
-		data.put("MessageType", "ReleasePluginResponseEvent");
-		data.put("Result", "AAAAAAAAAAAAAAAAA");
+	public ReleasePluginResponseEvent() {
 	}
 
 	@Override
 	public String getEventType() {
 		return "ReleasePluginResponseEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
+		// TODO Auto-generated method stub
+		
 	}
 }

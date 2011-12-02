@@ -1,16 +1,21 @@
 package com.funnyChat.event;
 
-import com.funnyChat.network.Connection;
+public class GetPluginListEvent extends Event {
 
-public class GetPluginListEvent extends MessageEvent {
-
-	public GetPluginListEvent(Connection _target) {
-		super(_target);
-		data.put("MessageType", "GetPluginListEvent");
+	public GetPluginListEvent() {
 	}
 
 	@Override
 	public String getEventType() {
 		return "GetPluginListEvent";
+	}
+
+	@Override
+	protected String onSerialize() {
+		return "";
+	}
+
+	@Override
+	protected void onUnserialize(String dataStr) {
 	}
 }
