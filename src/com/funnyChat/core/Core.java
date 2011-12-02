@@ -36,6 +36,7 @@ public class Core {
 			try {
 				if (!mConfInfo.loadConfFile()) {
 					mConfInfo.createConfFile();
+					mConfInfo.loadConfFile();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -51,7 +52,6 @@ public class Core {
 			EventManager.initialize();
 			NetworkManager.initialize();
 			
-			PluginManager.getInstance().enableAll();
 		} else {
 			mLogger.addLog("Duplicative initialization for the Core.",
 					LogType.WARNING);
