@@ -6,15 +6,15 @@ public class DeleteFriendResponseEvent extends Event {
 
 	private String mResult;
 
-	public DeleteFriendResponseEvent(Server _server, long _uid1, long _uid2) {
-		if (_server.deleteFriend(_uid1, _uid2))
-			mResult = "Succeed";
-		else
-			mResult = "Failed";
+	public DeleteFriendResponseEvent(){
+		mResult = "Failed";
 	}
 
 	public String getResult() {
 		return mResult;
+	}
+	public void setResult(String _result) {
+		mResult = _result;
 	}
 
 	@Override

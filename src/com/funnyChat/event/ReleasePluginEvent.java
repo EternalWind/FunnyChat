@@ -1,12 +1,23 @@
 package com.funnyChat.event;
 
+import com.funnyChat.db.PluginInfo;
+
 
 public class ReleasePluginEvent extends Event {
-
+	
+	private PluginInfo mPluginInfo;
 	private byte[] mPlugins;
 	
 	public ReleasePluginEvent(byte[] _plugins) {
 		mPlugins = _plugins;
+	}
+
+	public PluginInfo getPluginInfo() {
+		return mPluginInfo;
+	}
+
+	public void setPluginInfo(PluginInfo _pluginInfo) {
+		this.mPluginInfo = _pluginInfo;
 	}
 
 	public byte[] getPlugins() {
@@ -24,11 +35,13 @@ public class ReleasePluginEvent extends Event {
 
 	@Override
 	protected String onSerialize() {
-		return String.valueOf(mPlugins);
+		return mPluginInfo.toString()+String.valueOf(mPlugins);
 	}
 
 	@Override
 	protected void onUnserialize(String dataStr) {
-		mPlugins = dataStr.getBytes();
+		int index = dataStr.indexOf("]");
+		mPluginInfo = PluginInfo.parse(dataStr.substring(0, index+1));
+		mPlugins = dataStr.substring(index+1).getBytes();
 	}
 }

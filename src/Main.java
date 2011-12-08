@@ -1,5 +1,3 @@
-
-
 import com.funnyChat.core.Core;
 
 public class Main {
