@@ -9,8 +9,15 @@ public class GetPluginListResponseEvent extends Event {
 
 	private List<PluginInfo> mPluginsInfo;
 
-	public GetPluginListResponseEvent(Server _server) {
-		mPluginsInfo = _server.getPluginList();
+//	public GetPluginListResponseEvent(Server _server) {
+//		mPluginsInfo = _server.getPluginList();
+//	}
+	public GetPluginListResponseEvent() {
+		mPluginsInfo = null;
+	}
+	
+	public void setPluginsInfo(List<PluginInfo> _PluginsInfo) {
+		mPluginsInfo = _PluginsInfo;
 	}
 
 	public List<PluginInfo> getPluginsInfo() {
