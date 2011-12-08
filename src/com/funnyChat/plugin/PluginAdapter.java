@@ -24,4 +24,8 @@ public class PluginAdapter extends Plugin{
 		return true;
 	}
 	
+	@Override
+	public String getPluginName() {
+		return "Unnamed Plugin";
+	}
 }

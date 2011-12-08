@@ -22,7 +22,7 @@ public class EventManager extends FCThread{
 			Core.getLogger().addLog("Duplicative initialization for the EventManager.", LogType.WARNING);
 		}
 	}
-	public synchronized void deinitialize(){
+	public void deinitialize(){
 		if(mInstance != null){
 			terminate();
 			mLEvent.clear();
@@ -53,7 +53,7 @@ public class EventManager extends FCThread{
 			e.printStackTrace();
 		}
 	}
-	public synchronized void enqueue(Event _event){
+	public void enqueue(Event _event){
 		boolean _is_registered = false;
 		
 		//Check if has registered or not
@@ -71,7 +71,7 @@ public class EventManager extends FCThread{
 			}
 		}
 	}
-	public synchronized void enqueue(byte[] _byte_arr, Connection _source){
+	public void enqueue(byte[] _byte_arr, Connection _source){
 		Event _event = getEventInstance(_byte_arr);
 		//Deals with the PingEvent.
 		if(_event.getEventType().equals("PingEvent")){
@@ -99,7 +99,7 @@ public class EventManager extends FCThread{
 	/* Aborted
 	public void dequeue();
 	*/
-	private synchronized void handleNetworkEvent(){
+	private void handleNetworkEvent(){
 		/**
 		 * 将NetworkEvent通过NetworkManager发送
 		 */
@@ -109,7 +109,7 @@ public class EventManager extends FCThread{
 			_networkManager.send(_event);
 		}
 	}
-	private synchronized void handleLocalEvent(){
+	private void handleLocalEvent(){
 		/**
 		 * 将LocalEvent发送至 Plugin
 		 */

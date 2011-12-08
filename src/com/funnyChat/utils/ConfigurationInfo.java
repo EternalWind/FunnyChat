@@ -13,11 +13,16 @@ public final class ConfigurationInfo {
 	
 	public static final String SEPERATOR = ";";
 	private static String getString(String[] _strs) {
-		String s ="";
-		for(String i:_strs) {
-			s += i + SEPERATOR;
+		if(_strs == null) {
+			return NOTEXIST;
 		}
-		return s;
+		else {
+			String s ="";
+			for(String i:_strs) {
+				s += i + SEPERATOR;
+			}
+			return s;
+		}
 	}
 	private Log log;
 	
@@ -33,6 +38,7 @@ public final class ConfigurationInfo {
 	private String mDefaultLayout;
 	private String mDefaultSkin;
 	private String mDefaultPlugins;
+	private final static String NOTEXIST = "*";
 	
 	public ConfigurationInfo() {
 		log = new Log();
@@ -71,31 +77,82 @@ public final class ConfigurationInfo {
 
 			_data = _read.readLine();
 			String[] _wnd_size = _data.split(" ");
-			mWinWidth = Integer.parseInt(_wnd_size[0]);
-			mWinHeight = Integer.parseInt(_wnd_size[1]);
+			if(_data.indexOf(NOTEXIST) != -1 || _wnd_size.length < 2) {
+				mWinWidth = 400;
+				mWinHeight = 200;
+			}
+			else {
+				mWinWidth = Integer.parseInt(_wnd_size[0]);
+				mWinHeight = Integer.parseInt(_wnd_size[1]);
+			}
 
 			_data = _read.readLine();
 			String[] wnd_loc = _data.split(" ");
-			mWinX = Integer.parseInt(wnd_loc[0]);
-			mWinY = Integer.parseInt(wnd_loc[1]);
+			if(_data.indexOf(NOTEXIST) != -1 || wnd_loc.length < 2) {
+				mWinX = 100;
+				mWinY = 200;
+			}
+			else {
+				mWinX = Integer.parseInt(wnd_loc[0]);
+				mWinY = Integer.parseInt(wnd_loc[1]);
+			}
 
 			_data = _read.readLine();
-			String _is_full_screen = _data.trim();
-			mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mIsFullScreen = false;
+			}
+			else {
+				String _is_full_screen = _data.trim();
+				mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
+			}
 
 			_data = _read.readLine();
-			mLayoutFilePath = _data.split(SEPERATOR);
-			_data = _read.readLine();
-			mSkinFilePath = _data.split(SEPERATOR);
-			_data = _read.readLine();
-			mPluginFilePath = _data.split(SEPERATOR);
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mLayoutFilePath = null;
+			}
+			else {
+				mLayoutFilePath = _data.split(SEPERATOR);
+			}
 
 			_data = _read.readLine();
-			mDefaultLayout = _data.trim();
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mSkinFilePath = null;
+			}
+			else {
+				mSkinFilePath = _data.split(SEPERATOR);
+			}
+
 			_data = _read.readLine();
-			mDefaultSkin = _data.trim();
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mPluginFilePath = null;
+			}
+			else {
+				mPluginFilePath = _data.split(SEPERATOR);
+			}
+
 			_data = _read.readLine();
-			mDefaultPlugins = _data.trim();
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mDefaultLayout = null;
+			}
+			else {
+				mDefaultLayout = _data.trim();
+			}
+
+			_data = _read.readLine();
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mDefaultSkin = null;
+			}
+			else {
+				mDefaultSkin = _data.trim();
+			}
+
+			_data = _read.readLine();
+			if(_data.indexOf(NOTEXIST) != -1) {
+				mDefaultPlugins = null;
+			}
+			else {
+				mDefaultPlugins = _data.trim();
+			}
 			
 			return true;
 		}
@@ -120,9 +177,9 @@ public final class ConfigurationInfo {
 				LFP + "\r\n" +
 				SFP + "\r\n" +
 				PFP + "\r\n" +
-				mDefaultLayout + "\r\n" +
-				mDefaultSkin + "\r\n" +
-				mDefaultPlugins);
+				(mDefaultLayout == null ? "Default Layout.txt" : mDefaultLayout) + "\r\n" +
+				(mDefaultSkin == null ? "*" : mDefaultSkin) + "\r\n" +
+				(mDefaultPlugins == null ? "*" : mDefaultPlugins));
 		_fw.flush();
 		_fw.close();
 		

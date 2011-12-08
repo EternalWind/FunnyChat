@@ -12,48 +12,51 @@ import com.funnyChat.utils.Log.LogType;
 
 public class Core {
 
-	static private MainWindow mMainWnd;
+	private MainWindow mMainWnd;
 	private ConfigurationInfo mConfInfo;
-	static private Log mLogger = null;
+	private Log mLogger = null;
 	static private Core mInstance = null;
 	static private String mDEAFAULTLOGPATH = "Log.txt";
 
-	public boolean initialize() {
+	private Core(){}
+	
+	static public boolean initialize() {
 		return initialize(Core.mDEAFAULTLOGPATH);
 	}
 	
-	public boolean initialize(String _log_path) {
+	static public boolean initialize(String _log_path) {
 		if (mInstance == null) {
 			// ThreadManager.initialize();
 			mInstance = new Core();
-			mLogger = new Log();
+			mInstance.mLogger = new Log();
 			if (_log_path == null) {
 				_log_path = mDEAFAULTLOGPATH;
 			}
-			mConfInfo = new ConfigurationInfo();
-			mMainWnd = new MainWindow();
+			mInstance.mConfInfo = new ConfigurationInfo();
+			mInstance.mMainWnd = new MainWindow();
+			
+			EventManager.initialize();
 
 			try {
-				if (!mConfInfo.loadConfFile()) {
-					mConfInfo.createConfFile();
-					mConfInfo.loadConfFile();
+				if (!mInstance.mConfInfo.loadConfFile()) {
+					mInstance.mConfInfo.createConfFile();
+					//mConfInfo.loadConfFile();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			String _default_plugin = null;
-			if ((_default_plugin = mConfInfo.getDefaultPlugins()) == null)
+			if ((_default_plugin = mInstance.mConfInfo.getDefaultPlugins()) == null)
 				PluginManager.initialize();
 			else
 				PluginManager.initialize(_default_plugin);
-			mMainWnd.initWindow("FunnyChat", mConfInfo);
+			mInstance.mMainWnd.initWindow("FunnyChat", mInstance.mConfInfo);
 
 			MemoryManager.initialize();
-			EventManager.initialize();
 			NetworkManager.initialize();
 			
 		} else {
-			mLogger.addLog("Duplicative initialization for the Core.",
+			mInstance.mLogger.addLog("Duplicative initialization for the Core.",
 					LogType.WARNING);
 		}
 		return true;
@@ -73,12 +76,14 @@ public class Core {
 		mLogger.saveLog();
 		mInstance = null;
 		mLogger = null;
+		
+		System.exit(0);
 	}
 
 	public void run() {
 		EventManager.getInstance().start();
 		NetworkManager.getInstance().start();
-		PluginManager.getInstance().enableAll();
+		//PluginManager.getInstance().enableAll();
 		mMainWnd.run();
 	}
 
@@ -89,7 +94,7 @@ public class Core {
 	 */
 
 	static public MainWindow getMainWindow() {
-		return mMainWnd;
+		return mInstance.mMainWnd;
 	}
 
 	static public Core getInstance() {
@@ -97,6 +102,6 @@ public class Core {
 	}
 
 	static public Log getLogger() {
-		return mLogger;
+		return mInstance.mLogger;
 	}
 }

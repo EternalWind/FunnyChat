@@ -11,8 +11,7 @@ import java.util.Collection;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 
-import com.funnyChat.plugin.Plugin;
-import com.funnyChat.plugin.PluginManager;
+import com.funnyChat.plugin.*;
 import com.funnyChat.utils.ConfigurationInfo;
 import com.funnyChat.utils.LayoutInfo;
 
@@ -32,10 +31,12 @@ public class MainWindow {
 		mWindow = new JFrame();
 		mWindow.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				e.getWindow().dispose();
+				Core.getInstance().deinitialize();
+				//e.getWindow().dispose();
 			}
 		});
 	}
+
 
 	public boolean initWindow(String _window_title,
 			ConfigurationInfo _configuration) {
@@ -47,11 +48,8 @@ public class MainWindow {
 		int[] _loc = mConfInfo.getWindowLocation();
 
 		// read layout information to layout main window
-		File _default_layout = null;
-		if ((_default_layout = mConfInfo.getDefaultLayout()) == null)
-			return false;
-		if (!_default_layout.isFile())
-			return false;
+		File _default_layout = mConfInfo.getDefaultLayout();
+
 		mLayoutInfo = new LayoutInfo(_default_layout);
 		for (Panel p : mLayoutInfo.getPanels())
 			mWindow.add(p);
@@ -74,6 +72,7 @@ public class MainWindow {
 
 	public void deinitWindow() throws Throwable {
 		mWindow.dispose();
+		//mPluginChooser.dispose(); 
 	}
 
 	public void run() {
@@ -84,8 +83,9 @@ public class MainWindow {
 		mPluginSwitches = new JCheckBox[_panel_count];
 		int i = 0;
 		for (Plugin _plugin : _plugins) {
+			mPluginSwitches[i] = new JCheckBox();
 			mPluginSwitches[i].setDoubleBuffered(true);
-			mPluginSwitches[i].setText(_plugin.getName());
+			mPluginSwitches[i].setText(_plugin.getPluginName());
 			mPluginSwitches[i].addMouseListener(new MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					updatePluginState();
@@ -96,6 +96,7 @@ public class MainWindow {
 		}
 		mPluginChooser.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
+				e.getWindow().dispose();
 				mWindow.setVisible(true);
 			}
 		});

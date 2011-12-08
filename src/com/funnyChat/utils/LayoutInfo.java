@@ -40,40 +40,50 @@ public final class LayoutInfo {
 	}
 
 	private void readLayoutInfo() {
-		try {
-			if (mReader == null)
-				initReader();
-			int _panel_count = Integer.parseInt(mReader.readLine());
-			if (_panel_count <= 0)
-				return;
-
+		if(mLayoutFile == null || !mLayoutFile.isFile()) {
+			mLayoutFile = new File("Default Layout.txt");
 			mPanels = new LinkedList<Panel>();
-			String[] _data;
-			// _rect: record x,y,width,height, which are the left
-			// bottom point,width and height, respectively
-			int[] _rect = new int[4];
-			for (int i = 0; i < _panel_count; ++i) {
-				_data = mReader.readLine().split(" ");
-				for (int j = 0; j < 4; ++j) {
-					_rect[j] = Integer.parseInt(_data[j]);
+			Panel _panel = new Panel();
+			_panel.setBounds(0, 0, 100, 100);
+			mPanels.add(_panel);
+		}
+		else {
+			try {
+				if (mReader == null)
+					initReader();
+				int _panel_count = Integer.parseInt(mReader.readLine());
+				if (_panel_count <= 0)
+					return;
+
+				mPanels = new LinkedList<Panel>();
+				String[] _data;
+				// _rect: record x,y,width,height, which are the left
+				// bottom point,width and height, respectively
+				int[] _rect = new int[4];
+				for (int i = 0; i < _panel_count; ++i) {
+					_data = mReader.readLine().split(" ");
+					for (int j = 0; j < 4; ++j) {
+						_rect[j] = Integer.parseInt(_data[j]);
+					}
+					mPanels.add(new Panel());
+					mPanels.getLast().setBounds(_rect[0], _rect[1], _rect[2],
+							_rect[3]);
+					// =============== for test =============================
+					if (i == 0)
+						mPanels.get(i).setBackground(Color.blue);
+					else if (i == 1)
+						mPanels.get(i).setBackground(Color.red);
+					else
+						mPanels.get(i).setBackground(Color.green);
+					// ====================================================
+					mPanels.get(i).setVisible(true);
 				}
-				mPanels.add(new Panel());
-				mPanels.getLast().setBounds(_rect[0], _rect[1], _rect[2],
-						_rect[3]);
-				// =============== for test =============================
-				if (i == 0)
-					mPanels.get(i).setBackground(Color.blue);
-				else if (i == 1)
-					mPanels.get(i).setBackground(Color.red);
-				else
-					mPanels.get(i).setBackground(Color.green);
-				// ====================================================
-				mPanels.get(i).setVisible(true);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -106,6 +116,8 @@ public final class LayoutInfo {
 	}
 	
 	public LinkedList<Panel> getPanels() {
+		if (mPanels == null)
+			readLayoutInfo();
 		return mPanels;
 	}
 	

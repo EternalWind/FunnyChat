@@ -13,7 +13,7 @@ import com.funnyChat.db.UserInfoDAO;
 
 public class Server extends PluginAdapter{
 	@Override
-	protected void onCreate() {}
+	public void onCreate() {}
 
 	@Override
 	protected void onDestroy() {}
