@@ -1,7 +1,5 @@
 package com.funnyChat.event;
 
-import com.funnyChat.server.*;
-
 public class AddFriendResponseEvent extends Event {
 
 	private String mResult;

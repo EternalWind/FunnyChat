@@ -1,5 +1,3 @@
-
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +16,13 @@ import com.funnyChat.event.*;
 
 public class Server extends PluginAdapter{
 	private String pluginBasePath = "plugin/";
+	private HashMap<Long,UserInfo> users = new HashMap<Long, UserInfo>();
+	
+	@Override
+	public String getPluginName() {
+		return "FunnyChat Server";
+	}
+	
 	@Override
 	public void onCreate() {}
 
@@ -241,5 +246,4 @@ public class Server extends PluginAdapter{
     	}
     	return false;
     }
-    private HashMap<Long,UserInfo> users = new HashMap<Long, UserInfo>();
 }

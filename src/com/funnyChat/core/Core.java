@@ -12,11 +12,11 @@ import com.funnyChat.utils.Log.LogType;
 
 public class Core {
 
-	private MainWindow mMainWnd;
-	private ConfigurationInfo mConfInfo;
+	//private MainWindow mMainWnd;
 	private Log mLogger = null;
 	static private Core mInstance = null;
 	static private String mDEAFAULTLOGPATH = "Log.txt";
+	private MainWindow2 mTestWin;
 
 	private Core(){}
 	
@@ -32,25 +32,20 @@ public class Core {
 			if (_log_path == null) {
 				_log_path = mDEAFAULTLOGPATH;
 			}
-			mInstance.mConfInfo = new ConfigurationInfo();
-			mInstance.mMainWnd = new MainWindow();
+			//mInstance.mMainWnd = new MainWindow();
+			mInstance.mTestWin = new MainWindow2();
 			
 			EventManager.initialize();
 
-			try {
-				if (!mInstance.mConfInfo.loadConfFile()) {
-					mInstance.mConfInfo.createConfFile();
-					//mConfInfo.loadConfFile();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			String _default_plugin = null;
-			if ((_default_plugin = mInstance.mConfInfo.getDefaultPlugins()) == null)
+			String _default_plugin = mInstance.mTestWin.getConfigInfo().getDefaultPlugins();
+			
+			if (_default_plugin  == null)
 				PluginManager.initialize();
 			else
 				PluginManager.initialize(_default_plugin);
-			mInstance.mMainWnd.initWindow("FunnyChat", mInstance.mConfInfo);
+			
+			mInstance.mTestWin.initWindow("FunnyChat");
+			//mInstance.mMainWnd.initWindow("FunnyChat", mInstance.mConfInfo);
 
 			MemoryManager.initialize();
 			NetworkManager.initialize();
@@ -63,12 +58,6 @@ public class Core {
 	}
 
 	public void deinitialize() {
-		try {
-			mConfInfo.saveConfFile();
-			mMainWnd.deinitWindow();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
 		PluginManager.getInstance().deinitialize();
 		MemoryManager.getInstance().deinitialize();
 		EventManager.getInstance().deinitialize();
@@ -84,7 +73,8 @@ public class Core {
 		EventManager.getInstance().start();
 		NetworkManager.getInstance().start();
 		//PluginManager.getInstance().enableAll();
-		mMainWnd.run();
+		//mMainWnd.run();
+		mTestWin.setVisible(true);
 	}
 
 	// Abort
@@ -93,8 +83,8 @@ public class Core {
 	 * null) { mMainWnd = _mainWnd; return true; } else return false; }
 	 */
 
-	static public MainWindow getMainWindow() {
-		return mInstance.mMainWnd;
+	static public MainWindow2 getMainWindow() {
+		return mInstance.mTestWin;
 	}
 
 	static public Core getInstance() {
