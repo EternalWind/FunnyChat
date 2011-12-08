@@ -7,12 +7,20 @@ public class GetIpAndPortResponseEvent extends Event {
 	private String mIp;
 	private String mPort;
 	
-	public GetIpAndPortResponseEvent(Server _server,long _user_id) {
-		String[] _ip_port = _server.getIpAndPort(_user_id).split(":");
+//	public GetIpAndPortResponseEvent(Server _server,long _user_id) {
+//		String[] _ip_port = _server.getIpAndPort(_user_id).split(":");
+//		mIp = _ip_port[0].trim();
+//		mPort = _ip_port[1].trim();
+//	}
+	public GetIpAndPortResponseEvent() {
+		mIp = "";
+		mPort = "";
+	}
+	public void setIpAndPort(String _ipAndPort){
+		String[] _ip_port = _ipAndPort.split(" ");
 		mIp = _ip_port[0].trim();
 		mPort = _ip_port[1].trim();
 	}
-
 	@Override
 	public String getEventType() {
 		return "GetIpAndPortResponseEvent";

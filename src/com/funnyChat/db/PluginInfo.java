@@ -23,6 +23,40 @@ public class PluginInfo {
 				+ ", describe=" + describe + ", uptime=" + uptime + ", path="
 				+ path + "]";
 	}
+	@SuppressWarnings("deprecation")
+	public static PluginInfo parse(String str) {
+		// TODO Auto-generated method stub
+		PluginInfo pluginInfo = new PluginInfo();
+		int start = str.indexOf("pid=");
+		int end = str.indexOf(",");
+		pluginInfo.setPid(Long.parseLong(str.substring(start+4, end)));
+		str = str.substring(end+1);
+		
+		start = str.indexOf("name=");
+		end = str.indexOf(",");
+		pluginInfo.setName(str.substring(start+5, end));
+		str = str.substring(end+1);
+		
+		start = str.indexOf("uid=");
+		end = str.indexOf(",");
+		pluginInfo.setUid(Long.parseLong(str.substring(start+4, end)));
+		str = str.substring(end+1);
+		
+		start = str.indexOf("describe=");
+		end = str.indexOf(",");
+		pluginInfo.setDescribe(str.substring(start+9, end));
+		str = str.substring(end+1);
+		
+		start = str.indexOf("uptime=");
+		end = str.indexOf(",");
+		pluginInfo.setUptime(new Date(Date.parse(str.substring(start+7, end))));
+		str = str.substring(end+1);
+		
+		start = str.indexOf("path=");
+		end = str.indexOf("]");
+		pluginInfo.setPath(str.substring(start+5, end));
+		return null;
+	}
 
 	public String getName() {
 		return name;

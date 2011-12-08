@@ -97,7 +97,7 @@ public class MessageEvent extends Event{
      }
      public MessageEvent(int _target){
     	 mIsLocal = false;
- 		 mTarget = _target;
+ //		 mTarget = _target;
      }
 	@Override
 	public String getEventType() {

@@ -3,14 +3,22 @@ package com.funnyChat.event;
 import java.util.List;
 
 import com.funnyChat.db.UserInfo;
-import com.funnyChat.server.Server;
 
 public class GetFriendsResponseEvent extends Event {
 
 	private List<UserInfo> mUsersInfo;
 
-	public GetFriendsResponseEvent(Server _server, long _user_id) {
-		mUsersInfo = _server.getFriends(_user_id);
+
+
+	public void setUsersInfo(List<UserInfo> mUsersInfo) {
+		this.mUsersInfo = mUsersInfo;
+	}
+
+//	public GetFriendsResponseEvent(Server _server, long _user_id) {
+//		mUsersInfo = _server.getFriends(_user_id);
+//	}
+	public GetFriendsResponseEvent() {
+		mUsersInfo = null;
 	}
 
 	public List<UserInfo> getUsersInfo() {
