@@ -81,6 +81,8 @@ public class MainWindow {
 		int _panel_count = _plugins.size();
 		mPluginChooser.setLayout(new GridLayout(1,_panel_count));
 		mPluginSwitches = new JCheckBox[_panel_count];
+		mPluginChooser.setSize(400, 500);
+		mPluginChooser.setLocation(200, 200);
 		int i = 0;
 		for (Plugin _plugin : _plugins) {
 			mPluginSwitches[i] = new JCheckBox();

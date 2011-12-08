@@ -139,50 +139,66 @@ public class Client extends Plugin{
 	}
 
 	private boolean modifiedState(long _fid, String _state){
-		Event _event = new ChangeUserStateEvent(_fid, _state);
+		ChangeUserStateEvent _event = new ChangeUserStateEvent();
+		_event.setState(_state);
+		_event.setUId(_fid);
 		event_manager.enqueue(_event);
 		return true;
 	}
 	
 	private boolean register(String _name, String _password, String _state, String _ip, String _port){
-		Event _event = new RegisterEvent(_name, _password, _state, _ip, _port);
+		RegisterEvent _event = new RegisterEvent();
+		_event.setName(_name);
+		_event.setPassword(_password);
+		_event.setState(_state);
+		_event.setIp(_ip);
+		_event.setPort(_port);
 		event_manager.enqueue(_event);
 		return true;
 	}
 	
-	private boolean getFriendInfo(long fid){
-		Event _event = new GetFriendsEvent(fid);
+	private boolean getFriendInfo(long _fid){
+		GetFriendsEvent _event = new GetFriendsEvent();
+		_event.setUId(_fid);
 		event_manager.enqueue(_event);
 		return true;
 	}
 	
 	private boolean getPassword(String _answer){
-		Event _event = new GetPasswordEvent(_answer);
+		GetPasswordEvent _event = new GetPasswordEvent();
+		_event.setAnswer(_answer);
 		event_manager.enqueue(_event);
 		return true;
 	}
 	
 	private boolean login(String _name, String _password){
-		Event _event = new CheckLoginInfoEvent(_name, _password);
+		CheckLoginInfoEvent _event = new CheckLoginInfoEvent();
+		_event.setName(_name);
+		_event.setPassword(_password);
 		event_manager.enqueue(_event);
 		return true;
 	}
 	
 	
 	private boolean addFriend(long _uid1, long _uid2){
-		Event _event = new AddFriendEvent(_uid1, _uid2);
+		AddFriendEvent _event = new AddFriendEvent();
+		_event.setUId1(_uid1);
+		_event.setUId2(_uid2);
 		event_manager.enqueue(_event);
 		return true;
 	}
 
 	private boolean refreshUserInfo(UserInfo _user_info){
-		Event _event = new RefreshUserInfoEvent(_user_info);
+		RefreshUserInfoEvent _event = new RefreshUserInfoEvent();
+		_event.setUserInfo(_user_info);
 		event_manager.enqueue(_event);
 		return true;
 	}	
 
 	private boolean deleteFriend(long _uid1, long _uid2){
-		Event _event = new DeleteFriendEvent(_uid1, _uid2);
+		DeleteFriendEvent _event = new DeleteFriendEvent();
+		_event.setUId1(_uid1);
+		_event.setUId2(_uid2);
 		event_manager.enqueue(_event);
 		return true;
 	}		

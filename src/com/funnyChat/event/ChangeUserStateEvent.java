@@ -5,9 +5,9 @@ public class ChangeUserStateEvent extends Event {
 	private long mUId;
 	private String mState;
 	
-	public ChangeUserStateEvent( long _user_id, String _state) {
-		mUId = _user_id;
-		mState = _state;
+	public ChangeUserStateEvent() {
+		mUId = 0;
+		mState = "";
 	}
 
 	public long getUId() {

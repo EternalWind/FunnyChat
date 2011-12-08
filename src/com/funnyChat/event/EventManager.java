@@ -42,7 +42,7 @@ public class EventManager extends FCThread{
 		mNEvent = new LinkedList<Event>();
 		mEventPrototype = new LinkedList<Event>();
 	}
-	protected void onRun(){
+	synchronized protected void onRun(){
 		try {
 			handleLocalEvent();
 			handleNetworkEvent();
@@ -53,7 +53,7 @@ public class EventManager extends FCThread{
 			e.printStackTrace();
 		}
 	}
-	public void enqueue(Event _event){
+	synchronized public void enqueue(Event _event){
 		boolean _is_registered = false;
 		
 		//Check if has registered or not
@@ -71,7 +71,7 @@ public class EventManager extends FCThread{
 			}
 		}
 	}
-	public void enqueue(byte[] _byte_arr, Connection _source){
+	synchronized public void enqueue(byte[] _byte_arr, Connection _source){
 		Event _event = getEventInstance(_byte_arr);
 		//Deals with the PingEvent.
 		if(_event.getEventType().equals("PingEvent")){
@@ -99,7 +99,7 @@ public class EventManager extends FCThread{
 	/* Aborted
 	public void dequeue();
 	*/
-	private void handleNetworkEvent(){
+	synchronized private void handleNetworkEvent(){
 		/**
 		 * 将NetworkEvent通过NetworkManager发送
 		 */
@@ -109,7 +109,7 @@ public class EventManager extends FCThread{
 			_networkManager.send(_event);
 		}
 	}
-	private void handleLocalEvent(){
+	synchronized private void handleLocalEvent(){
 		/**
 		 * 将LocalEvent发送至 Plugin
 		 */
@@ -120,7 +120,7 @@ public class EventManager extends FCThread{
 		}
 	}
 
-	public boolean register(Event _event){
+	synchronized public boolean register(Event _event){
 		for(Event _e : mEventPrototype){
 			if(_e.getEventType().equals( _event.getEventType())){
 				//Already registered

@@ -46,8 +46,10 @@ public class NetworkManager extends FCThread{
 				_connection = mConnections.get(i);
 				
 				if(System.currentTimeMillis() - _connection.getLastActiveTime()
-						> mPingInterval){					
-					EventManager.getInstance().enqueue(new PingEvent(_connection));
+						> mPingInterval){
+					PingEvent _ping = new PingEvent();
+					_ping.setTarget(_connection);
+					EventManager.getInstance().enqueue(_ping);
 				}
 				else if(System.currentTimeMillis() - 
 						mConnections.get(i).getLastActiveTime() > mTimeout){
@@ -86,8 +88,8 @@ public class NetworkManager extends FCThread{
 		if(mInstance == null){
 			mInstance = new NetworkManager(_max_count, _port);
 			//Register the PingEvent.
-			EventManager.getInstance().register(new PingEvent(null));
-			EventManager.getInstance().register(new ConnectedEvent(true));
+			EventManager.getInstance().register(new PingEvent());
+			EventManager.getInstance().register(new ConnectedEvent());
 			//Launch the checker.
 			mInstance.mChecker.start();
 			return true;
@@ -180,14 +182,18 @@ public class NetworkManager extends FCThread{
 			_socket_channel.configureBlocking(true);
 			//_socket_channel.register(mSelector, SelectionKey.OP_CONNECT).attach(_socket_channel);
 			_socket_channel.connect(_address);
+			
 			if(_socket_channel.isConnected()){
-				Integer _id = generateId();
 				Connection _connection = new Connection(_socket_channel);
 				_socket_channel.configureBlocking(false);
 				_socket_channel.register(mSelector, SelectionKey.OP_READ).attach(_connection);
-				ConnectedEvent _event = new ConnectedEvent(true);
+				
+				ConnectedEvent _event = new ConnectedEvent();
+				_event.setIsInitiative(true);
 				_event.setSource(_connection);
 				EventManager.getInstance().enqueue(_event);
+				
+				Integer _id = generateId();
 				mConnections.put(_id, _connection);
 				_connection.setLastActiveTime(System.currentTimeMillis());
 			}
@@ -242,7 +248,8 @@ public class NetworkManager extends FCThread{
 					_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
 					mConnections.put(_id, _connection);
 					
-					ConnectedEvent _event = new ConnectedEvent(false);
+					ConnectedEvent _event = new ConnectedEvent();
+					_event.setIsInitiative(false);
 					_event.setSource(_connection);
 					_eventManager.enqueue(_event);
 				}
@@ -255,7 +262,8 @@ public class NetworkManager extends FCThread{
 						_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
 						mConnections.put(_id, _connection);
 						
-						ConnectedEvent _event = new ConnectedEvent(true);
+						ConnectedEvent _event = new ConnectedEvent();
+						_event.setIsInitiative(true);
 						_event.setSource(_connection);
 						_eventManager.enqueue(_event);
 					}

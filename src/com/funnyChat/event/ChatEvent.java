@@ -1,19 +1,36 @@
 package com.funnyChat.event;
 
 public class ChatEvent extends Event {
-	private Integer mFrom;
+	private long mFrom;
 	private boolean mIsReceived;
-	private Integer mTo;
+	private long mTo;
+	
+	public ChatEvent() {
+		mFrom = mTo = 0;
+		mIsReceived = false;
+	}
+	
+	public void setSenderId(long _sender_id) {
+		mFrom = _sender_id;
+	}
+	
+	public void setReceiverId(long _receiver_id) {
+		mTo = _receiver_id;
+	}
+	
+	public void setIsReceived(boolean _is_received) {
+		mIsReceived = _is_received;
+	}
 	
 	public boolean getIsReceived() {
 		return mIsReceived;
 	}
 	
-	public Integer getSenderId() {
+	public long getSenderId() {
 		return mFrom;
 	}
 	
-	public Integer getReceiverId() {
+	public long getReceiverId() {
 		return mTo;
 	}
 	

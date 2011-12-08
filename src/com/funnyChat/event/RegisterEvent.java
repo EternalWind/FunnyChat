@@ -8,13 +8,12 @@ public class RegisterEvent extends Event {
 	private String mIp;
 	private String mPort;
 
-	public RegisterEvent(String _name, String _password, String _state,
-			String _ip, String _port) {
-		mName = _name;
-		mPassword = _password;
-		mState = _state;
-		mIp = _ip;
-		mPort = _port;
+	public RegisterEvent() {
+		mName = "";
+		mPassword = "";
+		mState = "";
+		mIp = "";
+		mPort = "";
 	}
 
 	public String getName() {

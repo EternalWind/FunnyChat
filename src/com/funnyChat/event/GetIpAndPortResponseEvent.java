@@ -1,7 +1,5 @@
 package com.funnyChat.event;
 
-import com.funnyChat.server.Server;
-
 public class GetIpAndPortResponseEvent extends Event {
 
 	private String mIp;

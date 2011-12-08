@@ -5,9 +5,9 @@ public class CheckLoginInfoEvent extends Event {
 	private String mName;
 	private String mPassword;
 
-	public CheckLoginInfoEvent(String _name, String _password) {
-		mName = _name;
-		mPassword = _password;
+	public CheckLoginInfoEvent() {
+		mName = "";
+		mPassword = "";
 	}
 
 	public String getName() {

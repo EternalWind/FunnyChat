@@ -55,8 +55,8 @@ public final class ConfigurationInfo {
 			log.addLog("Debug: Not a file: " + mConfFile.getPath(),LogType.DEBUG);
 			
 			mWinWidth = 400;
-			mWinHeight = 200;
-			mWinX = 100;
+			mWinHeight = 500;
+			mWinX = 200;
 			mWinY = 200;
 			mIsFullScreen = false;
 			mLayoutFilePath = null;

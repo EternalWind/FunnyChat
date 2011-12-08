@@ -1,8 +1,5 @@
 package com.funnyChat.event;
 
-import com.funnyChat.db.UserInfo;
-import com.funnyChat.server.Server;
-
 public class RegisterResponseEvent extends Event {
 
 	private String mResult;

@@ -6,15 +6,15 @@ public class RefreshUserInfoEvent extends Event {
 
 	private UserInfo mUserInfo;
 
-	public RefreshUserInfoEvent(UserInfo _user_info) {
-		mUserInfo = _user_info;
+	public RefreshUserInfoEvent() {
+		mUserInfo = null;
 	}
 
 	public UserInfo getUserInfo() {
 		return mUserInfo;
 	}
 
-	public void setmUserInfo(UserInfo _user_info) {
+	public void setUserInfo(UserInfo _user_info) {
 		this.mUserInfo = _user_info;
 	}
 

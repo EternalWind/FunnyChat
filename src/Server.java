@@ -1,4 +1,4 @@
-package com.funnyChat.server;
+
 
 import java.io.DataOutputStream;
 import java.io.File;

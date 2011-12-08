@@ -5,10 +5,10 @@ import com.funnyChat.network.*;
 public class PingEvent extends Event {
 	private Boolean mIsDone;
 	
-	public PingEvent(Connection _target) {
+	public PingEvent() {
 		mIsLocal = false;
 		mIsDone = false;
-		mTarget = _target;
+		mTarget = null;
 	}
 
 	public void finishPing() {

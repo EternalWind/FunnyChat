@@ -8,8 +8,8 @@ public class ReleasePluginEvent extends Event {
 	private PluginInfo mPluginInfo;
 	private byte[] mPlugins;
 	
-	public ReleasePluginEvent(byte[] _plugins) {
-		mPlugins = _plugins;
+	public ReleasePluginEvent() {
+		mPlugins = null;
 	}
 
 	public PluginInfo getPluginInfo() {

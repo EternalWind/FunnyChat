@@ -3,7 +3,6 @@ package com.funnyChat.event;
 import java.util.List;
 
 import com.funnyChat.db.PluginInfo;
-import com.funnyChat.server.Server;
 
 public class GetPluginListResponseEvent extends Event {
 
@@ -15,17 +14,13 @@ public class GetPluginListResponseEvent extends Event {
 	public GetPluginListResponseEvent() {
 		mPluginsInfo = null;
 	}
-	
-	public void setPluginsInfo(List<PluginInfo> _PluginsInfo) {
-		mPluginsInfo = _PluginsInfo;
-	}
 
 	public List<PluginInfo> getPluginsInfo() {
 		return mPluginsInfo;
 	}
 
-	public void setPluginsInfo(Server _server) {
-		this.mPluginsInfo = _server.getPluginList();
+	public void setPluginsInfo(List<PluginInfo> _plugin_info) {
+		this.mPluginsInfo = _plugin_info;
 	}
 
 	@Override

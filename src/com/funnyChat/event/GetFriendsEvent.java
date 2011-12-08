@@ -5,8 +5,8 @@ public class GetFriendsEvent extends Event {
 	
 	private long mUId;
 	
-	public GetFriendsEvent(long _user_id) {
-		mUId = _user_id;
+	public GetFriendsEvent() {
+		mUId = 0;
 	}
 
 	public long getUId() {

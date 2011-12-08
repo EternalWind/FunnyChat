@@ -2,8 +2,8 @@ package com.funnyChat.event;
 
 public class GetPasswordResponseEvent extends Event{
 	String _password;
-	public GetPasswordResponseEvent(String _password_str){
-		_password = _password_str;
+	public GetPasswordResponseEvent(){
+		_password = "";
 	}
 	
 	public void setPassword(String _password_str){

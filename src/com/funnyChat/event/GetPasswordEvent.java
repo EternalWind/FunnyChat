@@ -3,8 +3,8 @@ package com.funnyChat.event;
 public class GetPasswordEvent extends Event {
 	String _answer;
 	
-	public GetPasswordEvent(String _answer_str){
-		_answer = _answer_str;
+	public GetPasswordEvent(){
+		_answer = "";
 	}
 	
 	public void setAnswer(String _answer_str){
