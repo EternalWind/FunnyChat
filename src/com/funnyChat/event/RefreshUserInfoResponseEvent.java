@@ -7,16 +7,22 @@ public class RefreshUserInfoResponseEvent extends Event {
 
 	private String mResult;
 	
-	public RefreshUserInfoResponseEvent(Server _server,
-			UserInfo _user_info) {
-		if (_server.refreshUserInfo(_user_info))
-			mResult = "Succeed";
-		else
-			mResult = "Failed";
+//	public RefreshUserInfoResponseEvent(Server _server,
+//			UserInfo _user_info) {
+//		if (_server.refreshUserInfo(_user_info))
+//			mResult = "Succeed";
+//		else
+//			mResult = "Failed";
+//	}
+	public RefreshUserInfoResponseEvent() {
+		mResult = "Failed";
 	}
 
 	public String getResult() {
 		return mResult;
+	}
+	public void setResult(String _result) {
+		mResult = _result;
 	}
 
 	@Override

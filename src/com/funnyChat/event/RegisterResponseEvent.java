@@ -7,15 +7,21 @@ public class RegisterResponseEvent extends Event {
 
 	private String mResult;
 
-	public RegisterResponseEvent(Server _server, UserInfo _user_info) {
-		if (_server.register(_user_info))
-			mResult = "Succeed";
-		else
-			mResult = "Failed";
+//	public RegisterResponseEvent(Server _server, UserInfo _user_info) {
+//		if (_server.register(_user_info))
+//			mResult = "Succeed";
+//		else
+//			mResult = "Failed";
+//	}
+	public RegisterResponseEvent() {
+		mResult = "Failed";
 	}
 
 	public String getResult() {
 		return mResult;
+	}
+	public void setResult(String _result) {
+		mResult = _result;
 	}
 
 	@Override
