@@ -1,3 +1,5 @@
+import java.awt.Label;
+import java.awt.Panel;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -5,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 
 import com.funnyChat.plugin.PluginAdapter;
 import com.funnyChat.db.FriendDAO;
@@ -16,13 +19,11 @@ import com.funnyChat.event.*;
 
 public class Server extends PluginAdapter{
 	private String pluginBasePath = "plugin/";
+	private Date hourDate = new Date();
+	private Date dayDate = new Date();
 	private HashMap<Long,UserInfo> users = new HashMap<Long, UserInfo>();
-	
-	@Override
-	public String getPluginName() {
-		return "FunnyChat Server";
-	}
-	
+	private int hourEventCount = 0;
+	private int dayEventCount = 0;
 	@Override
 	public void onCreate() {}
 
@@ -32,9 +33,32 @@ public class Server extends PluginAdapter{
 	@Override
 	protected void onEnable() {}
 
+	public void refreshPanel(){
+		mPanel = new Panel();
+		Label label1 = new Label("当前在线人数:  "+users.size());
+		mPanel.add(label1);
+		UserInfoDAO userInfoDAO = new UserInfoDAO();
+		Label label2 = new Label("目前注册人数:  "+userInfoDAO.getCount());
+		mPanel.add(label2);
+		Label label3 = new Label("本日事件量:  "+dayEventCount);
+		mPanel.add(label3);
+		Label label4 = new Label("本小时事件量:  "+hourEventCount);
+		mPanel.add(label4);
+		Date date = new Date();
+		if(date.getDay()!=dayDate.getDay()){
+			dayDate = date;
+			dayEventCount = 0;
+		}
+		if(date.getHours()!=hourDate.getHours()){
+			hourDate = date;
+			hourEventCount = 0;
+		}
+	}
 	@Override
 	protected void execute() {
 		//启动线程执行传过来的事件
+		hourEventCount++;
+		dayEventCount++;
 		EventManager eventManager = EventManager.getInstance();
 		if(mEvent instanceof AddFriendEvent){
 			AddFriendEvent temp = (AddFriendEvent)mEvent;
@@ -245,5 +269,9 @@ public class Server extends PluginAdapter{
     		return true;
     	}
     	return false;
+    }
+    @Override
+    public String getPluginName() {
+	return "FunnyChat Server";
     }
 }
