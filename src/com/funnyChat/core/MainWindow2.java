@@ -103,8 +103,8 @@ public class MainWindow2 extends javax.swing.JFrame {
 		int _it = 0;
 		for (Plugin p : _pm.getPlugins()) {
 			if (_it >= mLayoutInfo.getPanelCount())
-				mLayoutInfo.addPanel(new Panel());
-			p.setPanel(mLayoutInfo.getPanel(_it++));
+				mLayoutInfo.registerPanel(p.getPluginName(), p.getPanel());
+			p.setPanel(mLayoutInfo.getPanel(p.getPluginName()));
 			p.onCreate();
 		}
 

@@ -1,6 +1,5 @@
 package com.funnyChat.utils;
 
-import java.awt.Color;
 import java.awt.Panel;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,19 +8,21 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public final class LayoutInfo {
 
 	private BufferedReader mReader = null;
 	private FileWriter mWriter = null;
 	private File mLayoutFile = null;
-	private LinkedList<Panel> mPanels = null;
+	private Map<String, Panel> mLayoutInfo = null;
 
 	public LayoutInfo(File _layout_file) {
 		mLayoutFile = _layout_file;
 	}
-	
+
 	private void initReader() {
 		try {
 			mReader = new BufferedReader(new InputStreamReader(
@@ -40,14 +41,13 @@ public final class LayoutInfo {
 	}
 
 	private void readLayoutInfo() {
-		if(mLayoutFile == null || !mLayoutFile.isFile()) {
+		if (mLayoutFile == null || !mLayoutFile.isFile()) {
 			mLayoutFile = new File("Default Layout.txt");
-			mPanels = new LinkedList<Panel>();
-			Panel _panel = new Panel();
-			_panel.setBounds(0, 0, 100, 100);
-			mPanels.add(_panel);
-		}
-		else {
+			// mLayoutInfo = new LinkedList<Panel>();
+			// Panel _panel = new Panel();
+			// _panel.setBounds(0, 0, 100, 100);
+			// mLayoutInfo.add(_panel);
+		} else {
 			try {
 				if (mReader == null)
 					initReader();
@@ -55,33 +55,25 @@ public final class LayoutInfo {
 				if (_panel_count <= 0)
 					return;
 
-				mPanels = new LinkedList<Panel>();
 				String[] _data;
-				// _rect: record x,y,width,height, which are the left
-				// bottom point,width and height, respectively
-				int[] _rect = new int[4];
+				// _plugin_name: record plug-in name
+				// _rect: record x,y, which are the left
+				// bottom point, respectively
+				String _plugin_name = "";
+				int[] _rect = new int[2];
 				for (int i = 0; i < _panel_count; ++i) {
 					_data = mReader.readLine().split(" ");
-					for (int j = 0; j < 4; ++j) {
-						_rect[j] = Integer.parseInt(_data[j]);
+					_plugin_name = _data[0];
+					for (int j = 0; j < 2; ++j) {
+						_rect[j] = Integer.parseInt(_data[j + 1]);
 					}
-					mPanels.add(new Panel());
-					mPanels.getLast().setBounds(_rect[0], _rect[1], _rect[2],
-							_rect[3]);
-					// =============== for test =============================
-					if (i == 0)
-						mPanels.get(i).setBackground(Color.blue);
-					else if (i == 1)
-						mPanels.get(i).setBackground(Color.red);
-					else
-						mPanels.get(i).setBackground(Color.green);
-					// ====================================================
-					mPanels.get(i).setVisible(true);
+					mLayoutInfo.put(_plugin_name, new Panel());
+					mLayoutInfo.get(_plugin_name).setLocation(_rect[0],
+							_rect[1]);
 				}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} 
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -91,10 +83,10 @@ public final class LayoutInfo {
 		try {
 			initWriter();
 			String _data = "";
-			_data += mPanels.size() + "\r\n";
-			for (Panel p : mPanels) {
-				_data += "\r\n" + p.getX() + " " + p.getY() + " "
-						+ p.getWidth() + " " + p.getHeight();
+			_data += mLayoutInfo.size();
+			for (Entry<String, Panel> p : mLayoutInfo.entrySet()) {
+				_data += "\r\n" + p.getKey() + " " + p.getValue().getX() + " "
+						+ p.getValue().getY();
 			}
 			mWriter.write(_data);
 			mWriter.flush();
@@ -104,33 +96,34 @@ public final class LayoutInfo {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int getPanelCount() {
-		return mPanels.size();
+		if (mLayoutInfo == null)
+			readLayoutInfo();
+		return mLayoutInfo.size();
 	}
 
-	public Panel getPanel(int _index) {
-		if (mPanels == null)
+	public Panel getPanel(String _plugin_name) {
+		if (mLayoutInfo == null)
 			readLayoutInfo();
-		return mPanels.get(_index);
+		return mLayoutInfo.get(_plugin_name);
 	}
-	
-	public LinkedList<Panel> getPanels() {
-		if (mPanels == null)
+
+	public Collection<Panel> getPanels() {
+		if (mLayoutInfo == null)
 			readLayoutInfo();
-		return mPanels;
+		return mLayoutInfo.values();
 	}
-	
-	public void addPanel(Panel _panel) {
-		mPanels.add(_panel);
+
+	public void registerPanel(String _plugin_name, Panel _panel) {
+		if (mLayoutInfo == null)
+			readLayoutInfo();
+		mLayoutInfo.put(_plugin_name, _panel);
 	}
-	
-	public void removePanel(int _index) {
-		mPanels.remove(_index);
-	}
-	
-	public void setPanel(int _index, Panel _panel) {
-		if(_index >= 0 && _index < mPanels.size())
-			mPanels.set(_index, _panel);
+
+	public void removePanel(String _plugin_name) {
+		if (mLayoutInfo == null)
+			readLayoutInfo();
+		mLayoutInfo.remove(_plugin_name);
 	}
 }
