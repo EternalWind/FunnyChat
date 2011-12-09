@@ -1,6 +1,7 @@
 package com.funnyChat.db;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
@@ -11,6 +12,21 @@ public class UserInfoDAO {
 		stmt = Conn.getInstance().getStmt();
 	}
 
+	public Long getCount() {
+		String sql = "select count(*) from userinfo ";
+
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next())
+				return rs.getLong(1);
+			else
+				return new Long(-1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new Long(-1);
+		}
+	}
+	
 	public UserInfo find(long uid) {
 		try {
 			UserInfo userInfo = new UserInfo();
@@ -90,25 +106,26 @@ public class UserInfoDAO {
 	}
 	public static void main(String[]args){
 		UserInfoDAO userInfoDAO = new UserInfoDAO();
-		System.out.println(userInfoDAO.find(1).toString());
-		
-		
-		UserInfo userInfo = new UserInfo();
-		userInfo.setPassword("1234");
-		userInfo.setName("name7");
-		userInfo.setState("wetrdrfg");
-		userInfo.setIp("sdgdhgdfs");
-		userInfo.setPort("12345");
-		userInfoDAO.add(userInfo);
-		
-		userInfoDAO.find(1);
-		userInfo = userInfoDAO.find(userInfo.getName());
-		System.out.println("\n\n"+userInfo.toString());
-		userInfo.setState("setDescribe");
-		userInfoDAO.update(userInfo);
-		
-		userInfoDAO.find(userInfo.getName());
-		
-		userInfoDAO.delete(userInfo.getUid());
+		System.out.println(userInfoDAO.getCount());
+//		System.out.println(userInfoDAO.find(1).toString());
+//		
+//		
+//		UserInfo userInfo = new UserInfo();
+//		userInfo.setPassword("1234");
+//		userInfo.setName("name7");
+//		userInfo.setState("wetrdrfg");
+//		userInfo.setIp("sdgdhgdfs");
+//		userInfo.setPort("12345");
+//		userInfoDAO.add(userInfo);
+//		
+//		userInfoDAO.find(1);
+//		userInfo = userInfoDAO.find(userInfo.getName());
+//		System.out.println("\n\n"+userInfo.toString());
+//		userInfo.setState("setDescribe");
+//		userInfoDAO.update(userInfo);
+//		
+//		userInfoDAO.find(userInfo.getName());
+//		
+//		userInfoDAO.delete(userInfo.getUid());
 	}
 }
