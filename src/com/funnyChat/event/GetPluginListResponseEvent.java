@@ -3,7 +3,6 @@ package com.funnyChat.event;
 import java.util.List;
 
 import com.funnyChat.db.PluginInfo;
-import com.funnyChat.server.Server;
 
 public class GetPluginListResponseEvent extends Event {
 
@@ -24,9 +23,6 @@ public class GetPluginListResponseEvent extends Event {
 		return mPluginsInfo;
 	}
 
-	public void setPluginsInfo(Server _server) {
-		this.mPluginsInfo = _server.getPluginList();
-	}
 
 	@Override
 	public String getEventType() {

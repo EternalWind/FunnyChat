@@ -1,6 +1,5 @@
 package com.funnyChat.event;
 
-import com.funnyChat.server.Server;
 
 public class ChangeUserStateResponseEvent extends Event {
 
