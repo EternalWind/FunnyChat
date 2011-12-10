@@ -134,8 +134,8 @@ public class Client extends Plugin{
 			if(mEvent.getEventType().equals("ChatEvent")){
 				Panel p = new Panel();
 				for(int i = 0; i < chatPanels.size(); i++){
-					if((chatPanels.get(i)).getFid() == ((ChatEvent)mEvent).getSenderId()){
-						(chatPanels.get(i)).messageShow(((ChatEvent)mEvent).getData(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
+					if((chatPanels.get(i)).getFid() == (new Integer(((ChatEvent)mEvent).getSenderId())).longValue()){
+						(chatPanels.get(i)).messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
 					    break;
 					}
 				}
@@ -231,8 +231,8 @@ public class Client extends Plugin{
 	public void chat(String _content, String _fid){
 		ChatEvent _event = new ChatEvent();
 		_event.setContent(_content);
-		_event.setReceiverId(Long.parseLong(_fid));
-		_event.setSenderId(Long.parseLong(uid));
+		_event.setReceiverId(_fid);
+		_event.setSenderId(uid);
 		event_manager.enqueue(_event);	
 	}
 	public void addFriend(long _uid1, long _uid2){
