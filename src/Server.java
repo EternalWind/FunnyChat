@@ -155,8 +155,8 @@ public class Server extends PluginAdapter{
         	userInfo.setIp(temp.getIp());
         	userInfo.setName(temp.getName());
         	userInfo.setPassword(temp.getPassword());
-        	userInfo.setPort(temp.getPort());
-        	userInfo.setState(temp.getState());
+        	userInfo.setPort("WTF");
+        	userInfo.setState("FFS");
         	boolean result = register(userInfo);
         	RegisterResponseEvent response = new RegisterResponseEvent();
 			if(result)

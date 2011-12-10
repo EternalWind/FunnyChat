@@ -4,16 +4,19 @@ public class RegisterEvent extends Event {
 
 	private String mName;
 	private String mPassword;
-	private String mState;
+	private String mQuestion;
+	private String mAnswer;
 	private String mIp;
 	private String mPort;
 
-	public RegisterEvent() {
-		mName = "";
-		mPassword = "";
-		mState = "";
-		mIp = "";
-		mPort = "";
+	public RegisterEvent(String _name, String _password, String _question, String _answer,
+			String _ip, String _port) {
+		mName = _name;
+		mPassword = _password;
+		mQuestion = _question;
+		mAnswer = _answer;
+		mIp = _ip;
+		mPort = _port;
 	}
 
 	public String getName() {
@@ -32,12 +35,20 @@ public class RegisterEvent extends Event {
 		this.mPassword = _password;
 	}
 
-	public String getState() {
-		return mState;
+	public String getQuestion() {
+		return mQuestion;
 	}
 
-	public void setState(String _state) {
-		this.mState = _state;
+	public void setQuestion(String _question) {
+		this.mQuestion = _question;
+	}	
+	
+	public String getAnswer() {
+		return mAnswer;
+	}
+
+	public void setAnswer(String _answer) {
+		this.mAnswer = _answer;
 	}
 
 	public String getIp() {
@@ -63,7 +74,7 @@ public class RegisterEvent extends Event {
 
 	@Override
 	protected String onSerialize() {
-		return mName + " " + mPassword + " " + mState + " " + mIp + " " + mPort;
+		return mName + " " + mPassword + " " + mQuestion + " " + mAnswer + " " + mIp + " " + mPort;
 	}
 
 	@Override
@@ -71,8 +82,9 @@ public class RegisterEvent extends Event {
 		String[] _data = dataStr.split(" ");
 		mName = _data[0];
 		mPassword = _data[1];
-		mState = _data[2];
-		mIp = _data[3];
-		mPort = _data[4];
+		mQuestion = _data[2];
+		mAnswer = _data[3];
+		mIp = _data[4];
+		mPort = _data[5];
 	}
 }

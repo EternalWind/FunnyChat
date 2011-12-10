@@ -1,15 +1,17 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+
+import java.awt.Panel;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import com.funnyChat.db.UserInfo;
+import com.funnyChat.event.ChatEvent;
 import com.funnyChat.event.Event;
 import com.funnyChat.plugin.*;
 import com.funnyChat.network.*;
@@ -19,14 +21,41 @@ import com.funnyChat.event.*;
 public class Client extends Plugin{
 	private InetAddress serverIp;
 	private int serverPort;
+	private InetAddress localIp;
+	private int localPort;	
 	private NetworkManager network_manager;
 	private EventManager event_manager;
-	private long uid;
+	private String uid;
+	private String state;
+	private JFrame frame;
+	private String tempId;
+	private String tempState;
+	private String userName;
+	private String tempPassword;
+	private String password;
+//	private Vector<String> chatUsers;
+	public Vector<ChatPanel> chatPanels; 
+	private List<UserInfo> friendsInfo;
 	private String[] eventList = {
 			"ConnectedEvent", "GetFriendsEventResponse", "ChangeUserStateResponseEvent",
-			"CheckLoginInfoResponseEvent", "RegisterEvent", "AddFriendResponseEvent",
-			"ChatEvent", "DeleteFriendResponseEvent", "RefreshUserInfoResponseEvent"
+			"CheckLoginInfoResponseEvent", "RegisterResponseEvent", "AddFriendResponseEvent",
+			"ChatEvent", "DeleteFriendResponseEvent", "RefreshUserInfoResponseEvent",
+			"GetPasswordResponseEvent"
 	};
+	
+	public Client(){
+//		chatUsers = new Vector<String>();
+		chatPanels = new Vector<ChatPanel>();
+		friendsInfo = new ArrayList<UserInfo>();
+		UserInfo u = new UserInfo();
+		u.setName("asda");
+		u.setState("asda");
+		friendsInfo.add(u);
+		uid = "1231312";
+		state="aaa";
+		Panel _panel = new loginPanel(this);
+		setPanel(_panel);
+	}
 	@Override
 	protected void onEnable() {
 		// TODO Auto-generated method stub
@@ -45,24 +74,93 @@ public class Client extends Plugin{
 	protected void execute() {
 		// TODO Auto-generated method stub
 		if(this.hasWork()){
-			if(mEvent.getEventType().equals("ConnectedEvent"))
-			{}
-			if(mEvent.getEventType().equals("GetFriendsEventResponse"))
-			{}
-			if(mEvent.getEventType().equals("ChangeUserStateResponseEvent"))
-			{}
-			if(mEvent.getEventType().equals("CheckLoginInfoResponseEvent"))
-			{}
-			if(mEvent.getEventType().equals("RegisterEvent"))
-			{}
-			if(mEvent.getEventType().equals("AddFriendResponseEvent"))
-			{}
-			if(mEvent.getEventType().equals("ChatEvent"))
-			{}
-			if(mEvent.getEventType().equals("DeleteFriendResponseEvent"))
-			{}		
-			if(mEvent.getEventType().equals("RefreshUserInfoResponseEvent"))
-			{}					
+//			if(mEvent.getEventType().equals("ConnectedEvent"))
+//			{}
+			if(mEvent.getEventType().equals("GetFriendsResponseEvent")){
+				friendsInfo = ((GetFriendsResponseEvent)mEvent).getUsersInfo();
+			}
+			if(mEvent.getEventType().equals("GetPasswordResponseEvent")){
+				if(!(((GetPasswordResponseEvent)mEvent).getPassword()).equals("")){
+					JOptionPane.showMessageDialog(null, "ÄãµÄÃÜÂëÊÇ"+(((GetPasswordResponseEvent)mEvent).getPassword()));
+					gotoLoginPanel();
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "È¡»ØÃÜÂëÊ§°Ü£¡");
+					gotoLoginPanel();					
+				}
+			}			
+//			if(mEvent.getEventType().equals("ChangeUserStateResponseEvent"))
+//			{}
+			if(mEvent.getEventType().equals("CheckLoginInfoResponseEvent")){
+				if((((CheckLoginInfoResponseEvent)mEvent).getResult()).equals("Succeed")){
+					uid = tempId;
+					state = tempState;
+					password = tempPassword;
+					userName = "";
+					UserInfo _userinfo = new UserInfo();
+					_userinfo.setIp(localIp.toString());
+					_userinfo.setPort(String.valueOf(localPort));
+					_userinfo.setState(state);
+					_userinfo.setUid(Long.parseLong(uid));
+					_userinfo.setName(userName);
+					_userinfo.setPassword(password);
+					refreshUserInfo(_userinfo);
+					getFriendInfo(Long.parseLong(uid));	
+					gotoMainPanel();
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "·þÎñÆ÷¹ÊÕÏ£¬µÇÂ½Ê§°Ü£¡");
+					//gotoLoginPanel();					
+				}
+			}
+			if(mEvent.getEventType().equals("RegisterResponseEvent")){
+				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
+					JOptionPane.showMessageDialog(null, "×¢²á³É¹¦£¡");
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "·þÎñÆ÷¹ÊÕÏ£¬×¢²áÊ§°Ü£¡");
+				}
+				gotoLoginPanel();
+
+			}
+			if(mEvent.getEventType().equals("AddFriendResponseEvent")){
+				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "·þÎñÆ÷¹ÊÕÏ£¬ºÃÓÑÔö¼ÓÊ§°Ü£¡");
+				}
+				gotoMainPanel();
+			}
+			if(mEvent.getEventType().equals("ChatEvent")){
+				Panel p = new Panel();
+				for(int i = 0; i < chatPanels.size(); i++){
+					if((chatPanels.get(i)).getFid() == ((ChatEvent)mEvent).getSenderId()){
+						(chatPanels.get(i)).messageShow(((ChatEvent)mEvent).getData(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
+					    break;
+					}
+				}
+			}
+			if(mEvent.getEventType().equals("DeleteFriendResponseEvent")){
+				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "·þÎñÆ÷¹ÊÕÏ£¬ºÃÓÑÉ¾³ýÊ§°Ü£¡");
+				}		
+				gotoMainPanel();
+			}		
+			if(mEvent.getEventType().equals("RefreshUserInfoResponseEvent")){
+				if((((RefreshUserInfoResponseEvent)mEvent).getResult()).equals("Failed")){
+					UserInfo _userinfo = new UserInfo();
+					_userinfo.setIp(localIp.toString());
+					_userinfo.setPort(String.valueOf(localPort));
+					_userinfo.setState(state);
+					_userinfo.setUid(Long.parseLong(uid));
+					_userinfo.setName(userName);
+					_userinfo.setPassword(password);
+					refreshUserInfo(_userinfo);
+				}
+					
+			}					
 			this.doneWork();
 		}
 	}
@@ -80,129 +178,173 @@ public class Client extends Plugin{
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
-		File _config = new File("Client Config.txt");
-		if(!_config.exists() || !_config.isFile()) {
-			byte[] _ip = new byte[4];
-			_ip[0] = (byte)192;
-			_ip[1] = (byte)168;
-			_ip[2] = (byte)1;
-			_ip[3] = (byte)16;
-			try {
-				serverIp = InetAddress.getByAddress(_ip);
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			serverPort = 5643;
-			
-			try {
-				FileWriter _file_writer = new FileWriter(_config);
-				
-				String _temp = serverIp.getHostAddress();
-				_temp += "\r\n";
-				_temp += serverPort;
-				_file_writer.write(_temp);
-				
-				_file_writer.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else {
-			try {
-				BufferedReader _file_reader = new BufferedReader(new InputStreamReader(
-						new FileInputStream(_config)));
-				
-				try {
-					String _data = _file_reader.readLine();
-					serverIp = InetAddress.getByName(_data);
-					
-					_data = _file_reader.readLine();
-					serverPort = new Integer(_data);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		Panel _panel = new loginPanel(this);
+		setPanel(_panel);
 	}
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		
 	}
 
-	private boolean modifiedState(long _fid, String _state){
-		ChangeUserStateEvent _event = new ChangeUserStateEvent();
-		_event.setState(_state);
-		_event.setUId(_fid);
-		event_manager.enqueue(_event);
-		return true;
-	}
+//	private boolean modifiedState(long _fid, String _state){
+//		Event _event = new ChangeUserStateEvent(_fid, _state);
+//		event_manager.enqueue(_event);
+//		return true;
+//	}
 	
-	private boolean register(String _name, String _password, String _state, String _ip, String _port){
+	public void register(String _name, String _password, String _question, String _answer){
 		RegisterEvent _event = new RegisterEvent();
 		_event.setName(_name);
 		_event.setPassword(_password);
-		_event.setState(_state);
-		_event.setIp(_ip);
-		_event.setPort(_port);
+		_event.setQuestion(_question);
+		_event.setAnswer(_answer);
+		_event.setIp(serverIp.toString());
+		_event.setPort(serverPort);
 		event_manager.enqueue(_event);
-		return true;
 	}
 	
-	private boolean getFriendInfo(long _fid){
+	private void getFriendInfo(long _fid){
 		GetFriendsEvent _event = new GetFriendsEvent();
 		_event.setUId(_fid);
 		event_manager.enqueue(_event);
-		return true;
 	}
 	
-	private boolean getPassword(String _answer){
+	public void getPassword(String _answer){
 		GetPasswordEvent _event = new GetPasswordEvent();
 		_event.setAnswer(_answer);
 		event_manager.enqueue(_event);
-		return true;
 	}
 	
-	private boolean login(String _name, String _password){
-		CheckLoginInfoEvent _event = new CheckLoginInfoEvent();
-		_event.setName(_name);
-		_event.setPassword(_password);
+	public void login(String _id, String _password, String _state){
+		 //gotoMainPanel();
+		 CheckLoginInfoEvent _event = new CheckLoginInfoEvent();
+		 _event.setName(_id);
+		 _event.setPassword(_password);
 		event_manager.enqueue(_event);
-		return true;
+		tempId = _id;
+		tempState = _state;
+		tempPassword = _password;
 	}
 	
-	
-	private boolean addFriend(long _uid1, long _uid2){
+	public void chat(String _content, String _fid){
+		ChatEvent _event = new ChatEvent();
+		_event.setContent(_content);
+		_event.setReceiverId(Long.parseLong(_fid));
+		_event.setSenderId(Long.parseLong(uid));
+		event_manager.enqueue(_event);	
+	}
+	public void addFriend(long _uid1, long _uid2){
 		AddFriendEvent _event = new AddFriendEvent();
 		_event.setUId1(_uid1);
 		_event.setUId2(_uid2);
 		event_manager.enqueue(_event);
-		return true;
 	}
 
-	private boolean refreshUserInfo(UserInfo _user_info){
+	private void refreshUserInfo(UserInfo _user_info){
 		RefreshUserInfoEvent _event = new RefreshUserInfoEvent();
 		_event.setUserInfo(_user_info);
 		event_manager.enqueue(_event);
-		return true;
 	}	
 
-	private boolean deleteFriend(long _uid1, long _uid2){
+	public void deleteFriend(long _uid1, long _uid2){
 		DeleteFriendEvent _event = new DeleteFriendEvent();
 		_event.setUId1(_uid1);
 		_event.setUId2(_uid2);
 		event_manager.enqueue(_event);
-		return true;
+	}		
+
+	public void gotoRegisterPanel(){
+		frame.setSize(389,303);
+		Panel _panel = new registerPanel(this);
+		frame.remove(mPanel);
+		setPanel(_panel);
+		frame.add(mPanel);
+		frame.setVisible(true);		
+	}
+
+	public void gotoMainPanel(){
+		frame.setSize(228,457);
+		Panel _panel = new mainFunnyChatPanel(this);
+		frame.remove(mPanel);
+		setPanel(_panel);
+		frame.add(mPanel);
+		frame.setVisible(true);				
+	}	
+
+	public void gotoLoginPanel(){
+		frame.setSize(245,285);
+		Panel _panel = new loginPanel(this);
+		frame.remove(mPanel);
+		setPanel(_panel);
+		frame.add(mPanel);
+		frame.setVisible(true);				
+	}	
+
+	public void gotoPasswordPanel(){
+		frame.setSize(268, 277);
+		Panel _panel = new PasswordPanel(this);
+		frame.remove(mPanel);
+		setPanel(_panel);
+		frame.add(mPanel);
+		frame.setVisible(true);				
 	}		
 	
 	@Override
 	public String getPluginName() {
 		return "FunnyChat Cilent";
+	}
+	
+	public String getUid(){
+		return uid;
+	}
+	
+	public void setUid(String _uid){
+		uid = _uid;
+	}
+
+	public String getUserState(){
+		return state;
+	}
+
+	public String[] friendsName(){
+		String[] name = new String[friendsInfo.size()];
+		for(int i = 0; i < friendsInfo.size(); i++){
+			name[i] = (friendsInfo.get(i)).getName();
+		}
+		return name;
+	}
+
+	public String[] friendsState(){
+		String[] state = new String[friendsInfo.size()];
+		for(int i = 0; i < friendsInfo.size(); i++){
+			state[i] = (friendsInfo.get(i)).getState();
+		}
+		return state;
+	}
+
+	public String[] friendsID(){
+		String[] state = new String[friendsInfo.size()];
+		for(int i = 0; i < friendsInfo.size(); i++){
+			state[i] = String.valueOf((friendsInfo.get(i)).getUid());
+		}
+		return state;
+	}
+	
+	public void setUserState(String _state){
+		state = _state;
+	}	
+	/////////////////////TEST///////////////////////////////
+	public static void main(String args[])
+	{
+		Client c = new Client();
+		JFrame frame = new JFrame("MyFrame");
+		c.frame = frame;
+		frame.add(c.getPanel());
+		frame.setSize(205,245);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 	}
 }
