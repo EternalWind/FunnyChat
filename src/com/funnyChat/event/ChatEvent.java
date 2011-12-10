@@ -4,22 +4,15 @@ public class ChatEvent extends Event {
 	private long mFrom;
 	private boolean mIsReceived;
 	private long mTo;
+	private String data;
 	
-	public ChatEvent() {
-		mFrom = mTo = 0;
-		mIsReceived = false;
+	public boolean setData(String _data){
+		data = _data;
+		return true;
 	}
-	
-	public void setSenderId(long _sender_id) {
-		mFrom = _sender_id;
-	}
-	
-	public void setReceiverId(long _receiver_id) {
-		mTo = _receiver_id;
-	}
-	
-	public void setIsReceived(boolean _is_received) {
-		mIsReceived = _is_received;
+
+	public String getData(){
+		return data;
 	}
 	
 	public boolean getIsReceived() {
@@ -28,6 +21,16 @@ public class ChatEvent extends Event {
 	
 	public long getSenderId() {
 		return mFrom;
+	}
+	
+	public boolean setSenderId(long _sId) {
+		mTo = _sId;
+		return true;
+	}
+
+	public boolean setReceiverId(long _rId) {
+		mTo = _rId;
+		return true;
 	}
 	
 	public long getReceiverId() {
@@ -43,13 +46,13 @@ public class ChatEvent extends Event {
 	@Override
 	protected String onSerialize() {
 		// TODO Auto-generated method stub
-		return "data";
+		return data;
 	}
 
 	@Override
 	protected void onUnserialize(String _data_str) {
 		// TODO Auto-generated method stub
-
+		data = _data_str;
 	}
 
 }
