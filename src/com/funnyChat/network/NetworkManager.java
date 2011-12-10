@@ -92,6 +92,7 @@ public class NetworkManager extends FCThread{
 			//Register the PingEvent.
 			EventManager.getInstance().register(new PingEvent());
 			EventManager.getInstance().register(new ConnectedEvent());
+			EventManager.getInstance().register(new ConnectionFailedEvent());
 			//Launch the checker.
 			mInstance.mChecker.start();
 			return true;
