@@ -9,7 +9,7 @@ import java.util.List;
 import com.funnyChat.event.Event;
 import com.funnyChat.plugin.Plugin;
 import com.funnyChat.plugin.PluginAdapter;
-import com.funnyChat.event.RecordEvent;
+import com.funnyChat.event.ChatEvent;
 
 public class HistoryManager extends PluginAdapter{
 	private String basePath = "history/";
@@ -26,8 +26,8 @@ public class HistoryManager extends PluginAdapter{
 
 	@Override
 	protected void execute() {
-		if(mEvent instanceof RecordEvent){
-			addHistory((RecordEvent)mEvent);
+		if(mEvent instanceof ChatEvent){
+			addHistory((ChatEvent)mEvent);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class HistoryManager extends PluginAdapter{
 	protected void onDestroy() {
 		
 	}
-	private void addHistory(RecordEvent record){
+	private void addHistory(ChatEvent record){
 		Date date = new Date(Date.parse(record.getDate()));
 	    String path = basePath + date.getMonth()+ "/" + date.getDay()+".record";
 	    File file = new File(path);
@@ -58,9 +58,9 @@ public class HistoryManager extends PluginAdapter{
 			e.printStackTrace();
 		}
 	}
-	public List<RecordEvent> getRecords(int month, int day){
+	public List<ChatEvent> getRecords(int month, int day){
 		 String path = basePath + month + "/" + day+".record";
-		 return RecordEvent.readRecords(path);
+		 return ChatEvent.readRecords(path);
 	}
 
 }

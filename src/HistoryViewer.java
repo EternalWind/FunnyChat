@@ -1,42 +1,66 @@
-import java.awt.Image;
-import java.util.ArrayList;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import com.funnyChat.event.Event;
+import com.funnyChat.plugin.Plugin;
+import com.funnyChat.plugin.PluginAdapter;
+import com.funnyChat.event.ChatEvent;
 
-import com.funnyChat.event.RecordEvent;
+public class HistoryManager extends PluginAdapter{
+	private String basePath = "history/";
 
+	@Override
+	protected void onEnable() {
+		
+	}
 
-public class HistoryViewer extends JFrame{
-    HistoryManager historyManager = new HistoryManager();
-	public JPanel loadRecord(RecordEvent recordEvent){
-		JPanel panel=new JPanel();
-		List<Image> images = new ArrayList<Image>();
-		JLabel label=new JLabel(recordEvent.getSenderInfo()+"    "+recordEvent.getDate());
-		panel.add(label);
-		label=new JLabel(recordEvent.getContent());
-		panel.add(label);
-		for(int i=0;i<recordEvent.getPictures().size();i++){
-			Image image = this.getToolkit().createImage(recordEvent.getPictures().get(i));
-			images.add(image);
-			label=new JLabel(new ImageIcon(images.get(i)));
-			panel.add(label);
+	@Override
+	protected void onDisable() {
+		
+	}
+
+	@Override
+	protected void execute() {
+		if(mEvent instanceof ChatEvent){
+			addHistory((ChatEvent)mEvent);
 		}
-		return panel;
 	}
-	private List<RecordEvent> getRecords(int month, int day){
-		return historyManager.getRecords(month, day);
+
+	@Override
+	protected boolean isInterested(Event _event) {
+		return false;
 	}
-	public static void showRecords(int month, int day){
-		HistoryViewer historyViewer = new HistoryViewer();
-		List<RecordEvent> records = historyViewer.getRecords(month, day);
-		for(int i=0;i<records.size();i++){
-			historyViewer.add(historyViewer.loadRecord(records.get(i)));
+
+	@Override
+	public void onCreate() {
+		
+	}
+
+	@Override
+	protected void onDestroy() {
+		
+	}
+	private void addHistory(ChatEvent record){
+		Date date = new Date(Date.parse(record.getDate()));
+	    String path = basePath + date.getMonth()+ "/" + date.getDay()+".record";
+	    File file = new File(path);
+	    try {
+			DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
+			byte[] bytes = record.getBytes();
+			out.write(bytes, 0, bytes.length);
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		historyViewer.setTitle("历史记录:"+month+"月"+day+"日");
-		historyViewer.show();		
 	}
+	public List<ChatEvent> getRecords(int month, int day){
+		 String path = basePath + month + "/" + day+".record";
+		 return ChatEvent.readRecords(path);
+	}
+
 }
