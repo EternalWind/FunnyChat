@@ -89,7 +89,20 @@ public class MainWindow2 extends javax.swing.JFrame {
 		pack();
 	}// </editor-fold>
 	//GEN-END:initComponents
+	public void registerPanel(String _plugin_name, Panel _panel) {
+		this.add(_panel);
+		_panel.setVisible(true);
+		mLayoutInfo.registerPanel(_plugin_name, _panel);
+	}
 
+	public void updatePanel(String _plugin_name, Panel _old_panel,
+			Panel _new_panel) {
+		this.remove(_old_panel);
+		this.add(_new_panel);
+		_new_panel.setVisible(true);
+		mLayoutInfo.removePanel(_plugin_name);
+		mLayoutInfo.registerPanel(_plugin_name, _new_panel);
+	}
 	public void initWindow(String _window_title) {
 		// read windows attributes
 		int[] _size = mConfInfo.getWindowSize();
