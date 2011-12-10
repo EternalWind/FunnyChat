@@ -8,7 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JFrame;
 
+
+import com.funnyChat.network.Connection;
 import com.funnyChat.plugin.PluginAdapter;
 import com.funnyChat.db.FriendDAO;
 import com.funnyChat.db.PluginInfo;
@@ -86,7 +89,8 @@ public class Server extends PluginAdapter{
 		}
         if(mEvent instanceof CheckLoginInfoEvent){
         	CheckLoginInfoEvent temp = (CheckLoginInfoEvent)mEvent;
-        	boolean result = checkLoginInfo(temp.getName(), temp.getPassword());
+        	UserInfo userInfo = new UserInfo();
+        	boolean result = checkLoginInfo(temp.getName(), temp.getPassword(),temp.getSource());
         	CheckLoginInfoResponseEvent response = new CheckLoginInfoResponseEvent();
 			if(result)
 				response.setResult("Succeed");
@@ -242,17 +246,21 @@ public class Server extends PluginAdapter{
     	}
     	return false;
     }
-    public boolean checkLoginInfo(String _name, String _password){
+    public boolean checkLoginInfo(String _name, String _password,Connection source){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
     	UserInfo userInfo = userInfoDAO.find(_name);
-    	if(userInfo != null && userInfo.getPassword().equals(_password))
+    	if(userInfo != null && userInfo.getPassword().equals(_password)){
+    		userInfo.setIp(source.getIP().toString());
+    		userInfo.setPort(String.valueOf(source.getPort()));
+    		users.put(userInfo.getUid(), userInfo);
     		return true;
+    	}
     	return false;
     }
     public boolean refreshUserInfo(UserInfo userInfo){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
     	userInfoDAO.update(userInfo);
-    	users.put(userInfo.getUid(), userInfo);
+//    	users.put(userInfo.getUid(), userInfo);
     	return true;
     }
     public void checkAndwer(){
@@ -265,13 +273,29 @@ public class Server extends PluginAdapter{
     	}
     	boolean succ = userInfoDAO.add(userInfo);
     	if(succ){
-    		users.put(userInfo.getUid(), userInfo);
+    //		users.put(userInfo.getUid(), userInfo); //由于注册后要重新登录,此处忽略
     		return true;
     	}
     	return false;
     }
     @Override
-    public String getPluginName() {
-	return "FunnyChat Server";
+	public String getPluginName() {
+		return "FunnyChat Server";
+	}
+    public static void main(String[] args){
+    	JFrame frame = new JFrame();
+    	Server server = new Server();
+    	server.setPanel(new Panel());
+    	frame.add(server.getPanel());
+    	frame.show();
+    	while(true){
+    		server.refreshPanel();
+    		frame.add(server.getPanel());
+    		try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 }
