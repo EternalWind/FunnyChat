@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Label;
 import java.awt.Panel;
 import java.io.DataOutputStream;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 
 import com.funnyChat.network.Connection;
 import com.funnyChat.plugin.PluginAdapter;
+import com.funnyChat.core.Core;
 import com.funnyChat.db.FriendDAO;
 import com.funnyChat.db.PluginInfo;
 import com.funnyChat.db.PluginInfoDAO;
@@ -28,7 +30,14 @@ public class Server extends PluginAdapter{
 	private int hourEventCount = 0;
 	private int dayEventCount = 0;
 	@Override
-	public void onCreate() {}
+	public void onCreate() {
+		mPanel = new Panel();
+		mPanel.setSize(400, 200);
+		Core.getInstance().getMainWindow().registerPanel("server", mPanel);
+		refreshPanel();
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new ConnectionFailedEvent());
+	}
 
 	@Override
 	protected void onDestroy() {}
@@ -37,7 +46,6 @@ public class Server extends PluginAdapter{
 	protected void onEnable() {}
 
 	public void refreshPanel(){
-		mPanel = new Panel();
 		Label label1 = new Label("当前在线人数:  "+users.size());
 		mPanel.add(label1);
 		UserInfoDAO userInfoDAO = new UserInfoDAO();
@@ -56,10 +64,21 @@ public class Server extends PluginAdapter{
 			hourDate = date;
 			hourEventCount = 0;
 		}
+		mPanel.validate();
 	}
 	@Override
 	protected void execute() {
 		//启动线程执行传过来的事件
+		if(this.hasWork()){
+			if(mEvent.getEventType().equals("ConnectedEvent")){
+				System.out.println("LYD DIE DIE DIE!!!");
+			}
+		}
+		System.out.println(mEvent+"00");
+		if(mEvent == null || mEvent.equals(null)){
+			return;
+		}
+		System.out.println(mEvent.getEventType());
 		hourEventCount++;
 		dayEventCount++;
 		EventManager eventManager = EventManager.getInstance();
