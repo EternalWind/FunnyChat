@@ -261,7 +261,7 @@ public class NetworkManager extends FCThread{
 						else if((_key.readyOps() & SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT){
 							_sc = (SocketChannel)_key.channel();
 							try{
-								_sc.finishConnect();
+								if(_sc.finishConnect()) {
 								Integer _id = generateId();
 								Connection _connection = new Connection(_sc);
 								_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
@@ -271,6 +271,14 @@ public class NetworkManager extends FCThread{
 								_event.setIsInitiative(true);
 								_event.setSource(_connection);
 								_eventManager.enqueue(_event);
+								}
+								else {
+									ConnectionFailedEvent _event = new ConnectionFailedEvent();
+									Connection _connection = new Connection(_sc);
+									_event.setSource(_connection);
+									_eventManager.enqueue(_event);
+									
+								}
 							}
 							catch(Exception e){
 								Core.getLogger().addLog("Connection is denied.", LogType.DEBUG);
