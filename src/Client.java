@@ -2,6 +2,7 @@
 
 import java.awt.Panel;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -21,7 +22,7 @@ import com.funnyChat.event.*;
 public class Client extends Plugin{
 	private InetAddress serverIp;
 	private int serverPort;
-	private InetAddress localIp;
+	private String localIp;
 	private int localPort;	
 	private NetworkManager network_manager;
 	private EventManager event_manager;
@@ -55,6 +56,18 @@ public class Client extends Plugin{
 		state="aaa";
 		Panel _panel = new loginPanel(this);
 		setPanel(_panel);
+		localIp = new String("123.123.123.123");
+		localPort = 8888;
+//		String ip = new String("192.168.1.102");
+//		byte[] _addr = ip.getBytes();
+		try {
+			serverIp.getByName("192.168.1.102");
+			//serverIp.getByAddress(_addr);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		serverPort = 55555;	
 	}
 	@Override
 	protected void onEnable() {
@@ -62,6 +75,29 @@ public class Client extends Plugin{
 		network_manager = NetworkManager.getInstance();
 		network_manager.connect(serverIp, serverPort);
 		event_manager = EventManager.getInstance();
+		
+		chatPanels = new Vector<ChatPanel>();
+		friendsInfo = new ArrayList<UserInfo>();
+		UserInfo u = new UserInfo();
+		u.setName("asda");
+		u.setState("asda");
+		friendsInfo.add(u);
+		uid = "1231312";
+		state="aaa";
+		Panel _panel = new loginPanel(this);
+		setPanel(_panel);
+		localIp = new String("123.123.123.123");
+		localPort = 8888;
+//		String ip = new String("192.168.1.102");
+//		byte[] _addr = ip.getBytes();
+		try {
+			serverIp.getByName("192.168.1.102");
+			//serverIp.getByAddress(_addr);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		serverPort = 55555;			
 	}
 
 	@Override

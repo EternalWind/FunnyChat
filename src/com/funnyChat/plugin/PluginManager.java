@@ -49,22 +49,24 @@ public class PluginManager {
 			_plugin_dir.mkdir();
 		}
 
-		for(File _plugin_file : _plugin_dir.listFiles(new PluginFilter())){
-			_plugin_name = _plugin_file.getName();
-			_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
-					PluginFilter.getSuffix().length() - 1);
-			Plugin _plugin = null;
-			try{
-				URL[] url = new URL[1];
-				url[0] = new URL("file:///" + _plugin_dir.getAbsolutePath() + "/");
-				_plugin = (Plugin)Class.forName(_plugin_name, true, new URLClassLoader(url)).newInstance();
-			}
-			catch(Exception e){
-				mLog.addLog("Debug: Failed to istantiate plugin: " + _plugin_name,LogType.DEBUG);
-				Core.getLogger().addLog("Failed to instantiate plugin " + _plugin_name + ".", LogType.WARNING);
-			}
-			if(_plugin != null && !mPlugins.containsValue(_plugin)){
-				mPlugins.put(generateId(), _plugin);
+		for(File _plugin_sub_dir : _plugin_dir.listFiles()){
+			if(_plugin_sub_dir.isDirectory()) {
+				_plugin_name = _plugin_sub_dir.getName();
+				/*_plugin_name = _plugin_name.substring(0, _plugin_name.length() - 
+						PluginFilter.getSuffix().length() - 1);*/
+				Plugin _plugin = null;
+				try{
+					URL[] url = new URL[1];
+					url[0] = new URL("file:///" + _plugin_sub_dir.getAbsolutePath() + "/");
+					_plugin = (Plugin)Class.forName(_plugin_name, true, new URLClassLoader(url)).newInstance();
+				}
+				catch(Exception e){
+					mLog.addLog("Debug: Failed to instantiate plugin: " + _plugin_name,LogType.DEBUG);
+					Core.getLogger().addLog("Failed to instantiate plugin " + _plugin_name + ".", LogType.WARNING);
+				}
+				if(_plugin != null && !mPlugins.containsValue(_plugin)){
+					mPlugins.put(generateId(), _plugin);
+				}
 			}
 		}
 	}
