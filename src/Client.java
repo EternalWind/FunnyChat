@@ -61,7 +61,7 @@ public class Client extends Plugin{
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
-			serverIp.getByName("192.168.1.102");
+			serverIp = InetAddress.getByName("192.168.1.102");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -90,14 +90,14 @@ public class Client extends Plugin{
 		localPort = 8888;
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
-		try {
-			serverIp.getByName("192.168.1.102");
+		/*try {
+			serverIp = InetAddress.getByName("192.168.1.102");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		serverPort = 55555;			
+		serverPort = 55555;		*/	
 	}
 
 	@Override
