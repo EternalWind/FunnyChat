@@ -84,4 +84,5 @@ public abstract class Plugin extends FCThread {
 			return true;
 		}
 	}
+	public abstract String getPluginName();
 }

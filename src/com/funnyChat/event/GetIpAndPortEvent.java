@@ -5,8 +5,8 @@ public class GetIpAndPortEvent extends Event {
 
 	private long mUId;
 	
-	public GetIpAndPortEvent(long _user_id) {
-		mUId = _user_id;
+	public GetIpAndPortEvent() {
+		mUId = 0;
 	}
 
 	public long getUId() {

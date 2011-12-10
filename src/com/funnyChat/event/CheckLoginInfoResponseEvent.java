@@ -1,6 +1,5 @@
 package com.funnyChat.event;
 
-
 public class CheckLoginInfoResponseEvent extends Event {
 
 	private String mResult;

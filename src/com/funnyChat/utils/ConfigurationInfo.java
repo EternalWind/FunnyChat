@@ -10,17 +10,23 @@ import java.io.InputStreamReader;
 import com.funnyChat.utils.Log.LogType;
 
 public final class ConfigurationInfo {
-	
+
 	public static final String SEPERATOR = ";";
+
 	private static String getString(String[] _strs) {
-		String s ="";
-		for(String i:_strs) {
-			s += i + SEPERATOR;
+		if (_strs == null) {
+			return NOTEXIST;
+		} else {
+			String s = "";
+			for (String i : _strs) {
+				s += i + SEPERATOR;
+			}
+			return s;
 		}
-		return s;
 	}
+
 	private Log log;
-	
+
 	private File mConfFile;
 	private int mWinWidth;
 	private int mWinHeight;
@@ -28,41 +34,47 @@ public final class ConfigurationInfo {
 	private int mWinY;
 	private boolean mIsFullScreen;
 	private String[] mLayoutFilePath;
-	private String[] mSkinFilePath;
 	private String[] mPluginFilePath;
 	private String mDefaultLayout;
-	private String mDefaultSkin;
 	private String mDefaultPlugins;
-	
+	private final static String NOTEXIST = "*";
+
 	public ConfigurationInfo() {
 		log = new Log();
 		log.setLogFile("Config_Log.txt");
 		mConfFile = new File("Config.txt");
 	}
 
-	public boolean createConfFile() throws IOException {		
+	public boolean createConfFile() throws IOException {
+		mWinWidth = 400;
+		mWinHeight = 500;
+		mWinX = 200;
+		mWinY = 200;
+		mIsFullScreen = false;
+		mLayoutFilePath = null;
+		mPluginFilePath = null;
+		mDefaultLayout = null;
+		mDefaultPlugins = null;
 		return mConfFile.createNewFile();
 	}
 
 	public boolean loadConfFile() throws IOException {
 		if (!mConfFile.isFile() || !mConfFile.exists()) {
-			log.addLog("Debug: Not a file: " + mConfFile.getPath(),LogType.DEBUG);
-			
+			log.addLog("Debug: Not a file: " + mConfFile.getPath(),
+					LogType.DEBUG);
+
 			mWinWidth = 400;
-			mWinHeight = 200;
-			mWinX = 100;
+			mWinHeight = 500;
+			mWinX = 200;
 			mWinY = 200;
 			mIsFullScreen = false;
 			mLayoutFilePath = null;
-			mSkinFilePath = null;
 			mPluginFilePath = null;
 			mDefaultLayout = null;
-			mDefaultSkin = null;
 			mDefaultPlugins = null;
-			
+
 			return false;
-		}
-		else {
+		} else {
 			// get information from configuration file
 			BufferedReader _read = new BufferedReader(new InputStreamReader(
 					new FileInputStream(mConfFile)));
@@ -71,32 +83,60 @@ public final class ConfigurationInfo {
 
 			_data = _read.readLine();
 			String[] _wnd_size = _data.split(" ");
-			mWinWidth = Integer.parseInt(_wnd_size[0]);
-			mWinHeight = Integer.parseInt(_wnd_size[1]);
+			if (_data.indexOf(NOTEXIST) != -1 || _wnd_size.length < 2) {
+				mWinWidth = 400;
+				mWinHeight = 200;
+			} else {
+				mWinWidth = Integer.parseInt(_wnd_size[0]);
+				mWinHeight = Integer.parseInt(_wnd_size[1]);
+			}
 
 			_data = _read.readLine();
 			String[] wnd_loc = _data.split(" ");
-			mWinX = Integer.parseInt(wnd_loc[0]);
-			mWinY = Integer.parseInt(wnd_loc[1]);
+			if (_data.indexOf(NOTEXIST) != -1 || wnd_loc.length < 2) {
+				mWinX = 100;
+				mWinY = 200;
+			} else {
+				mWinX = Integer.parseInt(wnd_loc[0]);
+				mWinY = Integer.parseInt(wnd_loc[1]);
+			}
 
 			_data = _read.readLine();
-			String _is_full_screen = _data.trim();
-			mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
+			if (_data.indexOf(NOTEXIST) != -1) {
+				mIsFullScreen = false;
+			} else {
+				String _is_full_screen = _data.trim();
+				mIsFullScreen = Boolean.parseBoolean(_is_full_screen);
+			}
 
 			_data = _read.readLine();
-			mLayoutFilePath = _data.split(SEPERATOR);
-			_data = _read.readLine();
-			mSkinFilePath = _data.split(SEPERATOR);
-			_data = _read.readLine();
-			mPluginFilePath = _data.split(SEPERATOR);
+			if (_data.indexOf(NOTEXIST) != -1) {
+				mLayoutFilePath = null;
+			} else {
+				mLayoutFilePath = _data.split(SEPERATOR);
+			}
 
 			_data = _read.readLine();
-			mDefaultLayout = _data.trim();
+			if (_data.indexOf(NOTEXIST) != -1) {
+				mPluginFilePath = null;
+			} else {
+				mPluginFilePath = _data.split(SEPERATOR);
+			}
+
 			_data = _read.readLine();
-			mDefaultSkin = _data.trim();
+			if (_data.indexOf(NOTEXIST) != -1) {
+				mDefaultLayout = null;
+			} else {
+				mDefaultLayout = _data.trim();
+			}
+
 			_data = _read.readLine();
-			mDefaultPlugins = _data.trim();
-			
+			if (_data.indexOf(NOTEXIST) != -1) {
+				mDefaultPlugins = null;
+			} else {
+				mDefaultPlugins = _data.trim();
+			}
+
 			return true;
 		}
 	}
@@ -109,23 +149,30 @@ public final class ConfigurationInfo {
 
 		// set information to configuration file
 		FileWriter _fw = new FileWriter(mConfFile);
-		
+
 		String LFP = getString(mLayoutFilePath);
-		String SFP = getString(mSkinFilePath);
 		String PFP = getString(mPluginFilePath);
-		
-		_fw.write(mWinWidth + " " + mWinHeight + "\r\n" +
-				mWinX + " " + mWinY + "\r\n" +
-				mIsFullScreen + "\r\n" +
-				LFP + "\r\n" +
-				SFP + "\r\n" +
-				PFP + "\r\n" +
-				mDefaultLayout + "\r\n" +
-				mDefaultSkin + "\r\n" +
-				mDefaultPlugins);
+
+		_fw.write(mWinWidth
+				+ " "
+				+ mWinHeight
+				+ "\r\n"
+				+ mWinX
+				+ " "
+				+ mWinY
+				+ "\r\n"
+				+ mIsFullScreen
+				+ "\r\n"
+				+ LFP
+				+ "\r\n"
+				+ PFP
+				+ "\r\n"
+				+ (mDefaultLayout == null ? "Default Layout.txt"
+						: mDefaultLayout) + "\r\n"
+				+ (mDefaultPlugins == null ? "*" : mDefaultPlugins));
 		_fw.flush();
 		_fw.close();
-		
+
 		mConfFile.setReadOnly();
 		return;
 	}
@@ -166,14 +213,6 @@ public final class ConfigurationInfo {
 		this.mLayoutFilePath = _layout_file_path;
 	}
 
-	public String[] getSkinFilePath() {
-		return mSkinFilePath;
-	}
-
-	public void setSkinFilePath(String[] _skin_file_path) {
-		this.mSkinFilePath = _skin_file_path;
-	}
-
 	public String[] getPluginFilePath() {
 		return mPluginFilePath;
 	}
@@ -192,18 +231,6 @@ public final class ConfigurationInfo {
 
 	public void setDefaultLayout(String _layout_file_path) {
 		this.mDefaultLayout = _layout_file_path;
-	}
-
-	public File getDefaultSkin() {
-		if (this.mDefaultSkin != "" && this.mDefaultSkin != null) {
-			File _skin_file = new File(this.mDefaultSkin);
-			return _skin_file;
-		} else
-			return null;
-	}
-
-	public void setDefaultSkin(String _skin_file_path) {
-		this.mDefaultSkin = _skin_file_path;
 	}
 
 	public String getDefaultPlugins() {

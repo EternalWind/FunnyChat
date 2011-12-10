@@ -1,6 +1,5 @@
 package com.funnyChat.event;
 
-
 public class DeleteFriendResponseEvent extends Event {
 
 	private String mResult;

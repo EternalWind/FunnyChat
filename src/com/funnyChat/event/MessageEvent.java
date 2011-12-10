@@ -1,7 +1,7 @@
 package com.funnyChat.event;
 
 import java.util.HashMap;
-
+// 不要用这个！！！已被各种事件替代掉。
 public class MessageEvent extends Event{
      HashMap<String,String> data = new HashMap<String, String>();
      /**

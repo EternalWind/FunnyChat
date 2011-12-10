@@ -14,15 +14,14 @@ public class GetPluginListResponseEvent extends Event {
 	public GetPluginListResponseEvent() {
 		mPluginsInfo = null;
 	}
-	
-	public void setPluginsInfo(List<PluginInfo> _PluginsInfo) {
-		mPluginsInfo = _PluginsInfo;
-	}
 
 	public List<PluginInfo> getPluginsInfo() {
 		return mPluginsInfo;
 	}
 
+	public void setPluginsInfo(List<PluginInfo> _plugin_info) {
+		this.mPluginsInfo = _plugin_info;
+	}
 
 	@Override
 	public String getEventType() {

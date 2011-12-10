@@ -187,4 +187,10 @@ public class PluginManager {
 		
 		return _result;
 	}
+	public String getPluginDirectory() {
+		return mDir;
+	}
+	public void setPluginDirectory(String _directory) {
+		mDir = _directory;
+	}
 }

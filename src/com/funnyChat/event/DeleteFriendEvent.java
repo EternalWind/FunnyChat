@@ -5,9 +5,9 @@ public class DeleteFriendEvent extends Event {
 	private long mUId1;
 	private long mUId2;
 	
-	public DeleteFriendEvent(long _uid1, long _uid2) {
-		mUId1 = _uid1;
-		mUId2 = _uid2;
+	public DeleteFriendEvent() {
+		mUId1 = 0;
+		mUId2 = 0;
 	}
 
 	public long getUId1() {
