@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 public final class LayoutInfo {
@@ -17,10 +17,11 @@ public final class LayoutInfo {
 	private BufferedReader mReader = null;
 	private FileWriter mWriter = null;
 	private File mLayoutFile = null;
-	private Map<String, Panel> mLayoutInfo = null;
+	private HashMap<String, Panel> mLayoutInfo = null;
 
 	public LayoutInfo(File _layout_file) {
 		mLayoutFile = _layout_file;
+		mLayoutInfo = new HashMap<String, Panel>();
 	}
 
 	private void initReader() {
@@ -43,7 +44,7 @@ public final class LayoutInfo {
 	private void readLayoutInfo() {
 		if (mLayoutFile == null || !mLayoutFile.isFile()) {
 			mLayoutFile = new File("Default Layout.txt");
-			// mLayoutInfo = new LinkedList<Panel>();
+			// mLayoutInfo = new Map<String, Panel>();
 			// Panel _panel = new Panel();
 			// _panel.setBounds(0, 0, 100, 100);
 			// mLayoutInfo.add(_panel);
