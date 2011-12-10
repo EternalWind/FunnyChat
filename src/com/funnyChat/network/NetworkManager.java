@@ -65,11 +65,13 @@ public class NetworkManager extends FCThread{
 	private ServerSocketChannel mServerSocketChannel;
 	private Selector mSelector;
 	private int mMaxCount;
+	private Lock mLock;
 	private ConnectionChecker mChecker;
 	
 	private NetworkManager(int _max_count, int _port){
 		try{
 			mIdCount = 0;
+			mLock = new Lock();
 			mConnections = new HashMap<Integer, Connection>();
 			mSelector = Selector.open();
 			mServerSocketChannel = ServerSocketChannel.open();
@@ -176,33 +178,35 @@ public class NetworkManager extends FCThread{
 	}
 	
 	public void connect(InetAddress _ip, int _port){
-		try{
-			SocketAddress _address = new InetSocketAddress(_ip, _port);
-			SocketChannel _socket_channel = SocketChannel.open();
-			_socket_channel.configureBlocking(true);
-			//_socket_channel.register(mSelector, SelectionKey.OP_CONNECT).attach(_socket_channel);
-			_socket_channel.connect(_address);
-			
-			if(_socket_channel.isConnected()){
-				Connection _connection = new Connection(_socket_channel);
+		synchronized(mLock) {
+			try{
+				SocketAddress _address = new InetSocketAddress(_ip, _port);
+				SocketChannel _socket_channel = SocketChannel.open();
 				_socket_channel.configureBlocking(false);
-				_socket_channel.register(mSelector, SelectionKey.OP_READ).attach(_connection);
-				
-				ConnectedEvent _event = new ConnectedEvent();
-				_event.setIsInitiative(true);
-				_event.setSource(_connection);
-				EventManager.getInstance().enqueue(_event);
-				
-				Integer _id = generateId();
-				mConnections.put(_id, _connection);
-				_connection.setLastActiveTime(System.currentTimeMillis());
+				_socket_channel.register(mSelector, SelectionKey.OP_CONNECT).attach(_socket_channel);
+				_socket_channel.connect(_address);
+
+				/*if(_socket_channel.isConnected()){
+					Connection _connection = new Connection(_socket_channel);
+					_socket_channel.configureBlocking(false);
+					_socket_channel.register(mSelector, SelectionKey.OP_READ).attach(_connection);
+
+					ConnectedEvent _event = new ConnectedEvent();
+					_event.setIsInitiative(true);
+					_event.setSource(_connection);
+					EventManager.getInstance().enqueue(_event);
+
+					Integer _id = generateId();
+					mConnections.put(_id, _connection);
+					_connection.setLastActiveTime(System.currentTimeMillis());
+				}
+				else{
+					Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Timeout)", LogType.DEBUG);
+				}*/
 			}
-			else{
-				Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".(Timeout)", LogType.DEBUG);
+			catch(IOException e){
+				Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".", LogType.WARNING);
 			}
-		}
-		catch(IOException e){
-			Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".", LogType.WARNING);
 		}
 	}
 	
@@ -225,75 +229,78 @@ public class NetworkManager extends FCThread{
 			Core.getLogger().addLog("Failed to send event to " + _event.getTarget() + ".", LogType.WARNING);
 		}
 	}
-	
+
 	protected void onRun(){
-		try{
-			mSelector.select();
-			Set<SelectionKey> _selectedKeys = mSelector.selectedKeys();
-			Iterator<SelectionKey> _iter = _selectedKeys.iterator();
-			SocketChannel _sc;
-			EventManager _eventManager = EventManager.getInstance();
-			
-			while(_iter.hasNext()){
-				SelectionKey _key = _iter.next();
-				ByteBuffer _buffer = ByteBuffer.allocate(Integer.SIZE / 8);
-				
-				if((_key.readyOps() & SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT){
-					ServerSocketChannel _ssc = (ServerSocketChannel)_key.channel();
-					_sc = _ssc.accept();
-					Connection _connection = new Connection(_sc);
-					Integer _id = generateId();
-					
-					_sc.configureBlocking(false);
-					_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
-					mConnections.put(_id, _connection);
-					
-					ConnectedEvent _event = new ConnectedEvent();
-					_event.setIsInitiative(false);
-					_event.setSource(_connection);
-					_eventManager.enqueue(_event);
-				}
-				else if((_key.readyOps() & SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT){
-					_sc = (SocketChannel)_key.channel();
-					try{
-						_sc.finishConnect();
-						Integer _id = generateId();
-						Connection _connection = new Connection(_sc);
-						_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
-						mConnections.put(_id, _connection);
-						
-						ConnectedEvent _event = new ConnectedEvent();
-						_event.setIsInitiative(true);
-						_event.setSource(_connection);
-						_eventManager.enqueue(_event);
+		synchronized(mLock) {
+			try{
+				if(mSelector.selectNow() > 0) {
+					Set<SelectionKey> _selectedKeys = mSelector.selectedKeys();
+					Iterator<SelectionKey> _iter = _selectedKeys.iterator();
+					SocketChannel _sc = null;
+					EventManager _eventManager = EventManager.getInstance();
+
+					while(_iter.hasNext()){
+						SelectionKey _key = _iter.next();
+						ByteBuffer _buffer = ByteBuffer.allocate(Integer.SIZE / 8);
+
+						if((_key.readyOps() & SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT){
+							ServerSocketChannel _ssc = (ServerSocketChannel)_key.channel();
+							_sc = _ssc.accept();
+							Connection _connection = new Connection(_sc);
+							Integer _id = generateId();
+
+							_sc.configureBlocking(false);
+							_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
+							mConnections.put(_id, _connection);
+
+							ConnectedEvent _event = new ConnectedEvent();
+							_event.setIsInitiative(false);
+							_event.setSource(_connection);
+							_eventManager.enqueue(_event);
+						}
+						else if((_key.readyOps() & SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT){
+							_sc = (SocketChannel)_key.channel();
+							try{
+								_sc.finishConnect();
+								Integer _id = generateId();
+								Connection _connection = new Connection(_sc);
+								_sc.register(mSelector, SelectionKey.OP_READ).attach(_connection);
+								mConnections.put(_id, _connection);
+
+								ConnectedEvent _event = new ConnectedEvent();
+								_event.setIsInitiative(true);
+								_event.setSource(_connection);
+								_eventManager.enqueue(_event);
+							}
+							catch(Exception e){
+								Core.getLogger().addLog("Connection is denied.", LogType.DEBUG);
+							}
+						}
+						else if((_key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ){
+							Connection _connection = (Connection)_key.attachment();
+							if(_connection != null){
+								_connection.setLastActiveTime(System.currentTimeMillis());
+								_sc = (SocketChannel)_key.channel();
+
+								_sc.read(_buffer);
+								_buffer.clear();
+
+								int _size = _buffer.getInt();
+								_buffer = ByteBuffer.allocate(_size);
+
+								_sc.read(_buffer);
+								_buffer.clear();
+
+								_eventManager.enqueue(_buffer.array(), _connection);
+							}
+						}
+						_iter.remove();
 					}
-					catch(Exception e){
-						Core.getLogger().addLog("Connection is denied.", LogType.DEBUG);
-					}
 				}
-				else if((_key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ){
-					Connection _connection = (Connection)_key.attachment();
-					if(_connection != null){
-						_connection.setLastActiveTime(System.currentTimeMillis());
-						_sc = (SocketChannel)_key.channel();
-
-						_sc.read(_buffer);
-						_buffer.clear();
-
-						int _size = _buffer.getInt();
-						_buffer = ByteBuffer.allocate(_size);
-
-						_sc.read(_buffer);
-						_buffer.clear();
-
-						_eventManager.enqueue(_buffer.array(), _connection);
-					}
-				}
-				_iter.remove();
 			}
-		}
-		catch(IOException e){
-			Core.getLogger().addLog("Exception occured within the NetworkManager's general activity.", LogType.ERROR);
+			catch(IOException e){
+				Core.getLogger().addLog("Exception occured within the NetworkManager's general activity.", LogType.ERROR);
+			}
 		}
 	}
 	
