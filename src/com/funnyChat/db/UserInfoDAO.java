@@ -50,6 +50,7 @@ public class UserInfoDAO {
 	public UserInfo find(String name) {
 		try {
 			UserInfo userInfo = new UserInfo();
+			userInfo.setUid(-1);
 			String sql = "select * from userinfo where name = '" + name+"'";
 			
 			ResultSet rs = stmt.executeQuery(sql);
@@ -75,6 +76,7 @@ public class UserInfoDAO {
 			 +userInfo.getState()+"','"
 			 +userInfo.getIp()+"','"
 			 +userInfo.getPort()+"')";
+			System.out.println(sql);
 			return stmt.execute(sql);
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -37,6 +37,26 @@ public class Server extends PluginAdapter{
 		refreshPanel();
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
 		EventManager.getInstance().register(new ConnectionFailedEvent());
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new GetFriendsResponseEvent());
+		EventManager.getInstance().register(new ChangeUserStateResponseEvent());
+		EventManager.getInstance().register(new CheckLoginInfoResponseEvent());
+		EventManager.getInstance().register(new RegisterResponseEvent());
+		EventManager.getInstance().register(new AddFriendResponseEvent());
+		EventManager.getInstance().register(new ChatEvent());
+		EventManager.getInstance().register(new DeleteFriendResponseEvent());
+		EventManager.getInstance().register(new RefreshUserInfoResponseEvent());
+		EventManager.getInstance().register(new GetPasswordResponseEvent());
+		EventManager.getInstance().register(new ConnectionFailedEvent());
+		
+		EventManager.getInstance().register(new GetFriendsEvent());
+		EventManager.getInstance().register(new ChangeUserStateEvent());
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new RegisterEvent());
+		EventManager.getInstance().register(new AddFriendEvent());
+		EventManager.getInstance().register(new DeleteFriendEvent());
+		EventManager.getInstance().register(new RefreshUserInfoEvent());
+		EventManager.getInstance().register(new GetPasswordEvent());
 	}
 
 	@Override
@@ -69,12 +89,6 @@ public class Server extends PluginAdapter{
 	@Override
 	protected void execute() {
 		//启动线程执行传过来的事件
-		if(this.hasWork()){
-			if(mEvent.getEventType().equals("ConnectedEvent")){
-				System.out.println("LYD DIE DIE DIE!!!");
-			}
-		}
-		System.out.println(mEvent+"00");
 		if(mEvent == null || mEvent.equals(null)){
 			return;
 		}
@@ -90,6 +104,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -102,6 +117,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -115,6 +131,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -130,6 +147,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -139,6 +157,7 @@ public class Server extends PluginAdapter{
 			List<UserInfo> result = getFriends(temp.getUId());
 			GetFriendsResponseEvent response = new GetFriendsResponseEvent();
 			response.setUsersInfo(result);
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -147,6 +166,7 @@ public class Server extends PluginAdapter{
         	GetIpAndPortEvent temp = (GetIpAndPortEvent)mEvent;
         	String result = getIpAndPort(temp.getUId());
         	GetIpAndPortResponseEvent response = new GetIpAndPortResponseEvent();
+        	response.setIsLocal(false);
         	response.setIpAndPort(result);
         	response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
@@ -156,6 +176,7 @@ public class Server extends PluginAdapter{
         	GetPluginListEvent temp = (GetPluginListEvent)mEvent;
         	GetPluginListResponseEvent response = new GetPluginListResponseEvent();
         	response.setPluginsInfo(getPluginList());
+        	response.setIsLocal(false);
         	response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
         	eventManager.enqueue(response);
@@ -168,6 +189,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -186,6 +208,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -213,10 +236,13 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
 		}
+        mEvent = null;
+        this.doneWork();
 	}
 	//
 	@Override
@@ -287,7 +313,7 @@ public class Server extends PluginAdapter{
     }
     public boolean register(UserInfo userInfo){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
-    	if(userInfoDAO.find(userInfo.getName())!=null){
+    	if(userInfoDAO.find(userInfo.getName()).getUid() != -1){
     		return false;
     	}
     	boolean succ = userInfoDAO.add(userInfo);

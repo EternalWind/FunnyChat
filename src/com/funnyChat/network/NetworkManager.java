@@ -213,7 +213,7 @@ public class NetworkManager extends FCThread{
 	
 	public void send(Event _event){
 		try{
-			Connection _connection = mConnections.get(_event.getTarget());
+			Connection _connection = _event.getTarget();
 			if(_connection != null){
 				byte[] _data = _event.serialize();
 
