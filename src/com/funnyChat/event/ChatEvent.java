@@ -28,7 +28,7 @@ public class ChatEvent extends Event{
 	public String getSenderId() {
 		return mSenderId;
 	}
-	public void getSenderId(String sender_id) {
+	public void setSenderId(String sender_id) {
 		this.mSenderId = sender_id;
 	}
 	public String getContent() {

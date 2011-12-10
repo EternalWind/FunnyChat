@@ -7,16 +7,15 @@ public class RegisterEvent extends Event {
 	private String mQuestion;
 	private String mAnswer;
 	private String mIp;
-	private String mPort;
+	private Integer mPort;
 
-	public RegisterEvent(String _name, String _password, String _question, String _answer,
-			String _ip, String _port) {
-		mName = _name;
-		mPassword = _password;
-		mQuestion = _question;
-		mAnswer = _answer;
-		mIp = _ip;
-		mPort = _port;
+	public RegisterEvent() {
+		mName = "";
+		mPassword = "";
+		mQuestion = "";
+		mAnswer = "";
+		mIp = "";
+		mPort = 0;
 	}
 
 	public String getName() {
@@ -59,11 +58,11 @@ public class RegisterEvent extends Event {
 		this.mIp = _ip;
 	}
 
-	public String getPort() {
+	public Integer getPort() {
 		return mPort;
 	}
 
-	public void setPort(String _port) {
+	public void setPort(Integer _port) {
 		this.mPort = _port;
 	}
 
@@ -85,6 +84,6 @@ public class RegisterEvent extends Event {
 		mQuestion = _data[2];
 		mAnswer = _data[3];
 		mIp = _data[4];
-		mPort = _data[5];
+		mPort = new Integer(_data[5]);
 	}
 }
