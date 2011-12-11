@@ -6,6 +6,7 @@ public class AddFriendEvent extends Event {
 	private long mUId2;
 	
 	public AddFriendEvent() {
+		mIsLocal = false;
 		mUId1 = 0;
 		mUId2 = 0;
 	}

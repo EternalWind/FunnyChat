@@ -107,13 +107,13 @@ public class ChatPanel extends java.awt.Panel {
 
 	private void button1MouseClicked(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
-		textField1.setText(textField1.getText()+textField2.getText());
+		textField1.setText(textField1.getText()+"\r\n"+client.getId()+"\r\n"+textField2.getText());
 		client.chat(textField2.getText(), String.valueOf(Fid));
 		textField2.setText("");
 	}
 	
 	public void messageShow(String content, String senderID){
-		textField1.setText(textField1.getText()+"\n"+senderID+"\n"+content);
+		textField1.setText(textField1.getText()+"\r\n"+senderID+"\r\n"+content);
 	}
 	
 	public long getFid(){

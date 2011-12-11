@@ -41,17 +41,18 @@ public class EventManager extends FCThread{
 		mLEvent = new LinkedList<Event>();
 		mNEvent = new LinkedList<Event>();
 		mEventPrototype = new LinkedList<Event>();
+		mSleepTime = 20;
 	}
 	synchronized protected void onRun(){
-		try {
+		//try {
 			handleLocalEvent();
 			handleNetworkEvent();
-			sleep(500);
-		} catch (InterruptedException e) {
+			//sleep(500);
+		//} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			Core.getLogger().addLog("The EventManager has been inerrupted.", LogType.DEBUG);
-			e.printStackTrace();
-		}
+			//Core.getLogger().addLog("The EventManager has been inerrupted.", LogType.DEBUG);
+			//e.printStackTrace();
+		//}
 	}
 	synchronized public void enqueue(Event _event){
 		boolean _is_registered = false;
@@ -145,7 +146,6 @@ public class EventManager extends FCThread{
 			return null;
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			Core.getLogger().addLog("Failed to instantiate the an event.", LogType.ERROR);
 			return null;
 		}

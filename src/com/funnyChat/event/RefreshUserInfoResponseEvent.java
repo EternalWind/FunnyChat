@@ -14,6 +14,7 @@ public class RefreshUserInfoResponseEvent extends Event {
 //			mResult = "Failed";
 //	}
 	public RefreshUserInfoResponseEvent() {
+		mIsLocal = false;
 		mResult = "Failed";
 	}
 

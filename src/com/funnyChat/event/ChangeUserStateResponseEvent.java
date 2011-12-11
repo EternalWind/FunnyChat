@@ -12,6 +12,7 @@ public class ChangeUserStateResponseEvent extends Event {
 //			mResult = "Failed";
 //	}
 	public ChangeUserStateResponseEvent(){
+		mIsLocal = false;
 		mResult = "Failed";
 	}
 

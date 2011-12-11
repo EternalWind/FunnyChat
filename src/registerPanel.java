@@ -174,7 +174,7 @@ private void button2MouseClicked(java.awt.event.MouseEvent evt) {
 		} else {
 			if (textField2.getText().equals(textField3.getText())) {
 				label7.setText("");
-				//client.register(textField1.getText(), textField2.getText(), textField4.getText(), textField5.getText());
+				client.register(textField1.getText(), textField2.getText(), textField4.getText(), textField5.getText());
 			} else {
 				label7.setText("ÃÜÂë²»Ò»ÖÂ!");
 			}

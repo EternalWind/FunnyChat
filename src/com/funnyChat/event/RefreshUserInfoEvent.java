@@ -7,6 +7,7 @@ public class RefreshUserInfoEvent extends Event {
 	private UserInfo mUserInfo;
 
 	public RefreshUserInfoEvent() {
+		mIsLocal = false;
 		mUserInfo = new UserInfo();
 	}
 
@@ -33,17 +34,11 @@ public class RefreshUserInfoEvent extends Event {
 	@Override
 	protected void onUnserialize(String dataStr) {
 		String[] _data = dataStr.split(" ");
-		String str = _data[0];
-		System.out.println(str);
-		long l = Long.parseLong(str);
-		mUserInfo.setUid(l);
+		mUserInfo.setUid(Long.parseLong(_data[0]));
 		mUserInfo.setName(_data[1]);
 		mUserInfo.setPassword(_data[2]);
 		mUserInfo.setState(_data[3]);
 		mUserInfo.setIp(_data[4]);
 		mUserInfo.setPort(_data[5]);
-	}
-	public static void main(String[]args){
-		System.out.println(Long.parseLong("20"));
 	}
 }

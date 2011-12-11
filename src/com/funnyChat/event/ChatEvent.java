@@ -13,6 +13,9 @@ public class ChatEvent extends Event{
 	private String mReceiverId;
 	private String mContent;//¡¤¡é?¨ª?¨²¨¨Y
 	private List<byte[]> mPictures = new ArrayList<byte[]>();
+	public ChatEvent(){
+		mIsLocal = false;
+	}
 	public String getDate() {
 		return mDate;
 	}
@@ -47,6 +50,10 @@ public class ChatEvent extends Event{
 	public String getEventType() {
 		// TODO Auto-generated method stub
 		return "ChatEvent";
+	}
+	
+	public String  toString(){
+		return onSerialize();
 	}
 	@Override
 	protected String onSerialize() {

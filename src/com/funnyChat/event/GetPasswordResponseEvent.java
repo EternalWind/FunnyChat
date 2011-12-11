@@ -3,6 +3,7 @@ package com.funnyChat.event;
 public class GetPasswordResponseEvent extends Event{
 	String _password;
 	public GetPasswordResponseEvent(){
+		mIsLocal = false;
 		_password = "";
 	}
 	
