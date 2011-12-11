@@ -89,7 +89,7 @@ public class Server extends PluginAdapter{
 	@Override
 	protected void execute() {
 		//启动线程执行传过来的事件
-		if(mEvent == null || mEvent.equals(null)){
+		if(hasWork()){
 			return;
 		}
 		System.out.println(mEvent.getEventType());
@@ -241,7 +241,6 @@ public class Server extends PluginAdapter{
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
 		}
-        mEvent = null;
         this.doneWork();
 	}
 	//
