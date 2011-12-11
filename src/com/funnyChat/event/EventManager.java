@@ -145,6 +145,7 @@ public class EventManager extends FCThread{
 			return null;
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			Core.getLogger().addLog("Failed to instantiate the an event.", LogType.ERROR);
 			return null;
 		}

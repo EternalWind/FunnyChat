@@ -10,6 +10,7 @@ public class ReleasePluginEvent extends Event {
 	
 	public ReleasePluginEvent() {
 		mPlugins = null;
+		mPluginInfo = new PluginInfo();
 	}
 
 	public PluginInfo getPluginInfo() {
