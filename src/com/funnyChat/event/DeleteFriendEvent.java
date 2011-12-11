@@ -6,6 +6,7 @@ public class DeleteFriendEvent extends Event {
 	private long mUId2;
 	
 	public DeleteFriendEvent() {
+		mIsLocal = false;
 		mUId1 = 0;
 		mUId2 = 0;
 	}

@@ -16,6 +16,7 @@ public class RegisterEvent extends Event {
 		mAnswer = "";
 		mIp = "";
 		mPort = 0;
+		mIsLocal = false;
 	}
 
 	public String getName() {

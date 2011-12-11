@@ -3,7 +3,6 @@ package com.funnyChat.event;
 public class RegisterResponseEvent extends Event {
 
 	private String mResult;
-
 //	public RegisterResponseEvent(Server _server, UserInfo _user_info) {
 //		if (_server.register(_user_info))
 //			mResult = "Succeed";
@@ -11,6 +10,7 @@ public class RegisterResponseEvent extends Event {
 //			mResult = "Failed";
 //	}
 	public RegisterResponseEvent() {
+		mIsLocal = false;
 		mResult = "Failed";
 	}
 

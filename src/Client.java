@@ -4,6 +4,7 @@ import java.awt.Panel;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -33,17 +34,21 @@ public class Client extends Plugin{
 	private String uid;
 	private String state;
 	private JFrame frame;
-	private String tempId;
+	private String tempName;
 	private String tempState;
 	private String userName;
 	private String tempPassword;
 	private String password;
 	private MainWindow2 mTestWin;
+	private String[] stateC = {"在线","忙碌","离开"};
+	private HashMap<Long,Connection>connections = new HashMap<Long,Connection>();
 //	private Vector<String> chatUsers;
-	public Vector<ChatPanel> chatPanels; 
+	public HashMap<Long,ChatPanel>chatPanels = new HashMap<Long,ChatPanel>();
 	private List<UserInfo> friendsInfo;
+	protected Connection serverCon;
+	private Connection _conTemp;
 	private String[] eventList = {
-			"ConnectedEvent", "GetFriendsEventResponse", "ChangeUserStateResponseEvent",
+			"ConnectedEvent", "GetFriendsResponseEvent", "ChangeUserStateResponseEvent",
 			"CheckLoginInfoResponseEvent", "RegisterResponseEvent", "AddFriendResponseEvent",
 			"ChatEvent", "DeleteFriendResponseEvent", "RefreshUserInfoResponseEvent",
 			"GetPasswordResponseEvent","ConnectionFailedEvent"
@@ -51,18 +56,14 @@ public class Client extends Plugin{
 	
 	public Client(){
 //		chatUsers = new Vector<String>();
-		chatPanels = new Vector<ChatPanel>();
 		friendsInfo = new ArrayList<UserInfo>();
 		UserInfo u = new UserInfo();
-		u.setName("asda");
-		u.setState("asda");
-		friendsInfo.add(u);
 		uid = "1231312";
 		state="aaa";
 		Panel _panel = new loginPanel(this);
 		setPanel(_panel);
-		localIp = new String("123.123.123.123");
-		localPort = 8888;
+		localIp = new String("123.123.123.13");
+		localPort = 55555;
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
@@ -77,23 +78,18 @@ public class Client extends Plugin{
 	@Override
 	protected void onEnable() {
 		// TODO Auto-generated method stub
-		chatPanels = new Vector<ChatPanel>();
 		friendsInfo = new ArrayList<UserInfo>();
-		UserInfo u = new UserInfo();
-		u.setName("asda");
-		u.setState("asda");
-		friendsInfo.add(u);
 		uid = "1231312";
 		state="aaa";
 		Panel _panel = new loginPanel(this);
 		_panel.setBounds(0, 0, 245, 285);
 		setPanel(_panel);
 		localIp = new String("123.123.123.123");
-		localPort = 8888;
+		localPort = 55555;
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
-			serverIp = InetAddress.getByName("192.168.1.103");
+			serverIp = InetAddress.getByName("192.168.1.13");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -103,14 +99,31 @@ public class Client extends Plugin{
 		
 		network_manager = NetworkManager.getInstance();
 		network_manager.connect(serverIp, serverPort);
+		network_manager.getConnections();
 		event_manager = EventManager.getInstance();
 		
 		mTestWin = Core.getInstance().getMainWindow();	
 		
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
-//		EventManager.getInstance().register(new ConnectionFailedEvent());
-//		EventManager.getInstance().register(new CheckLoginInfoEvent());
-//		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new GetFriendsResponseEvent());
+		EventManager.getInstance().register(new ChangeUserStateResponseEvent());
+		EventManager.getInstance().register(new CheckLoginInfoResponseEvent());
+		EventManager.getInstance().register(new RegisterResponseEvent());
+		EventManager.getInstance().register(new AddFriendResponseEvent());
+		EventManager.getInstance().register(new ChatEvent());
+		EventManager.getInstance().register(new DeleteFriendResponseEvent());
+		EventManager.getInstance().register(new RefreshUserInfoResponseEvent());
+		EventManager.getInstance().register(new GetPasswordResponseEvent());
+		EventManager.getInstance().register(new ConnectionFailedEvent());
+
+		EventManager.getInstance().register(new GetFriendsEvent());
+		EventManager.getInstance().register(new ChangeUserStateEvent());
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new RegisterEvent());
+		EventManager.getInstance().register(new AddFriendEvent());
+		EventManager.getInstance().register(new DeleteFriendEvent());
+		EventManager.getInstance().register(new RefreshUserInfoEvent());
+		EventManager.getInstance().register(new GetPasswordEvent());		
 	}
 
 	@Override
@@ -123,16 +136,60 @@ public class Client extends Plugin{
 	protected void execute() {
 		// TODO Auto-generated method stub
 		if(this.hasWork()){
+//			if(serverCon != null && serverCon.getIP().toString().substring(1).equals(serverIp.toString().substring(1))){
+//				getFriendInfo(Long.parseLong(uid));					
+//			}
+			System.out.println(mEvent.getEventType());
 			if(mEvent.getEventType().equals("ConnectionFailedEvent")){
 				System.out.println("LYD DIE DIE DIE!");
+				
 			}
 			if(mEvent.getEventType().equals("ConnectedEvent")){
+				getFriendInfo(Long.parseLong(uid));
+				Connection _con = ((ConnectedEvent)mEvent).getSource();
+				if(_con.getIP().equals(serverIp))
+					serverCon = _con;
+				_conTemp = _con;
+//				else{
+//					long _id = 0;
+//					for(int i = 0; i < friendsInfo.size(); i++){
+//						if((friendsInfo.get(i).getIp()).equals(_con.getIP().toString().substring(1))){
+//							_id = friendsInfo.get(i).getUid();
+//							break;
+//						}
+//					}
+//					if(_id != 0){
+//						connections.put(_id, _con);
+//					}
+//				}
 				System.out.println("LYD DIE DIE DIE!!!");
 			}
 			if(mEvent.getEventType().equals("GetFriendsResponseEvent")){
+				System.out.println(((GetFriendsResponseEvent)mEvent).getEventType()+((GetFriendsResponseEvent)mEvent).getUsersInfo());
 				friendsInfo = ((GetFriendsResponseEvent)mEvent).getUsersInfo();
+				for(int i = 0; i < friendsInfo.size(); i++){
+					System.out.println(friendsInfo.get(i).toString());
+				}
+				//ConnectRefresh();
+				gotoMainPanel();
+				Connection _con = _conTemp;
+				if(_con.getIP().equals(serverIp))
+					serverCon = _con;
+				else{
+					long _id = 0;
+					for(int i = 0; i < friendsInfo.size(); i++){
+						if((friendsInfo.get(i).getIp()).equals(_con.getIP().toString().substring(1))){
+							_id = friendsInfo.get(i).getUid();
+							break;
+						}
+					}
+					if(_id != 0){
+						connections.put(_id, _con);
+					}
+				}				
 			}
 			if(mEvent.getEventType().equals("GetPasswordResponseEvent")){
+				System.out.println(((GetPasswordResponseEvent)mEvent).getEventType()+((GetPasswordResponseEvent)mEvent).getPassword());
 				if(!(((GetPasswordResponseEvent)mEvent).getPassword()).equals("")){
 					JOptionPane.showMessageDialog(null, "你的密码是"+(((GetPasswordResponseEvent)mEvent).getPassword()));
 					gotoLoginPanel();
@@ -145,11 +202,12 @@ public class Client extends Plugin{
 //			if(mEvent.getEventType().equals("ChangeUserStateResponseEvent"))
 //			{}
 			if(mEvent.getEventType().equals("CheckLoginInfoResponseEvent")){
+				System.out.println(((CheckLoginInfoResponseEvent)mEvent).getEventType()+((CheckLoginInfoResponseEvent)mEvent).getResult());
 				if((((CheckLoginInfoResponseEvent)mEvent).getResult()).equals("Succeed")){
-					uid = tempId;
+					userName = tempName;
 					state = tempState;
 					password = tempPassword;
-					userName = "";
+					uid = ((CheckLoginInfoResponseEvent)mEvent).getUid();
 					UserInfo _userinfo = new UserInfo();
 					_userinfo.setIp(localIp.toString());
 					_userinfo.setPort(String.valueOf(localPort));
@@ -167,6 +225,7 @@ public class Client extends Plugin{
 				}
 			}
 			if(mEvent.getEventType().equals("RegisterResponseEvent")){
+				System.out.println(((RegisterResponseEvent)mEvent).getEventType()+((RegisterResponseEvent)mEvent).getResult());
 				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
 					JOptionPane.showMessageDialog(null, "注册成功！");
 				}
@@ -177,7 +236,10 @@ public class Client extends Plugin{
 
 			}
 			if(mEvent.getEventType().equals("AddFriendResponseEvent")){
-				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
+				System.out.println(((AddFriendResponseEvent)mEvent).getEventType()+((AddFriendResponseEvent)mEvent).getResult());
+				if((((AddFriendResponseEvent)mEvent).getResult()).equals("Succeed")){
+					getFriendInfo(Long.parseLong(uid));
+					gotoMainPanel();
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "服务器故障，好友增加失败！");
@@ -185,16 +247,44 @@ public class Client extends Plugin{
 				gotoMainPanel();
 			}
 			if(mEvent.getEventType().equals("ChatEvent")){
-				Panel p = new Panel();
-				for(int i = 0; i < chatPanels.size(); i++){
-					if((chatPanels.get(i)).getFid() == (new Integer(((ChatEvent)mEvent).getSenderId())).longValue()){
-						(chatPanels.get(i)).messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
-					    break;
+				System.out.println(((ChatEvent)mEvent).toString());
+				System.out.println(((ChatEvent)mEvent).getEventType()+((ChatEvent)mEvent).getContent());
+				ChatPanel p;
+				Connection _c = mEvent.getSource();
+				String _ip = ((_c.getIP()).toString()).substring(1);
+				long _id = 0;
+				for(int i= 0; i < friendsInfo.size(); i++){
+					System.out.println(_ip+"aaaaaaa"+friendsInfo.get(i).getIp());
+					if(	_ip.equals(friendsInfo.get(i).getIp())){
+						_id = friendsInfo.get(i).getUid();
+						break;
 					}
+				}
+				if(_id != 0){
+				p = chatPanels.get(_id);
+				if(p != null)
+					p.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
+				else{
+					JFrame frame = new JFrame("MyFrame");
+					ChatPanel chatPanel = new ChatPanel(this, _id);
+		            chatPanels.put( _id,chatPanel);
+		            chatPanel.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
+					frame.add(chatPanel);
+					frame.setSize(300, 300);
+					frame.setLocationRelativeTo(null);
+					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					frame.setVisible(true);
+				}					
+				}
+				else{
+					System.out.println("找不到聊天对象的ID！");
 				}
 			}
 			if(mEvent.getEventType().equals("DeleteFriendResponseEvent")){
-				if((((RegisterResponseEvent)mEvent).getResult()).equals("Succeed")){
+				System.out.println(((DeleteFriendResponseEvent)mEvent).getEventType()+((DeleteFriendResponseEvent)mEvent).getResult());
+				if((((DeleteFriendResponseEvent)mEvent).getResult()).equals("Succeed")){
+					getFriendInfo(Long.parseLong(uid));
+					gotoMainPanel();
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "服务器故障，好友删除失败！");
@@ -202,6 +292,7 @@ public class Client extends Plugin{
 				gotoMainPanel();
 			}		
 			if(mEvent.getEventType().equals("RefreshUserInfoResponseEvent")){
+				System.out.println(((RefreshUserInfoResponseEvent)mEvent).getEventType()+((RefreshUserInfoResponseEvent)mEvent).getResult());
 				if((((RefreshUserInfoResponseEvent)mEvent).getResult()).equals("Failed")){
 					UserInfo _userinfo = new UserInfo();
 					_userinfo.setIp(localIp.toString());
@@ -253,51 +344,66 @@ public class Client extends Plugin{
 		_event.setPassword(_password);
 		_event.setQuestion(_question);
 		_event.setAnswer(_answer);
-		_event.setIp(serverIp.toString());
+		_event.setIp(serverIp.toString().substring(1));
 		_event.setPort(serverPort);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}
 	
 	private void getFriendInfo(long _fid){
 		GetFriendsEvent _event = new GetFriendsEvent();
 		_event.setUId(_fid);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}
 	
 	public void getPassword(String _answer){
 		GetPasswordEvent _event = new GetPasswordEvent();
+		//_event.setUserName();
 		_event.setAnswer(_answer);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}
 	
-	public void login(String _id, String _password, String _state){
+	public void login(String _userName, String _password, String _state){
 		 //gotoMainPanel();
 		 CheckLoginInfoEvent _event = new CheckLoginInfoEvent();
-		 _event.setName(_id);
+		 _event.setName(_userName);
+		 _event.setTarget(serverCon);
 		 _event.setPassword(_password);
+		 _event.setPort(String.valueOf(localPort));
 		event_manager.enqueue(_event);
-		tempId = _id;
+		tempName = _userName;
 		tempState = _state;
 		tempPassword = _password;
 	}
 	
 	public void chat(String _content, String _fid){
 		ChatEvent _event = new ChatEvent();
-		_event.setContent(_content);
-		_event.setReceiverId(_fid);
-		_event.setSenderId(uid);
-		event_manager.enqueue(_event);	
+		Connection _c = connections.get(Long.parseLong(_fid));
+		if(_c == null){
+			JOptionPane.showMessageDialog(null, "未与该用户连接！");
+		}
+		else{
+			_event.setContent(_content);
+			_event.setReceiverId(_fid);
+			_event.setSenderId(uid);
+			_event.setTarget(_c);
+			event_manager.enqueue(_event);	
+		}
 	}
 	public void addFriend(long _uid1, long _uid2){
 		AddFriendEvent _event = new AddFriendEvent();
 		_event.setUId1(_uid1);
 		_event.setUId2(_uid2);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}
 
 	private void refreshUserInfo(UserInfo _user_info){
 		RefreshUserInfoEvent _event = new RefreshUserInfoEvent();
 		_event.setUserInfo(_user_info);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}	
 
@@ -305,6 +411,7 @@ public class Client extends Plugin{
 		DeleteFriendEvent _event = new DeleteFriendEvent();
 		_event.setUId1(_uid1);
 		_event.setUId2(_uid2);
+		_event.setTarget(serverCon);
 		event_manager.enqueue(_event);
 	}		
 
@@ -347,7 +454,7 @@ public class Client extends Plugin{
 //		frame.setVisible(true);				
 	}	
 
-	public void gotoPasswordPanel(){
+	public void gotoPasswordPanel(String _name){
 		Panel _panel = new PasswordPanel(this);
 		_panel.setBounds(0, 0, 268, 277);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
@@ -404,6 +511,26 @@ public class Client extends Plugin{
 	public void setUserState(String _state){
 		state = _state;
 	}	
+	
+	public String[] getStateC(){
+		return stateC;
+	}
+	
+	private void ConnectRefresh(){
+		InetAddress _ip; 
+		for(int i = 0; i < friendsInfo.size(); i++){
+			try {
+				if(!(friendsInfo.get(i).getState()).equals("离线") && connections.get((friendsInfo.get(i))) == null){
+					_ip = InetAddress.getByName((friendsInfo.get(i)).getIp());
+					System.out.println(_ip.toString()+"UUUUUUU"+Integer.parseInt(((friendsInfo.get(i)).getPort())));
+				    network_manager.connect(_ip, Integer.parseInt(((friendsInfo.get(i)).getPort())));
+				}
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}				
+		}
+	}
 	/////////////////////TEST///////////////////////////////
 //	public static void main(String args[])
 //	{
