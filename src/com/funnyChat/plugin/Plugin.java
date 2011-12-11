@@ -14,6 +14,7 @@ public abstract class Plugin extends FCThread {
 		mEvent = null;
 		mIsBusy = false;
 		mPanel = null;
+		onCreate();
 	}
 	protected abstract void onEnable();
 	protected abstract void onDisable();
