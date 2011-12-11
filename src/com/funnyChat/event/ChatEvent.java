@@ -12,7 +12,7 @@ public class ChatEvent extends Event{
 	private String mSenderId;//name(uid)
 	private String mReceiverId;
 	private String mContent;//¡¤¡é?¨ª?¨²¨¨Y
-	private List<byte[]> mPictures;
+	private List<byte[]> mPictures = new ArrayList<byte[]>();
 	public String getDate() {
 		return mDate;
 	}

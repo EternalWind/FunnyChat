@@ -1,9 +1,12 @@
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +40,26 @@ public class Server extends PluginAdapter{
 		refreshPanel();
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
 		EventManager.getInstance().register(new ConnectionFailedEvent());
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new GetFriendsResponseEvent());
+		EventManager.getInstance().register(new ChangeUserStateResponseEvent());
+		EventManager.getInstance().register(new CheckLoginInfoResponseEvent());
+		EventManager.getInstance().register(new RegisterResponseEvent());
+		EventManager.getInstance().register(new AddFriendResponseEvent());
+		EventManager.getInstance().register(new ChatEvent());
+		EventManager.getInstance().register(new DeleteFriendResponseEvent());
+		EventManager.getInstance().register(new RefreshUserInfoResponseEvent());
+		EventManager.getInstance().register(new GetPasswordResponseEvent());
+		EventManager.getInstance().register(new ConnectionFailedEvent());
+		
+		EventManager.getInstance().register(new GetFriendsEvent());
+		EventManager.getInstance().register(new ChangeUserStateEvent());
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+		EventManager.getInstance().register(new RegisterEvent());
+		EventManager.getInstance().register(new AddFriendEvent());
+		EventManager.getInstance().register(new DeleteFriendEvent());
+		EventManager.getInstance().register(new RefreshUserInfoEvent());
+		EventManager.getInstance().register(new GetPasswordEvent());
 	}
 
 	@Override
@@ -46,6 +69,8 @@ public class Server extends PluginAdapter{
 	protected void onEnable() {}
 
 	public void refreshPanel(){
+		mPanel.setLayout(new FlowLayout());
+		mPanel.removeAll();
 		Label label1 = new Label("当前在线人数:  "+users.size());
 		mPanel.add(label1);
 		UserInfoDAO userInfoDAO = new UserInfoDAO();
@@ -69,13 +94,7 @@ public class Server extends PluginAdapter{
 	@Override
 	protected void execute() {
 		//启动线程执行传过来的事件
-		if(this.hasWork()){
-			if(mEvent.getEventType().equals("ConnectedEvent")){
-				System.out.println("LYD DIE DIE DIE!!!");
-			}
-		}
-		System.out.println(mEvent+"00");
-		if(mEvent == null || mEvent.equals(null)){
+		if(!hasWork()){
 			return;
 		}
 		System.out.println(mEvent.getEventType());
@@ -90,6 +109,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -102,6 +122,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -109,12 +130,16 @@ public class Server extends PluginAdapter{
         if(mEvent instanceof CheckLoginInfoEvent){
         	CheckLoginInfoEvent temp = (CheckLoginInfoEvent)mEvent;
         	UserInfo userInfo = new UserInfo();
-        	boolean result = checkLoginInfo(temp.getName(), temp.getPassword(),temp.getSource());
+        	long  uid = checkLoginInfo(temp.getName(), temp.getPassword(),temp.getSource(), temp.getPort());
         	CheckLoginInfoResponseEvent response = new CheckLoginInfoResponseEvent();
-			if(result)
-				response.setResult("Succeed");
-			else
+			if(uid == -1){
 				response.setResult("Failed");
+			    response.setUid(String.valueOf(-1));
+	        }else{
+				response.setResult("Succeed");
+				response.setUid(String.valueOf(uid));
+			}
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -130,6 +155,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -139,6 +165,7 @@ public class Server extends PluginAdapter{
 			List<UserInfo> result = getFriends(temp.getUId());
 			GetFriendsResponseEvent response = new GetFriendsResponseEvent();
 			response.setUsersInfo(result);
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -147,6 +174,7 @@ public class Server extends PluginAdapter{
         	GetIpAndPortEvent temp = (GetIpAndPortEvent)mEvent;
         	String result = getIpAndPort(temp.getUId());
         	GetIpAndPortResponseEvent response = new GetIpAndPortResponseEvent();
+        	response.setIsLocal(false);
         	response.setIpAndPort(result);
         	response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
@@ -156,6 +184,7 @@ public class Server extends PluginAdapter{
         	GetPluginListEvent temp = (GetPluginListEvent)mEvent;
         	GetPluginListResponseEvent response = new GetPluginListResponseEvent();
         	response.setPluginsInfo(getPluginList());
+        	response.setIsLocal(false);
         	response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
         	eventManager.enqueue(response);
@@ -168,6 +197,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -186,6 +216,7 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
@@ -213,10 +244,13 @@ public class Server extends PluginAdapter{
 				response.setResult("Succeed");
 			else
 				response.setResult("Failed");
+			response.setIsLocal(false);
 			response.setTarget(temp.getSource());
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
 		}
+		refreshPanel();
+        this.doneWork();
 	}
 	//
 	@Override
@@ -242,15 +276,29 @@ public class Server extends PluginAdapter{
     	return pluginInfoDAO.add(_plugin);
     }
     public boolean addFriend(long uid1, long uid2){
-    	return false;
+    	UserInfoDAO userInfoDAO = new UserInfoDAO();
+    	if(userInfoDAO.find(uid1) == null || userInfoDAO.find(uid2) == null)
+    		return false;
+    	FriendDAO friendDAO = new FriendDAO();
+    	return friendDAO.add(uid1, uid2);
     }
     public List<UserInfo> getFriends(long _uid){
     	FriendDAO friendDAO = new FriendDAO();
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
     	List<Long> friends = friendDAO.find(_uid);
     	List<UserInfo> friendInfo = new ArrayList<UserInfo>();
-    	for(int i=0;i<friends.size();i++)
-    		friendInfo.add(userInfoDAO.find(friends.get(i)));
+    	for(int i=0;i<friends.size();i++){
+    		UserInfo userInfoDB = userInfoDAO.find(friends.get(i));
+    		UserInfo userInfoME = users.get(userInfoDB.getUid());
+    		if(userInfoME != null){
+    			userInfoDB.setIp(userInfoME.getIp());
+    			userInfoDB.setPort(userInfoME.getPort());
+    			userInfoDB.setState(userInfoME.getState());
+    		}else{
+    			userInfoDB.setState("离线");
+    		}
+    		friendInfo.add(userInfoDB);
+    	}
     	return friendInfo;
     }
     public boolean deleteFriend(long _uid1, long _uid2){
@@ -265,16 +313,16 @@ public class Server extends PluginAdapter{
     	}
     	return false;
     }
-    public boolean checkLoginInfo(String _name, String _password,Connection source){
+    public long checkLoginInfo(String _name, String _password,Connection source, String port){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
     	UserInfo userInfo = userInfoDAO.find(_name);
     	if(userInfo != null && userInfo.getPassword().equals(_password)){
-    		userInfo.setIp(source.getIP().toString());
-    		userInfo.setPort(String.valueOf(source.getPort()));
+    		userInfo.setIp(source.getIP().toString().substring(1));
+    		userInfo.setPort(String.valueOf(port));
     		users.put(userInfo.getUid(), userInfo);
-    		return true;
+    		return userInfo.getUid();
     	}
-    	return false;
+    	return -1;
     }
     public boolean refreshUserInfo(UserInfo userInfo){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
@@ -287,7 +335,7 @@ public class Server extends PluginAdapter{
     }
     public boolean register(UserInfo userInfo){
     	UserInfoDAO userInfoDAO = new UserInfoDAO();
-    	if(userInfoDAO.find(userInfo.getName())!=null){
+    	if(userInfoDAO.find(userInfo.getName()) != null){
     		return false;
     	}
     	boolean succ = userInfoDAO.add(userInfo);
@@ -302,19 +350,12 @@ public class Server extends PluginAdapter{
 		return "FunnyChat Server";
 	}
     public static void main(String[] args){
-    	JFrame frame = new JFrame();
-    	Server server = new Server();
-    	server.setPanel(new Panel());
-    	frame.add(server.getPanel());
-    	frame.show();
-    	while(true){
-    		server.refreshPanel();
-    		frame.add(server.getPanel());
-    		try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-    	}
+    	try {
+			InetAddress i = InetAddress.getByName("192.169.1.13");
+			System.out.println(i.toString().substring(1));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

@@ -51,6 +51,8 @@ public class PluginInfoDAO {
 				pluginInfo.setUptime(rs.getDate(5));
 				pluginInfo.setPath(rs.getString(6));
 			}
+			if(pluginInfo.getName() == null)
+				return null;
 			return pluginInfo;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -86,7 +88,8 @@ public class PluginInfoDAO {
 			 +pluginInfo.getDescribe()+"','"
 			 +pluginInfo.getUptime().toGMTString()+"','"
 			 +pluginInfo.getPath()+"')";
-			return stmt.execute(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -101,7 +104,8 @@ public class PluginInfoDAO {
 			+"path = '"+_pluginInfo.getPath()+"' "
 			+"where pid = "+ _pluginInfo.getPid();
 			System.out.println(_pluginInfo.getPid());
-			return stmt.execute(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -110,7 +114,8 @@ public class PluginInfoDAO {
 	public boolean delete(long _pid) {
 		try {
 			String sql = "delete from plugininfo where pid = "+_pid;
-			return stmt.execute(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;

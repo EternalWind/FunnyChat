@@ -55,7 +55,7 @@ public class PluginInfo {
 		start = str.indexOf("path=");
 		end = str.indexOf("]");
 		pluginInfo.setPath(str.substring(start+5, end));
-		return null;
+		return pluginInfo;
 	}
 
 	public String getName() {

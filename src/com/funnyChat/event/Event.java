@@ -56,7 +56,7 @@ public abstract class Event {
 		//Check the type.
 		if(_data_str.indexOf(_type) == 0){
 			//Type matched!
-			onUnserialize(_data_str.substring(_type.length(), _data_str.length()));
+			onUnserialize(_data_str.substring(_type.length()+1, _data_str.length()));
 			
 			return true;
 		}
