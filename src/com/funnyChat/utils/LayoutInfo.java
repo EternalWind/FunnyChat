@@ -1,6 +1,5 @@
 package com.funnyChat.utils;
 
-import java.awt.Panel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,16 +11,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.swing.JPanel;
+
 public final class LayoutInfo {
 
 	private BufferedReader mReader = null;
 	private FileWriter mWriter = null;
 	private File mLayoutFile = null;
-	private HashMap<String, Panel> mLayoutInfo = null;
+	private HashMap<String, JPanel> mLayoutInfo = null;
 
 	public LayoutInfo(File _layout_file) {
 		mLayoutFile = _layout_file;
-		mLayoutInfo = new HashMap<String, Panel>();
+		mLayoutInfo = new HashMap<String, JPanel>();
 	}
 
 	private void initReader() {
@@ -68,7 +69,7 @@ public final class LayoutInfo {
 					for (int j = 0; j < 2; ++j) {
 						_rect[j] = Integer.parseInt(_data[j + 1]);
 					}
-					mLayoutInfo.put(_plugin_name, new Panel());
+					mLayoutInfo.put(_plugin_name, new JPanel());
 					mLayoutInfo.get(_plugin_name).setLocation(_rect[0],
 							_rect[1]);
 				}
@@ -85,7 +86,7 @@ public final class LayoutInfo {
 			initWriter();
 			String _data = "";
 			_data += mLayoutInfo.size();
-			for (Entry<String, Panel> p : mLayoutInfo.entrySet()) {
+			for (Entry<String, JPanel> p : mLayoutInfo.entrySet()) {
 				_data += "\r\n" + p.getKey() + " " + p.getValue().getX() + " "
 						+ p.getValue().getY();
 			}
@@ -104,19 +105,19 @@ public final class LayoutInfo {
 		return mLayoutInfo.size();
 	}
 
-	public Panel getPanel(String _plugin_name) {
+	public JPanel getPanel(String _plugin_name) {
 		if (mLayoutInfo == null)
 			readLayoutInfo();
 		return mLayoutInfo.get(_plugin_name);
 	}
 
-	public Collection<Panel> getPanels() {
+	public Collection<JPanel> getPanels() {
 		if (mLayoutInfo == null)
 			readLayoutInfo();
 		return mLayoutInfo.values();
 	}
 
-	public void registerPanel(String _plugin_name, Panel _panel) {
+	public void registerPanel(String _plugin_name, JPanel _panel) {
 		if (mLayoutInfo == null)
 			readLayoutInfo();
 		mLayoutInfo.put(_plugin_name, _panel);

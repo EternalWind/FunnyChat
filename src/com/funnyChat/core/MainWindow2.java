@@ -6,9 +6,10 @@
 
 package com.funnyChat.core;
 
-import java.awt.Panel;
 import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JPanel;
 
 import com.funnyChat.plugin.Plugin;
 import com.funnyChat.plugin.PluginManager;
@@ -89,37 +90,39 @@ public class MainWindow2 extends javax.swing.JFrame {
 		pack();
 	}// </editor-fold>
 	//GEN-END:initComponents
-	public void registerPanel(String _plugin_name, Panel _panel) {
+	public void registerPanel(String _plugin_name, JPanel _panel) {
 		this.add(_panel);
 		_panel.setVisible(true);
 		mLayoutInfo.registerPanel(_plugin_name, _panel);
 	}
 
-	public void updatePanel(String _plugin_name, Panel _old_panel,
-			Panel _new_panel) {
+	public void updatePanel(String _plugin_name, JPanel _old_panel,
+			JPanel _new_panel) {
 		this.remove(_old_panel);
-		this.add(_new_panel);
-		_new_panel.setVisible(true);
 		mLayoutInfo.removePanel(_plugin_name);
-		mLayoutInfo.registerPanel(_plugin_name, _new_panel);
+		if(_new_panel != null) {
+			this.add(_new_panel);
+			_new_panel.setVisible(true);
+			mLayoutInfo.registerPanel(_plugin_name, _new_panel);
+		}
 	}
 	public void initWindow(String _window_title) {
 		// read windows attributes
 		int[] _size = mConfInfo.getWindowSize();
 		int[] _loc = mConfInfo.getWindowLocation();
 
-		for (Panel p : mLayoutInfo.getPanels())
+		for (JPanel p : mLayoutInfo.getPanels())
 			this.add(p);
 
 		// read plug-ins information to load plug-ins
-		PluginManager _pm = PluginManager.getInstance();
+		/*PluginManager _pm = PluginManager.getInstance();
 		int _it = 0;
 		for (Plugin p : _pm.getPlugins()) {
 			if (_it >= mLayoutInfo.getPanelCount())
 				mLayoutInfo.registerPanel(p.getPluginName(), p.getPanel());
 			p.setPanel(mLayoutInfo.getPanel(p.getPluginName()));
 			p.onCreate();
-		}
+		}*/
 
 		this.setTitle(_window_title);
 		this.setSize(_size[0], _size[1]);
