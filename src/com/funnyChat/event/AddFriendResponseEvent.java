@@ -12,6 +12,7 @@ public class AddFriendResponseEvent extends Event {
 //			mResult = "Failed";
 //	}
 	public AddFriendResponseEvent(){
+		mIsLocal = false;
 		mResult = "Failed";
 	}
 

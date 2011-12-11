@@ -1,6 +1,7 @@
 import java.awt.Panel;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /*
  * loginPanel.java
@@ -69,8 +70,7 @@ public class loginPanel extends java.awt.Panel {
 
 		jLabel3.setText("\u72b6\u6001:");
 
-		jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-				"Item 1", "Item 2", "Item 3", "Item 4" }));
+		jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(client.getStateC()));
 
 		jButton3.setText("\u627e\u56de\u5bc6\u7801");
 		jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -213,7 +213,8 @@ public class loginPanel extends java.awt.Panel {
 
 	private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
-		client.gotoPasswordPanel();
+		String id = JOptionPane.showInputDialog("请输入用户名称：");
+		//client.gotoPasswordPanel(String id);
 	}
 
 	private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {

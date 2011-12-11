@@ -2,8 +2,19 @@ package com.funnyChat.event;
 
 public class GetPasswordEvent extends Event {
 	String _answer;
+	String name;
+	
+	public boolean setUserName(String _name){
+		name = _name; 
+		return true;
+	}
+	
+	public String getUserName(){
+		return name;
+	}
 	
 	public GetPasswordEvent(){
+		mIsLocal = false;
 		_answer = "";
 	}
 	

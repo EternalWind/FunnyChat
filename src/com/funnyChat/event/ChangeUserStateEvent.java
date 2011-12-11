@@ -6,6 +6,7 @@ public class ChangeUserStateEvent extends Event {
 	private String mState;
 	
 	public ChangeUserStateEvent() {
+		mIsLocal = false;
 		mUId = 0;
 		mState = "";
 	}

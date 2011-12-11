@@ -418,9 +418,11 @@ public class mainFunnyChatPanel extends java.awt.Panel {
 
 	private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
-		String fid = JOptionPane.showInputDialog("输入所要删除的好友ID");
+		int _k = jList1.getSelectedIndex();
+		jList3.setSelectedIndex(_k);
+		String _i = (String)jList3.getSelectedValue();
 		client.deleteFriend(Long.parseLong(client.getUid()),
-				Long.parseLong(fid));
+				Long.parseLong(id[jList3.getSelectedIndex()]));
 	}
 
 	private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
@@ -437,7 +439,7 @@ public class mainFunnyChatPanel extends java.awt.Panel {
 		if (evt.getClickCount() == 2) {
 			JFrame frame = new JFrame("MyFrame");
 			ChatPanel chatPanel = new ChatPanel(client, Long.parseLong(id[jList1.getSelectedIndex()]));
-            client.chatPanels.add(chatPanel);
+            client.chatPanels.put( Long.parseLong(id[jList1.getSelectedIndex()]),chatPanel);
 			frame.add(chatPanel);
 			frame.setSize(300, 300);
 			frame.setLocationRelativeTo(null);

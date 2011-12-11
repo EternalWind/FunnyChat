@@ -377,10 +377,17 @@ public class PreferenceWindow extends javax.swing.JDialog {
 	private void updatePluginState() {
 		Collection<Plugin> _plugins = PluginManager.getInstance().getPlugins();
 		for (Plugin _plugin : _plugins) {
-			if (mEnableList.contains(_plugin.getPluginName()))
+			if (mEnableList.contains(_plugin.getPluginName())) {
 				_plugin.enable();
-			else
+				if(_plugin.getPanel() != null)
+					Core.getInstance().getMainWindow().add(_plugin.getPanel());
+				_plugin.getPanel().setVisible(true);
+			}
+			else {
+				if(_plugin.getPanel() != null)
+					Core.getInstance().getMainWindow().remove(_plugin.getPanel());
 				_plugin.disable();
+			}
 		}
 	}
 

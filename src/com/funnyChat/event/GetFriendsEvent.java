@@ -6,6 +6,7 @@ public class GetFriendsEvent extends Event {
 	private long mUId;
 	
 	public GetFriendsEvent() {
+		mIsLocal = false;
 		mUId = 0;
 	}
 

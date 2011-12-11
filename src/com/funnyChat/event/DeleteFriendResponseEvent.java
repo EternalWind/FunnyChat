@@ -5,6 +5,7 @@ public class DeleteFriendResponseEvent extends Event {
 	private String mResult;
 
 	public DeleteFriendResponseEvent(){
+		mIsLocal = false;
 		mResult = "Failed";
 	}
 
