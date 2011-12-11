@@ -11,9 +11,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.funnyChat.core.Core;
+import com.funnyChat.core.MainWindow2;
 import com.funnyChat.db.UserInfo;
 import com.funnyChat.event.ChatEvent;
+import com.funnyChat.event.ConnectedEvent;
 import com.funnyChat.event.Event;
+import com.funnyChat.event.EventManager;
 import com.funnyChat.plugin.*;
 import com.funnyChat.network.*;
 import com.funnyChat.event.*;
@@ -34,6 +38,7 @@ public class Client extends Plugin{
 	private String userName;
 	private String tempPassword;
 	private String password;
+	private MainWindow2 mTestWin;
 //	private Vector<String> chatUsers;
 	public Vector<ChatPanel> chatPanels; 
 	private List<UserInfo> friendsInfo;
@@ -41,7 +46,7 @@ public class Client extends Plugin{
 			"ConnectedEvent", "GetFriendsEventResponse", "ChangeUserStateResponseEvent",
 			"CheckLoginInfoResponseEvent", "RegisterResponseEvent", "AddFriendResponseEvent",
 			"ChatEvent", "DeleteFriendResponseEvent", "RefreshUserInfoResponseEvent",
-			"GetPasswordResponseEvent"
+			"GetPasswordResponseEvent","ConnectionFailedEvent"
 	};
 	
 	public Client(){
@@ -61,7 +66,7 @@ public class Client extends Plugin{
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
-			serverIp = InetAddress.getByName("192.168.1.102");
+			serverIp = InetAddress.getByName("192.168.1.103");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -72,10 +77,6 @@ public class Client extends Plugin{
 	@Override
 	protected void onEnable() {
 		// TODO Auto-generated method stub
-		network_manager = NetworkManager.getInstance();
-		network_manager.connect(serverIp, serverPort);
-		event_manager = EventManager.getInstance();
-		
 		chatPanels = new Vector<ChatPanel>();
 		friendsInfo = new ArrayList<UserInfo>();
 		UserInfo u = new UserInfo();
@@ -85,19 +86,31 @@ public class Client extends Plugin{
 		uid = "1231312";
 		state="aaa";
 		Panel _panel = new loginPanel(this);
+		_panel.setBounds(0, 0, 245, 285);
 		setPanel(_panel);
 		localIp = new String("123.123.123.123");
 		localPort = 8888;
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
-		/*try {
-			serverIp = InetAddress.getByName("192.168.1.102");
+		try {
+			serverIp = InetAddress.getByName("192.168.1.103");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		serverPort = 55555;		*/	
+		serverPort = 55555;		
+		
+		network_manager = NetworkManager.getInstance();
+		network_manager.connect(serverIp, serverPort);
+		event_manager = EventManager.getInstance();
+		
+		mTestWin = Core.getInstance().getMainWindow();	
+		
+		EventManager.getInstance().register(new CheckLoginInfoEvent());
+//		EventManager.getInstance().register(new ConnectionFailedEvent());
+//		EventManager.getInstance().register(new CheckLoginInfoEvent());
+//		EventManager.getInstance().register(new CheckLoginInfoEvent());
 	}
 
 	@Override
@@ -110,8 +123,12 @@ public class Client extends Plugin{
 	protected void execute() {
 		// TODO Auto-generated method stub
 		if(this.hasWork()){
-//			if(mEvent.getEventType().equals("ConnectedEvent"))
-//			{}
+			if(mEvent.getEventType().equals("ConnectionFailedEvent")){
+				System.out.println("LYD DIE DIE DIE!");
+			}
+			if(mEvent.getEventType().equals("ConnectedEvent")){
+				System.out.println("LYD DIE DIE DIE!!!");
+			}
 			if(mEvent.getEventType().equals("GetFriendsResponseEvent")){
 				friendsInfo = ((GetFriendsResponseEvent)mEvent).getUsersInfo();
 			}
@@ -292,39 +309,55 @@ public class Client extends Plugin{
 	}		
 
 	public void gotoRegisterPanel(){
-		frame.setSize(389,303);
 		Panel _panel = new registerPanel(this);
-		frame.remove(mPanel);
-		setPanel(_panel);
-		frame.add(mPanel);
-		frame.setVisible(true);		
+		_panel.setBounds(0, 0, 389, 303);
+		mTestWin.updatePanel(this.getName(), mPanel, _panel);
+		setPanel(_panel);				
+//		frame.setSize(389,303);
+//		Panel _panel = new registerPanel(this);
+//		frame.remove(mPanel);
+//		setPanel(_panel);
+//		frame.add(mPanel);
+//		frame.setVisible(true);		
 	}
 
 	public void gotoMainPanel(){
-		frame.setSize(228,457);
 		Panel _panel = new mainFunnyChatPanel(this);
-		frame.remove(mPanel);
-		setPanel(_panel);
-		frame.add(mPanel);
-		frame.setVisible(true);				
+		_panel.setBounds(0, 0, 228, 457);
+		mTestWin.updatePanel(this.getName(), mPanel, _panel);
+		setPanel(_panel);			
+//		frame.setSize(228,457);
+//		Panel _panel = new mainFunnyChatPanel(this);
+//		frame.remove(mPanel);
+//		setPanel(_panel);
+//		frame.add(mPanel);
+//		frame.setVisible(true);				
 	}	
 
 	public void gotoLoginPanel(){
-		frame.setSize(245,285);
 		Panel _panel = new loginPanel(this);
-		frame.remove(mPanel);
+		_panel.setBounds(0, 0, 245, 285);
+		mTestWin.updatePanel(this.getName(), mPanel, _panel);
 		setPanel(_panel);
-		frame.add(mPanel);
-		frame.setVisible(true);				
+//		frame.setSize(245,285);
+//		Panel _panel = new loginPanel(this);
+//		frame.remove(mPanel);
+//		setPanel(_panel);
+//		frame.add(mPanel);
+//		frame.setVisible(true);				
 	}	
 
 	public void gotoPasswordPanel(){
-		frame.setSize(268, 277);
 		Panel _panel = new PasswordPanel(this);
-		frame.remove(mPanel);
-		setPanel(_panel);
-		frame.add(mPanel);
-		frame.setVisible(true);				
+		_panel.setBounds(0, 0, 268, 277);
+		mTestWin.updatePanel(this.getName(), mPanel, _panel);
+		setPanel(_panel);		
+//		frame.setSize(268, 277);
+//		Panel _panel = new PasswordPanel(this);
+//		frame.remove(mPanel);
+//		setPanel(_panel);
+//		frame.add(mPanel);
+//		frame.setVisible(true);				
 	}		
 	
 	@Override
@@ -372,15 +405,15 @@ public class Client extends Plugin{
 		state = _state;
 	}	
 	/////////////////////TEST///////////////////////////////
-	public static void main(String args[])
-	{
-		Client c = new Client();
-		JFrame frame = new JFrame("MyFrame");
-		c.frame = frame;
-		frame.add(c.getPanel());
-		frame.setSize(205,245);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
+//	public static void main(String args[])
+//	{
+//		Client c = new Client();
+//		JFrame frame = new JFrame("MyFrame");
+//		c.frame = frame;
+//		frame.add(c.getPanel());
+//		frame.setSize(205,245);
+//		frame.setLocationRelativeTo(null);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setVisible(true);
+//	}
 }
