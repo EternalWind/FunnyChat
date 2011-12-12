@@ -20,6 +20,7 @@ public class MainPanel extends javax.swing.JPanel {
 		state = client.friendsState();
 		id = client.friendsID();
 		initComponents();
+		this.refreshFriends();
 	}
 
 	//GEN-BEGIN:initComponents
@@ -38,15 +39,13 @@ public class MainPanel extends javax.swing.JPanel {
 		jButton3 = new javax.swing.JButton();
 		jButton4 = new javax.swing.JButton();
 		jButton5 = new javax.swing.JButton();
+		jButton6 = new javax.swing.JButton();
 
 		jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 25));
 		jLabel1.setText("Status :");
 
-		jTextField1.setText("jTextField1");
-
 		jList1.setModel(new javax.swing.AbstractListModel() {
-			String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4",
-					"Item 5" };
+			String[] strings = { "You" };
 
 			public int getSize() {
 				return strings.length;
@@ -91,6 +90,13 @@ public class MainPanel extends javax.swing.JPanel {
 
 		jButton5.setText("Info");
 
+		jButton6.setText("\u221a");
+		jButton6.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton6ActionPerformed(evt);
+			}
+		});
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 		this.setLayout(layout);
 		layout.setHorizontalGroup(layout
@@ -101,36 +107,41 @@ public class MainPanel extends javax.swing.JPanel {
 								.addGroup(
 										layout.createParallelGroup(
 												javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(
-														jLabel2,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														407, Short.MAX_VALUE)
 												.addGroup(
 														layout.createSequentialGroup()
-																.addGroup(
-																		layout.createParallelGroup(
-																				javax.swing.GroupLayout.Alignment.LEADING)
-																				.addComponent(
-																						jSeparator1,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						395,
-																						Short.MAX_VALUE)
-																				.addGroup(
-																						javax.swing.GroupLayout.Alignment.TRAILING,
-																						layout.createSequentialGroup()
-																								.addComponent(
-																										jLabel1,
-																										javax.swing.GroupLayout.PREFERRED_SIZE,
-																										146,
-																										javax.swing.GroupLayout.PREFERRED_SIZE)
-																								.addPreferredGap(
-																										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																								.addComponent(
-																										jTextField1,
-																										javax.swing.GroupLayout.DEFAULT_SIZE,
-																										244,
-																										Short.MAX_VALUE)))
-																.addContainerGap())
+																.addComponent(
+																		jLabel2,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		238,
+																		Short.MAX_VALUE)
+																.addGap(157,
+																		157,
+																		157))
+												.addComponent(
+														jSeparator1,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														395, Short.MAX_VALUE)
+												.addGroup(
+														layout.createSequentialGroup()
+																.addComponent(
+																		jLabel1,
+																		javax.swing.GroupLayout.PREFERRED_SIZE,
+																		146,
+																		javax.swing.GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																.addComponent(
+																		jTextField1,
+																		javax.swing.GroupLayout.PREFERRED_SIZE,
+																		190,
+																		javax.swing.GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																.addComponent(
+																		jButton6,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		47,
+																		Short.MAX_VALUE))
 												.addGroup(
 														javax.swing.GroupLayout.Alignment.TRAILING,
 														layout.createSequentialGroup()
@@ -163,26 +174,17 @@ public class MainPanel extends javax.swing.JPanel {
 																.addGap(18, 18,
 																		18)
 																.addComponent(
-																		jButton4)
-																.addContainerGap())
-												.addGroup(
+																		jButton4))
+												.addComponent(
+														jScrollPane1,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														395, Short.MAX_VALUE)
+												.addComponent(
+														jSeparator2,
 														javax.swing.GroupLayout.Alignment.TRAILING,
-														layout.createSequentialGroup()
-																.addGroup(
-																		layout.createParallelGroup(
-																				javax.swing.GroupLayout.Alignment.TRAILING)
-																				.addComponent(
-																						jScrollPane1,
-																						javax.swing.GroupLayout.Alignment.LEADING,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						395,
-																						Short.MAX_VALUE)
-																				.addComponent(
-																						jSeparator2,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						395,
-																						Short.MAX_VALUE))
-																.addContainerGap()))));
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														395, Short.MAX_VALUE))
+								.addContainerGap()));
 		layout.setVerticalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(
@@ -190,16 +192,25 @@ public class MainPanel extends javax.swing.JPanel {
 								.addContainerGap()
 								.addGroup(
 										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.TRAILING,
-												false)
-												.addComponent(
-														jTextField1,
-														javax.swing.GroupLayout.Alignment.LEADING)
+												javax.swing.GroupLayout.Alignment.LEADING)
+												.addGroup(
+														layout.createParallelGroup(
+																javax.swing.GroupLayout.Alignment.BASELINE)
+																.addComponent(
+																		jTextField1,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		32,
+																		Short.MAX_VALUE)
+																.addComponent(
+																		jButton6,
+																		javax.swing.GroupLayout.PREFERRED_SIZE,
+																		31,
+																		javax.swing.GroupLayout.PREFERRED_SIZE))
 												.addComponent(
 														jLabel1,
-														javax.swing.GroupLayout.Alignment.LEADING,
 														javax.swing.GroupLayout.PREFERRED_SIZE,
-														32, Short.MAX_VALUE))
+														32,
+														javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jSeparator1,
@@ -258,6 +269,10 @@ public class MainPanel extends javax.swing.JPanel {
 	}// </editor-fold>
 	//GEN-END:initComponents
 
+	private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
+		client.setUserState(jTextField1.getText());
+	}
+
 	private void listboxMouseClicked(java.awt.event.MouseEvent evt) {
 		if (evt.getClickCount() == 2) {
 			onChatClicked();
@@ -269,16 +284,30 @@ public class MainPanel extends javax.swing.JPanel {
 	}
 
 	private void onChatClicked() {
-		JFrame frame = new JFrame("MyFrame");
+		JFrame frame = new JFrame("Chatting with "
+				+ name[jList1.getSelectedIndex()] + "("
+				+ id[jList1.getSelectedIndex()] + ")");
 		Chat chatPanel = new Chat(client, Long.parseLong(id[jList1
 				.getSelectedIndex()]));
 		client.chatPanels.put(Long.parseLong(id[jList1.getSelectedIndex()]),
 				chatPanel);
 		frame.add(chatPanel);
-		frame.setSize(300, 300);
+		frame.setSize(607, 547);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
+	}
+
+	private void refreshFriends() {
+		jList1.removeAll();
+		String[] friendItem = new String[name.length];
+
+		for (int i = 0; i < name.length; i++) {
+			friendItem[i] = name[i] + "(" + id[i] + ")" + "         "
+					+ state[i];
+		}
+
+		jList1.setListData(friendItem);
 	}
 
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,6 +333,7 @@ public class MainPanel extends javax.swing.JPanel {
 	private javax.swing.JButton jButton3;
 	private javax.swing.JButton jButton4;
 	private javax.swing.JButton jButton5;
+	private javax.swing.JButton jButton6;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JList jList1;

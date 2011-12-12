@@ -38,6 +38,8 @@ public final class ConfigurationInfo {
 	private String mDefaultLayout;
 	private String mDefaultPlugins;
 	private final static String NOTEXIST = "*";
+	public final static int RANDOMPORT = -1;
+	private int mPort;
 
 	public ConfigurationInfo() {
 		log = new Log();
@@ -50,6 +52,7 @@ public final class ConfigurationInfo {
 		mWinHeight = 500;
 		mWinX = 200;
 		mWinY = 200;
+		mPort = RANDOMPORT;
 		mIsFullScreen = false;
 		mLayoutFilePath = null;
 		mPluginFilePath = null;
@@ -137,10 +140,21 @@ public final class ConfigurationInfo {
 				mDefaultPlugins = _data.trim();
 			}
 
+			_data = _read.readLine();
+			mPort = Integer.parseInt(_data);
+			
 			return true;
 		}
 	}
 
+	public int getPort() {
+		return mPort;
+	}
+	
+	public void setPort(int _port) {
+		mPort = _port;
+	}
+	
 	public void saveConfFile() throws IOException {
 		if (!mConfFile.exists())
 			this.createConfFile();
@@ -169,7 +183,9 @@ public final class ConfigurationInfo {
 				+ "\r\n"
 				+ (mDefaultLayout == null ? "Default Layout.txt"
 						: mDefaultLayout) + "\r\n"
-				+ (mDefaultPlugins == null ? "*" : mDefaultPlugins));
+				+ (mDefaultPlugins == null ? "*" : mDefaultPlugins)
+				+ "\r\n"
+				+ mPort);
 		_fw.flush();
 		_fw.close();
 

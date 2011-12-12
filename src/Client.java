@@ -63,7 +63,7 @@ public class Client extends Plugin{
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
-			serverIp = InetAddress.getByName("192.168.1.103");
+			serverIp = InetAddress.getByName("192.168.1.13");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -81,7 +81,7 @@ public class Client extends Plugin{
 		_panel.setBounds(0, 0, 413, 270);
 		setPanel(_panel);
 		localIp = new String("123.123.123.123");
-		localPort = 55555;
+		localPort = NetworkManager.getInstance().getPort();
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
@@ -419,7 +419,7 @@ public class Client extends Plugin{
 
 	public void gotoRegisterPanel(){
 		JPanel _panel = new RegisterPanel2(this);
-		_panel.setBounds(0, 0, 389, 303);
+		_panel.setBounds(0, 0, 503, 523);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
 		setPanel(_panel);	
 		/*mTestWin.validate();
@@ -436,7 +436,7 @@ public class Client extends Plugin{
 
 	public void gotoMainPanel(){
 		JPanel _panel = new MainPanel(this);
-		_panel.setBounds(0, 0, 228, 457);
+		_panel.setBounds(0, 0, 419, 506);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
 		setPanel(_panel);	
 		/*mTestWin.validate();
@@ -453,7 +453,7 @@ public class Client extends Plugin{
 
 	public void gotoLoginPanel(){
 		JPanel _panel = new LoginPanel3(this);
-		_panel.setBounds(0, 0, 245, 285);
+		_panel.setBounds(0, 0, 413, 270);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
 		setPanel(_panel);
 		/*mTestWin.validate();
@@ -528,6 +528,14 @@ public class Client extends Plugin{
 	
 	public void setUserState(String _state){
 		state = _state;
+		UserInfo _user_info = new UserInfo();
+		_user_info.setIp(localIp.toString());
+		_user_info.setPort(String.valueOf(localPort));
+		_user_info.setState(state);
+		_user_info.setUid(Long.parseLong(uid));
+		_user_info.setName(userName);
+		_user_info.setPassword(password);
+		this.refreshUserInfo(_user_info);
 	}	
 	
 	public String[] getStateC(){

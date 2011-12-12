@@ -48,7 +48,13 @@ public class Core {
 			//mInstance.mMainWnd.initWindow("FunnyChat", mInstance.mConfInfo);
 
 			MemoryManager.initialize();
-			NetworkManager.initialize();
+			
+			if(mInstance.mTestWin.getConfigInfo().getPort() == ConfigurationInfo.RANDOMPORT) {
+				NetworkManager.initialize();
+			}
+			else {
+				NetworkManager.initialize(50, mInstance.mTestWin.getConfigInfo().getPort());
+			}
 			
 		} else {
 			mInstance.mLogger.addLog("Duplicative initialization for the Core.",

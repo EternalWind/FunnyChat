@@ -67,6 +67,7 @@ public class NetworkManager extends FCThread{
 	private int mMaxCount;
 	private Lock mLock;
 	private ConnectionChecker mChecker;
+	private static int mPort;
 	
 	private NetworkManager(int _max_count, int _port){
 		try{
@@ -79,7 +80,7 @@ public class NetworkManager extends FCThread{
 			mServerSocketChannel.socket().bind(new InetSocketAddress(_port));
 			mServerSocketChannel.register(mSelector, SelectionKey.OP_ACCEPT);
 			mMaxCount = _max_count;
-			mChecker = new ConnectionChecker(11000, 50000, mConnections);
+			mChecker = new ConnectionChecker(11000, 5000, mConnections);
 		}
 		catch(IOException e){
 			Core.getLogger().addLog("Failed to initialize the NetworkManager.", LogType.ERROR);
@@ -88,6 +89,7 @@ public class NetworkManager extends FCThread{
 	
 	public static boolean initialize(int _max_count, int _port){
 		if(mInstance == null){
+			mPort = _port;
 			mInstance = new NetworkManager(_max_count, _port);
 			//Register the PingEvent.
 			EventManager.getInstance().register(new PingEvent());
@@ -101,7 +103,8 @@ public class NetworkManager extends FCThread{
 	}
 	
 	public static boolean initialize(){
-		return initialize(50, 55555);
+		Random r = new Random();
+		return initialize(50, r.nextInt(65535));
 	}
 	
 	public boolean deinitialize(){
@@ -125,6 +128,10 @@ public class NetworkManager extends FCThread{
 	
 	public static NetworkManager getInstance(){
 		return mInstance;
+	}
+	
+	public int getPort() {
+		return mPort;
 	}
 	
 	public int getTimeout(){

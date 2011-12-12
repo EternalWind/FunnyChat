@@ -1,3 +1,5 @@
+import java.awt.event.KeyEvent;
+
 /*
  * ChatPanel2.java
  *
@@ -54,12 +56,16 @@ public class Chat extends javax.swing.JPanel {
 		jScrollPane2.setViewportView(jTextArea2);
 
 		jLabel1.setText("jLabel1");
+		jLabel1.setEnabled(false);
 
 		jLabel2.setText("jLabel1");
+		jLabel2.setEnabled(false);
 
 		jLabel3.setText("jLabel3");
+		jLabel3.setEnabled(false);
 
 		jLabel4.setText("jLabel4");
+		jLabel4.setEnabled(false);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 		this.setLayout(layout);
@@ -160,7 +166,7 @@ public class Chat extends javax.swing.JPanel {
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 								.addComponent(jSeparator1,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE,
 										4, Short.MAX_VALUE)
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -193,9 +199,13 @@ public class Chat extends javax.swing.JPanel {
 	}// </editor-fold>
 	//GEN-END:initComponents
 
+	private void init() {
+		jButton1.setMnemonic(KeyEvent.VK_ENTER);
+	}
+	
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		jTextArea1.setText(jTextArea1.getText() + 
-				"\r\n" + client.getId() + "\r\n" + jTextArea2.getText());
+		jTextArea1.setText(jTextArea1.getText() + "\r\n" + client.getId()
+				+ "\r\n" + jTextArea2.getText());
 		client.chat(jTextArea2.getText(), String.valueOf(Fid));
 		jTextArea2.setText("");
 	}
