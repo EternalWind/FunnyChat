@@ -1,5 +1,8 @@
 package com.funnyChat.plugin;
 
+import javax.swing.JDialog;
+
+import com.funnyChat.core.Core;
 import com.funnyChat.event.Event;
 
 public class PluginAdapter extends Plugin{
@@ -27,5 +30,10 @@ public class PluginAdapter extends Plugin{
 	@Override
 	public String getPluginName() {
 		return "Unnamed Plugin";
+	}
+	
+	@Override
+	public JDialog getConfigPanel() {
+		return new DefaultPluginConfig(Core.getMainWindow(), true);
 	}
 }

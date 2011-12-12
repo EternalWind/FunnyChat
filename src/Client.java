@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,11 +17,12 @@ import com.funnyChat.event.ConnectedEvent;
 import com.funnyChat.event.Event;
 import com.funnyChat.event.EventManager;
 import com.funnyChat.plugin.*;
+import com.funnyChat.utils.Log.LogType;
 import com.funnyChat.network.*;
 import com.funnyChat.event.*;
  
 
-public class Client extends Plugin{
+public class Client extends PluginAdapter{
 	private InetAddress serverIp;
 	private int serverPort;
 	private String localIp;
@@ -50,6 +52,33 @@ public class Client extends Plugin{
 			"GetPasswordResponseEvent","ConnectionFailedEvent"
 	};
 	
+	public InetAddress getServerIp() {
+		return serverIp;
+	}
+	
+	public int getServerPort() {
+		return serverPort;
+	}
+	
+	public void setServerIp(String _ip) {
+		try {
+			serverIp = InetAddress.getByName(_ip);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			Core.getLogger().addLog("The given server IP is not a IP address or a host name"
+					, LogType.DEBUG);
+			e.printStackTrace();
+		}
+	}
+	
+	public void setServerPort(int _port) {
+		serverPort = _port;
+	}
+	
+	public void setServerIp(InetAddress _ip) {
+		serverIp = _ip;
+	}
+	
 	public Client(){
 //		chatUsers = new Vector<String>();
 		friendsInfo = new ArrayList<UserInfo>();
@@ -63,7 +92,7 @@ public class Client extends Plugin{
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
 		try {
-			serverIp = InetAddress.getByName("192.168.1.13");
+			serverIp = InetAddress.getByName("192.168.1.17");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -84,14 +113,14 @@ public class Client extends Plugin{
 		localPort = NetworkManager.getInstance().getPort();
 //		String ip = new String("192.168.1.102");
 //		byte[] _addr = ip.getBytes();
-		try {
+		/*try {
 			serverIp = InetAddress.getByName("192.168.1.13");
 			//serverIp.getByAddress(_addr);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		serverPort = 55555;		
+		serverPort = 55555;		*/
 		
 		network_manager = NetworkManager.getInstance();
 		network_manager.connect(serverIp, serverPort);
@@ -149,10 +178,11 @@ public class Client extends Plugin{
 			if(mEvent.getEventType().equals("ConnectedEvent")){
 				getFriendInfo(Long.parseLong(uid));
 				Connection _con = ((ConnectedEvent)mEvent).getSource();
-				if(_con.getIP().equals(serverIp))
-					serverCon = _con;
 				_conTemp = _con;
-//				else{
+				if(_con.getIP().equals(serverIp)){
+					serverCon = _con;
+				}
+				else{
 //					long _id = 0;
 //					for(int i = 0; i < friendsInfo.size(); i++){
 //						if((friendsInfo.get(i).getIp()).equals(_con.getIP().toString().substring(1))){
@@ -163,7 +193,7 @@ public class Client extends Plugin{
 //					if(_id != 0){
 //						connections.put(_id, _con);
 //					}
-//				}
+				}
 				System.out.println("LYD DIE DIE DIE!!!");
 			}
 			if(mEvent.getEventType().equals("GetFriendsResponseEvent")){
@@ -175,6 +205,9 @@ public class Client extends Plugin{
 				//ConnectRefresh();
 				gotoMainPanel();
 				Connection _con = _conTemp;
+				
+				ConnectRefresh();
+				
 				if(_con.getIP().equals(serverIp))
 					serverCon = _con;
 				else{
@@ -267,14 +300,21 @@ public class Client extends Plugin{
 				if(p != null)
 					p.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
 				else{
-					JFrame frame = new JFrame("MyFrame");
+					JFrame frame = new JFrame(String.valueOf(_id));
+					frame.setName(String.valueOf(_id));
 					Chat chatPanel = new Chat(this, _id);
 		            chatPanels.put( _id,chatPanel);
 		            chatPanel.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
 					frame.add(chatPanel);
-					frame.setSize(300, 300);
+					frame.setSize(607, 580);
 					frame.setLocationRelativeTo(null);
 					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					frame.addWindowListener(new java.awt.event.WindowAdapter() {
+						public void windowClosing(java.awt.event.WindowEvent evt) {
+							chatPanels.remove(Long.parseLong(evt.getWindow().getName()));
+							System.out.println(evt.getWindow().getName());
+						}
+					});
 					frame.setVisible(true);
 				}					
 				}
@@ -417,6 +457,12 @@ public class Client extends Plugin{
 		event_manager.enqueue(_event);
 	}		
 
+	@Override
+	public JDialog getConfigPanel() {
+		ClientConfig _config = new ClientConfig(Core.getMainWindow(), true, this);
+		return _config;
+	}
+	
 	public void gotoRegisterPanel(){
 		JPanel _panel = new RegisterPanel2(this);
 		_panel.setBounds(0, 0, 503, 523);
@@ -546,7 +592,7 @@ public class Client extends Plugin{
 		InetAddress _ip; 
 		for(int i = 0; i < friendsInfo.size(); i++){
 			try {
-				if(!(friendsInfo.get(i).getState()).equals("ÀëÏß") && connections.get((friendsInfo.get(i))) == null){
+				if(!(friendsInfo.get(i).getState()).equals("ÀëÏß") && connections.get((friendsInfo.get(i).getUid())) == null){
 					_ip = InetAddress.getByName((friendsInfo.get(i)).getIp());
 					System.out.println(_ip.toString()+"UUUUUUU"+Integer.parseInt(((friendsInfo.get(i)).getPort())));
 				    network_manager.connect(_ip, Integer.parseInt(((friendsInfo.get(i)).getPort())));

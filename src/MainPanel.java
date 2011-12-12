@@ -292,9 +292,16 @@ public class MainPanel extends javax.swing.JPanel {
 		client.chatPanels.put(Long.parseLong(id[jList1.getSelectedIndex()]),
 				chatPanel);
 		frame.add(chatPanel);
-		frame.setSize(607, 547);
+		frame.setSize(607, 580);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setName(String.valueOf(id[jList1.getSelectedIndex()]));
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent evt) {
+				client.chatPanels.remove(Long.parseLong(evt.getWindow().getName()));
+				System.out.println(evt.getWindow().getName());
+			}
+		});		
 		frame.setVisible(true);
 	}
 

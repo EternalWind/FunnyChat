@@ -39,6 +39,9 @@ public class Chat extends javax.swing.JPanel {
 		jLabel3 = new javax.swing.JLabel();
 		jLabel4 = new javax.swing.JLabel();
 
+		setMaximumSize(new java.awt.Dimension(607, 580));
+		setMinimumSize(new java.awt.Dimension(607, 580));
+
 		jButton1.setText("Send");
 		jButton1.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,7 +170,7 @@ public class Chat extends javax.swing.JPanel {
 										javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 								.addComponent(jSeparator1,
 										javax.swing.GroupLayout.DEFAULT_SIZE,
-										4, Short.MAX_VALUE)
+										37, Short.MAX_VALUE)
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addGroup(
@@ -202,7 +205,7 @@ public class Chat extends javax.swing.JPanel {
 	private void init() {
 		jButton1.setMnemonic(KeyEvent.VK_ENTER);
 	}
-	
+
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		jTextArea1.setText(jTextArea1.getText() + "\r\n" + client.getId()
 				+ "\r\n" + jTextArea2.getText());

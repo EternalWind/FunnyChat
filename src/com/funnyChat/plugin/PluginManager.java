@@ -11,7 +11,7 @@ import com.funnyChat.utils.Log.LogType;
 import com.funnyChat.core.*;
 
 public class PluginManager {
-	private HashMap<Integer, Plugin> mPlugins;
+	private HashMap<String, Plugin> mPlugins;
 	private static PluginManager mInstance;
 	private Integer mIdCount;
 	private String mDir;
@@ -30,7 +30,7 @@ public class PluginManager {
 	}
 	
 	private PluginManager(String _directory){
-		mPlugins = new HashMap<Integer, Plugin>();
+		mPlugins = new HashMap<String, Plugin>();
 		mIdCount = 0;
 		mDir = _directory;
 		mLog = new Log();
@@ -65,7 +65,7 @@ public class PluginManager {
 					Core.getLogger().addLog("Failed to instantiate plugin " + _plugin_name + ".", LogType.WARNING);
 				}
 				if(_plugin != null && !mPlugins.containsValue(_plugin)){
-					mPlugins.put(generateId(), _plugin);
+					mPlugins.put(_plugin.getPluginName(), _plugin);
 				}
 			}
 		}
@@ -106,8 +106,8 @@ public class PluginManager {
 			return true;
 		}
 	}*/
-	public Boolean remove(Integer _id){
-		Plugin _plugin = mPlugins.remove(_id);
+	public Boolean remove(String _name){
+		Plugin _plugin = mPlugins.remove(_name);
 		if(_plugin == null){
 			return false;
 		}
@@ -116,8 +116,7 @@ public class PluginManager {
 		return true;
 	}
 	public Boolean remove(Plugin _plugin){
-		Integer _id = getId(_plugin);
-		return remove(_id);
+		return remove(_plugin.getPluginName());
 	}
 	public Boolean removeAll(){
 		for(Plugin _plugin : mPlugins.values()){
@@ -126,17 +125,17 @@ public class PluginManager {
 		mPlugins.clear();
 		return true;
 	}
-	public Integer getId(Plugin _plugin){
-		for(Map.Entry<Integer, Plugin> _item : mPlugins.entrySet()){
+	/*public Integer getId(Plugin _plugin){
+		for(Map.Entry<String, Plugin> _item : mPlugins.entrySet()){
 			if(_item.getValue().equals(_plugin)){
 				return _item.getKey();
 			}
 		}
 		
 		return -1;
-	}
-	public Plugin get(Integer _id){
-		return mPlugins.get(_id);
+	}*/
+	public Plugin get(String _name){
+		return mPlugins.get(_name);
 	}
 	public Collection<Plugin> getPlugins() {
 		return mPlugins.values();
@@ -147,31 +146,53 @@ public class PluginManager {
 		return true;
 	}
 	*/
-	public void enable(Integer[] _ids){
+	/*public void enable(String[] _names){
 		Plugin _plugin;
-		for(int i=0;i<_ids.length;i++){
-			_plugin = mPlugins.get(_ids[i]);
+		for(int i=0;i<_names.length;i++){
+			_plugin = mPlugins.get(_names[i]);
 			
 			if(_plugin != null){
 				_plugin.enable();
 			}
 		}
+	}*/
+	public Plugin disable(String _name) {
+		Plugin _plugin = mPlugins.get(_name);
+		
+		if(_plugin != null) {
+			_plugin.disable();
+			
+			return _plugin;
+		}
+		
+		return null;
+	}
+	public Plugin enable(String _name) {
+		Plugin _plugin = mPlugins.get(_name);
+		
+		if(_plugin != null) {
+			_plugin.enable();
+			
+			return _plugin;
+		}
+		
+		return null;
 	}
 	public void enableAll(){
 		for(Plugin _plugin : mPlugins.values()){
 			_plugin.enable();
 		}
 	}
-	public void disable(Integer[] _ids){
+	/*public void disable(String[] _names){
 		Plugin _plugin;
-		for(int i=0;i<_ids.length;i++){
-			_plugin = mPlugins.get(_ids[i]);
+		for(int i=0;i<_names.length;i++){
+			_plugin = mPlugins.get(_names[i]);
 			
 			if(_plugin != null){
 				_plugin.disable();
 			}
 		}
-	}
+	}*/
 	public void disableAll(){
 		for(Plugin _plugin : mPlugins.values()){
 			_plugin.disable();

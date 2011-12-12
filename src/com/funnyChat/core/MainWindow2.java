@@ -6,6 +6,7 @@
 
 package com.funnyChat.core;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 
@@ -94,7 +95,12 @@ public class MainWindow2 extends javax.swing.JFrame {
 		this.add(_panel);
 		_panel.setVisible(true);
 		mLayoutInfo.registerPanel(_plugin_name, _panel);
-		this.repaint();
+		//this.repaint();
+		Dimension _dim = this.getSize();
+		_dim.height -= 1;
+		this.setSize(_dim);
+		_dim.height += 1;
+		this.setSize(_dim);
 	}
 
 	public void updatePanel(String _plugin_name, JPanel _old_panel,
@@ -106,7 +112,12 @@ public class MainWindow2 extends javax.swing.JFrame {
 			_new_panel.setVisible(true);
 			mLayoutInfo.registerPanel(_plugin_name, _new_panel);
 		}
-		this.validate();
+		//this.validate();
+		Dimension _dim = this.getSize();
+		_dim.height -= 1;
+		this.setSize(_dim);
+		_dim.height += 1;
+		this.setSize(_dim);
 	}
 	public void initWindow(String _window_title) {
 		// read windows attributes

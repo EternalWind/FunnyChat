@@ -6,9 +6,11 @@
 
 package com.funnyChat.core;
 
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import com.funnyChat.network.NetworkManager;
@@ -54,6 +56,7 @@ public class PreferenceWindow extends javax.swing.JDialog {
 		JL_disable = new javax.swing.JList();
 		jScrollPane2 = new javax.swing.JScrollPane();
 		JL_enable = new javax.swing.JList();
+		jButton3 = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -238,6 +241,13 @@ public class PreferenceWindow extends javax.swing.JDialog {
 		});
 		jScrollPane2.setViewportView(JL_enable);
 
+		jButton3.setText("Cfg");
+		jButton3.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton3ActionPerformed(evt);
+			}
+		});
+
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
 				jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
@@ -266,18 +276,27 @@ public class PreferenceWindow extends javax.swing.JDialog {
 																		.addGroup(
 																				jPanel1Layout
 																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								false)
+																								javax.swing.GroupLayout.Alignment.LEADING)
 																						.addComponent(
-																								JBT_move_disable,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
+																								jButton3,
+																								0,
+																								0,
 																								Short.MAX_VALUE)
-																						.addComponent(
-																								JBT_move_enable,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								69,
-																								Short.MAX_VALUE)))
+																						.addGroup(
+																								jPanel1Layout
+																										.createParallelGroup(
+																												javax.swing.GroupLayout.Alignment.LEADING,
+																												false)
+																										.addComponent(
+																												JBT_move_disable,
+																												javax.swing.GroupLayout.DEFAULT_SIZE,
+																												javax.swing.GroupLayout.DEFAULT_SIZE,
+																												Short.MAX_VALUE)
+																										.addComponent(
+																												JBT_move_enable,
+																												javax.swing.GroupLayout.DEFAULT_SIZE,
+																												69,
+																												Short.MAX_VALUE))))
 														.addComponent(
 																JLB_disable))
 										.addGap(26, 26, 26)
@@ -380,6 +399,14 @@ public class PreferenceWindow extends javax.swing.JDialog {
 																												JBT_move_disable,
 																												javax.swing.GroupLayout.PREFERRED_SIZE,
 																												43,
+																												javax.swing.GroupLayout.PREFERRED_SIZE)
+																										.addGap(70,
+																												70,
+																												70)
+																										.addComponent(
+																												jButton3,
+																												javax.swing.GroupLayout.PREFERRED_SIZE,
+																												48,
 																												javax.swing.GroupLayout.PREFERRED_SIZE))
 																						.addGroup(
 																								jPanel1Layout
@@ -418,6 +445,24 @@ public class PreferenceWindow extends javax.swing.JDialog {
 		pack();
 	}// </editor-fold>
 	//GEN-END:initComponents
+
+	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+		int _index;
+		JDialog _con_pan = null;
+		
+		if((_index = JL_enable.getSelectedIndex()) != -1) {
+			_con_pan = PluginManager.getInstance().get(mEnableList.
+					get(_index)).getConfigPanel();
+		}
+		else if((_index = JL_disable.getSelectedIndex()) != -1){
+			_con_pan = PluginManager.getInstance().get(mDisableList.
+					get(_index)).getConfigPanel();
+		}
+		
+		if(_con_pan != null) {
+			_con_pan.setVisible(true);
+		}
+	}
 
 	private void cancel2MouseClicked(java.awt.event.MouseEvent evt) {
 		JBT_cancelMouseClicked(evt);
@@ -542,16 +587,15 @@ public class PreferenceWindow extends javax.swing.JDialog {
 		mPort = Integer.parseInt(jTextField1.getText());
 		ConfigurationInfo _config = Core.getInstance().getMainWindow()
 				.getConfigInfo();
-		
-		if(mPort > 65535 || mPort < 0) {
+
+		if (mPort > 65535 || mPort < 0) {
 			JOptionPane.showMessageDialog(JBT_ok, "Invalid port!");
-		}
-		else {
+		} else {
 			if (NetworkManager.getInstance().getPort() != mPort
 					|| (_config.getPort() != _config.RANDOMPORT && jCheckBox1
 							.isSelected())
-							|| (_config.getPort() == _config.RANDOMPORT && !jCheckBox1
-									.isSelected())) {
+					|| (_config.getPort() == _config.RANDOMPORT && !jCheckBox1
+							.isSelected())) {
 				if (_config.getPort() != _config.RANDOMPORT
 						&& jCheckBox1.isSelected()) {
 					_config.setPort(_config.RANDOMPORT);
@@ -564,7 +608,7 @@ public class PreferenceWindow extends javax.swing.JDialog {
 	}
 
 	private void updatePluginState() {
-		Collection<Plugin> _plugins = PluginManager.getInstance().getPlugins();
+		/*Collection<Plugin> _plugins = PluginManager.getInstance().getPlugins();
 		for (Plugin _plugin : _plugins) {
 			if (mEnableList.contains(_plugin.getPluginName())) {
 				_plugin.enable();
@@ -582,6 +626,22 @@ public class PreferenceWindow extends javax.swing.JDialog {
 				}
 				_plugin.disable();
 			}
+		}*/
+		PluginManager _pm = PluginManager.getInstance();
+
+		for (String _name : mEnableList) {
+			_pm.enable(_name);
+		}
+
+		for (String _name : mDisableList) {
+			Plugin _plugin = _pm.disable(_name);
+			Dimension _dim = Core.getInstance().getMainWindow().getSize();
+
+			Core.getInstance().getMainWindow().remove(_plugin.getPanel());
+			_dim.height -= 1;
+			Core.getInstance().getMainWindow().setSize(_dim);
+			_dim.height += 1;
+			Core.getInstance().getMainWindow().setSize(_dim);
 		}
 	}
 
@@ -623,6 +683,7 @@ public class PreferenceWindow extends javax.swing.JDialog {
 	private javax.swing.JList JL_enable;
 	private javax.swing.JButton jButton1;
 	private javax.swing.JButton jButton2;
+	private javax.swing.JButton jButton3;
 	private javax.swing.JCheckBox jCheckBox1;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JPanel jPanel1;

@@ -61,6 +61,7 @@ public abstract class Plugin extends FCThread {
 		mPanel = _panel;
 	}
 	public abstract void onCreate();
+	public abstract JDialog getConfigPanel();
 	protected abstract void onDestroy();
 	//处理事件前应先检查是否有事件要处理
 	protected boolean hasWork(){
