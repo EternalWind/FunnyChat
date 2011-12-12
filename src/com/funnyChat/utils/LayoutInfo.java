@@ -1,5 +1,6 @@
 package com.funnyChat.utils;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,8 +11,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-import javax.swing.JPanel;
 
 public final class LayoutInfo {
 

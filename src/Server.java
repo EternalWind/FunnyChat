@@ -1,7 +1,3 @@
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Label;
-import java.awt.Panel;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,18 +8,40 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JFrame;
-
-
-import com.funnyChat.network.Connection;
-import com.funnyChat.plugin.PluginAdapter;
 import com.funnyChat.core.Core;
 import com.funnyChat.db.FriendDAO;
 import com.funnyChat.db.PluginInfo;
 import com.funnyChat.db.PluginInfoDAO;
 import com.funnyChat.db.UserInfo;
 import com.funnyChat.db.UserInfoDAO;
-import com.funnyChat.event.*;
+import com.funnyChat.event.AddFriendEvent;
+import com.funnyChat.event.AddFriendResponseEvent;
+import com.funnyChat.event.ChangeUserStateEvent;
+import com.funnyChat.event.ChangeUserStateResponseEvent;
+import com.funnyChat.event.ChatEvent;
+import com.funnyChat.event.CheckLoginInfoEvent;
+import com.funnyChat.event.CheckLoginInfoResponseEvent;
+import com.funnyChat.event.ConnectedEvent;
+import com.funnyChat.event.ConnectionFailedEvent;
+import com.funnyChat.event.DeleteFriendEvent;
+import com.funnyChat.event.DeleteFriendResponseEvent;
+import com.funnyChat.event.EventManager;
+import com.funnyChat.event.GetFriendsEvent;
+import com.funnyChat.event.GetFriendsResponseEvent;
+import com.funnyChat.event.GetIpAndPortEvent;
+import com.funnyChat.event.GetIpAndPortResponseEvent;
+import com.funnyChat.event.GetPasswordEvent;
+import com.funnyChat.event.GetPasswordResponseEvent;
+import com.funnyChat.event.GetPluginListEvent;
+import com.funnyChat.event.GetPluginListResponseEvent;
+import com.funnyChat.event.RefreshUserInfoEvent;
+import com.funnyChat.event.RefreshUserInfoResponseEvent;
+import com.funnyChat.event.RegisterEvent;
+import com.funnyChat.event.RegisterResponseEvent;
+import com.funnyChat.event.ReleasePluginEvent;
+import com.funnyChat.event.ReleasePluginResponseEvent;
+import com.funnyChat.network.Connection;
+import com.funnyChat.plugin.PluginAdapter;
 
 public class Server extends PluginAdapter{
 	private String pluginBasePath = "plugin/";
@@ -32,12 +50,11 @@ public class Server extends PluginAdapter{
 	private HashMap<Long,UserInfo> users = new HashMap<Long, UserInfo>();
 	private int hourEventCount = 0;
 	private int dayEventCount = 0;
+	private ServerPanel mServerPanel;
 	@Override
 	public void onCreate() {
-		mPanel = new Panel();
-		mPanel.setSize(400, 200);
-		Core.getInstance().getMainWindow().registerPanel("server", mPanel);
-		refreshPanel();
+		Core.getInstance().getMainWindow().registerPanel("server", mServerPanel);
+		mServerPanel.refreshPanel();
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
 		EventManager.getInstance().register(new ConnectionFailedEvent());
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
@@ -51,7 +68,6 @@ public class Server extends PluginAdapter{
 		EventManager.getInstance().register(new RefreshUserInfoResponseEvent());
 		EventManager.getInstance().register(new GetPasswordResponseEvent());
 		EventManager.getInstance().register(new ConnectionFailedEvent());
-		
 		EventManager.getInstance().register(new GetFriendsEvent());
 		EventManager.getInstance().register(new ChangeUserStateEvent());
 		EventManager.getInstance().register(new CheckLoginInfoEvent());
@@ -68,18 +84,20 @@ public class Server extends PluginAdapter{
 	@Override
 	protected void onEnable() {}
 
-	public void refreshPanel(){
-		mPanel.setLayout(new FlowLayout());
-		mPanel.removeAll();
-		Label label1 = new Label("当前在线人数:  "+users.size());
-		mPanel.add(label1);
+	public int getOnlineUserCount() {
+		return users.size();
+	}
+	public Long getCurrRegUserCount() {
 		UserInfoDAO userInfoDAO = new UserInfoDAO();
-		Label label2 = new Label("目前注册人数:  "+userInfoDAO.getCount());
-		mPanel.add(label2);
-		Label label3 = new Label("本日事件量:  "+dayEventCount);
-		mPanel.add(label3);
-		Label label4 = new Label("本小时事件量:  "+hourEventCount);
-		mPanel.add(label4);
+		return userInfoDAO.getCount();
+	}
+	public int getDayEventCount() {
+		return dayEventCount;
+	}
+	public int getHourEventCount() {
+		return hourEventCount;
+	}
+	public void refresh(){
 		Date date = new Date();
 		if(date.getDay()!=dayDate.getDay()){
 			dayDate = date;
@@ -89,7 +107,6 @@ public class Server extends PluginAdapter{
 			hourDate = date;
 			hourEventCount = 0;
 		}
-		mPanel.validate();
 	}
 	@Override
 	protected void execute() {
@@ -249,7 +266,7 @@ public class Server extends PluginAdapter{
 			response.setSource(temp.getTarget());
 			eventManager.enqueue(response);
 		}
-		refreshPanel();
+		mServerPanel.refreshPanel();
         this.doneWork();
 	}
 	//

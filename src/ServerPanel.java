@@ -11,8 +11,10 @@
 public class ServerPanel extends javax.swing.JPanel {
 
 	/** Creates new form ServerPanel */
-	public ServerPanel() {
+	public ServerPanel(Server _server) {
 		initComponents();
+		jLabel2.setText("ON");
+		mServer = _server;
 	}
 
 	/** This method is called from within the constructor to
@@ -229,6 +231,15 @@ public class ServerPanel extends javax.swing.JPanel {
 	}// </editor-fold>
 	//GEN-END:initComponents
 
+	public void refreshPanel(){
+		jLabel4.setText(Integer.toString(mServer.getOnlineUserCount()));
+		jLabel6.setText(Long.toString(mServer.getCurrRegUserCount()));
+		jLabel8.setText(Integer.toString(mServer.getDayEventCount()));
+		jLabel10.setText(Integer.toString(mServer.getHourEventCount()));
+		mServer.refresh();
+	}
+	
+	private Server mServer;
 	//GEN-BEGIN:variables
 	// Variables declaration - do not modify
 	private javax.swing.JButton jButton1;

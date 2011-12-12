@@ -11,7 +11,8 @@
 public class RegisterPanel2 extends javax.swing.JPanel {
 
 	/** Creates new form RegisterPanel2 */
-	public RegisterPanel2() {
+	public RegisterPanel2(Client _client) {
+		client = _client;
 		initComponents();
 	}
 
@@ -40,12 +41,18 @@ public class RegisterPanel2 extends javax.swing.JPanel {
 		jTextField5 = new javax.swing.JTextField();
 		jSeparator3 = new javax.swing.JSeparator();
 		jButton2 = new javax.swing.JButton();
+		jLabel7 = new javax.swing.JLabel();
 
 		jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 30));
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("Registration");
 
 		jButton1.setText("Cancel");
+		jButton1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton1ActionPerformed(evt);
+			}
+		});
 
 		jLabel2.setText("User ID : ");
 
@@ -57,17 +64,12 @@ public class RegisterPanel2 extends javax.swing.JPanel {
 
 		jLabel6.setText("Answer for getting back your password :");
 
-		jTextField1.setText("jTextField1");
-
-		jTextField2.setText("jTextField2");
-
-		jTextField3.setText("jTextField3");
-
-		jTextField4.setText("jTextField4");
-
-		jTextField5.setText("jTextField5");
-
 		jButton2.setText("OK");
+		jButton2.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton2ActionPerformed(evt);
+			}
+		});
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 		this.setLayout(layout);
@@ -206,6 +208,14 @@ public class RegisterPanel2 extends javax.swing.JPanel {
 																		javax.swing.GroupLayout.PREFERRED_SIZE,
 																		129,
 																		javax.swing.GroupLayout.PREFERRED_SIZE)
+																.addContainerGap())
+												.addGroup(
+														layout.createSequentialGroup()
+																.addComponent(
+																		jLabel7,
+																		javax.swing.GroupLayout.PREFERRED_SIZE,
+																		229,
+																		javax.swing.GroupLayout.PREFERRED_SIZE)
 																.addContainerGap()))));
 		layout.setVerticalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,24 +289,51 @@ public class RegisterPanel2 extends javax.swing.JPanel {
 										javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(
+										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jLabel7)
+								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-										49, Short.MAX_VALUE)
+										41, Short.MAX_VALUE)
 								.addGroup(
 										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.TRAILING)
+												javax.swing.GroupLayout.Alignment.TRAILING,
+												false)
 												.addComponent(
 														jButton2,
 														javax.swing.GroupLayout.DEFAULT_SIZE,
-														61, Short.MAX_VALUE)
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														Short.MAX_VALUE)
 												.addComponent(
 														jButton1,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														61,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														61, Short.MAX_VALUE))
 								.addContainerGap()));
 	}// </editor-fold>
 	//GEN-END:initComponents
 
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+		if (jTextField1.getText().equals("")
+				|| jTextField2.getText().equals("")
+				|| jTextField3.getText().equals("")
+				|| jTextField4.getText().equals("")
+				|| jTextField5.getText().equals("")) {
+			jLabel7.setText("信息填写不完全！");
+		} else {
+			if (jTextField2.getText().equals(jTextField3.getText())) {
+				jLabel7.setText("");
+				client.register(jTextField1.getText(), jTextField2.getText(),
+						jTextField4.getText(), jTextField5.getText());
+			} else {
+				jLabel7.setText("密码不一致!");
+			}
+		}
+	}
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		client.gotoLoginPanel();
+	}
+
+	private Client client;
 	//GEN-BEGIN:variables
 	// Variables declaration - do not modify
 	private javax.swing.JButton jButton1;
@@ -307,6 +344,7 @@ public class RegisterPanel2 extends javax.swing.JPanel {
 	private javax.swing.JLabel jLabel4;
 	private javax.swing.JLabel jLabel5;
 	private javax.swing.JLabel jLabel6;
+	private javax.swing.JLabel jLabel7;
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JSeparator jSeparator2;
 	private javax.swing.JSeparator jSeparator3;

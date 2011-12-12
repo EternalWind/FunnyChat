@@ -1,6 +1,6 @@
 package com.funnyChat.plugin;
 
-import java.awt.Panel;
+import javax.swing.*;
 import com.funnyChat.Thread.*;
 import com.funnyChat.event.Event;
 
@@ -8,7 +8,7 @@ public abstract class Plugin extends FCThread {
 	private boolean mIsEnabled;
 	private boolean mIsBusy;
 	protected Event mEvent;
-	protected Panel mPanel;
+	protected JPanel mPanel;
 	public Plugin(){
 		mIsEnabled = false;
 		mEvent = null;
@@ -54,10 +54,10 @@ public abstract class Plugin extends FCThread {
 		terminate();
 		onDestroy();
 	}
-	public Panel getPanel(){
+	public JPanel getPanel(){
 		return mPanel;
 	}
-	public void setPanel(Panel _panel){
+	public void setPanel(JPanel _panel){
 		mPanel = _panel;
 	}
 	public abstract void onCreate();
@@ -68,6 +68,7 @@ public abstract class Plugin extends FCThread {
 	}
 	//完成事件的处理后应调用此函数告知插件管理器处理已完成
 	protected void doneWork(){
+		mEvent = null;
 		mIsBusy = false;
 	}
 	public boolean handleEvent(Event _localEvent){

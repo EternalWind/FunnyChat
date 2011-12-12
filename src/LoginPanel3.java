@@ -1,5 +1,5 @@
 /*
- * LoginPanel2.java
+ * LoginPanel3.java
  *
  * Created on __DATE__, __TIME__
  */
@@ -8,10 +8,10 @@
  *
  * @author  __USER__
  */
-public class LoginPanel2 extends javax.swing.JPanel {
+public class LoginPanel3 extends javax.swing.JPanel {
 
-	/** Creates new form LoginPanel2 */
-	public LoginPanel2(Client _client) {
+	/** Creates new form LoginPanel3 */
+	public LoginPanel3(Client _client) {
 		client = _client;
 		initComponents();
 	}
@@ -26,19 +26,21 @@ public class LoginPanel2 extends javax.swing.JPanel {
 	private void initComponents() {
 
 		jLabel1 = new javax.swing.JLabel();
-		jButton1 = new javax.swing.JButton();
+		jTextField1 = new javax.swing.JTextField();
 		jLabel2 = new javax.swing.JLabel();
 		jLabel3 = new javax.swing.JLabel();
-		jTextField1 = new javax.swing.JTextField();
 		jTextField2 = new javax.swing.JTextField();
 		jSeparator1 = new javax.swing.JSeparator();
+		jButton1 = new javax.swing.JButton();
 		jButton2 = new javax.swing.JButton();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
 		jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 30));
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("Sign In");
+
+		jLabel2.setText("User ID :");
+
+		jLabel3.setText("Password :");
 
 		jButton1.setText("OK");
 		jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -47,14 +49,6 @@ public class LoginPanel2 extends javax.swing.JPanel {
 			}
 		});
 
-		jLabel2.setText("User ID :");
-
-		jLabel3.setText("Password :");
-
-		jTextField1.setText("jTextField1");
-
-		jTextField2.setText("jTextField2");
-
 		jButton2.setText("Register");
 		jButton2.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -62,9 +56,8 @@ public class LoginPanel2 extends javax.swing.JPanel {
 			}
 		});
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
-		getContentPane().setLayout(layout);
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+		this.setLayout(layout);
 		layout.setHorizontalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(
@@ -73,47 +66,38 @@ public class LoginPanel2 extends javax.swing.JPanel {
 								.addGroup(
 										layout.createParallelGroup(
 												javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(
-														jSeparator1,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														388, Short.MAX_VALUE)
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		jLabel3)
-																.addContainerGap())
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		jLabel2)
-																.addContainerGap(
-																		337,
-																		Short.MAX_VALUE))
-												.addGroup(
-														javax.swing.GroupLayout.Alignment.TRAILING,
-														layout.createSequentialGroup()
-																.addComponent(
-																		jLabel1,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		376,
-																		Short.MAX_VALUE)
-																.addContainerGap())
 												.addGroup(
 														layout.createSequentialGroup()
 																.addGroup(
 																		layout.createParallelGroup(
-																				javax.swing.GroupLayout.Alignment.TRAILING,
-																				false)
+																				javax.swing.GroupLayout.Alignment.LEADING)
 																				.addComponent(
-																						jTextField2,
-																						javax.swing.GroupLayout.Alignment.LEADING)
+																						jLabel2)
 																				.addComponent(
 																						jTextField1,
-																						javax.swing.GroupLayout.Alignment.LEADING,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						javax.swing.GroupLayout.PREFERRED_SIZE,
 																						151,
-																						Short.MAX_VALUE))
-																.addContainerGap())
+																						javax.swing.GroupLayout.PREFERRED_SIZE))
+																.addGap(237,
+																		237,
+																		237))
+												.addGroup(
+														layout.createSequentialGroup()
+																.addComponent(
+																		jLabel3)
+																.addContainerGap(
+																		338,
+																		Short.MAX_VALUE))
+												.addGroup(
+														layout.createSequentialGroup()
+																.addComponent(
+																		jTextField2,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		164,
+																		Short.MAX_VALUE)
+																.addGap(237,
+																		237,
+																		237))
 												.addGroup(
 														layout.createSequentialGroup()
 																.addComponent(
@@ -121,13 +105,33 @@ public class LoginPanel2 extends javax.swing.JPanel {
 																		javax.swing.GroupLayout.PREFERRED_SIZE,
 																		178,
 																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addGap(18, 18,
-																		18)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																		31,
+																		Short.MAX_VALUE)
 																.addComponent(
 																		jButton2,
 																		javax.swing.GroupLayout.PREFERRED_SIZE,
 																		180,
 																		javax.swing.GroupLayout.PREFERRED_SIZE)
+																.addContainerGap())
+												.addGroup(
+														javax.swing.GroupLayout.Alignment.TRAILING,
+														layout.createSequentialGroup()
+																.addGroup(
+																		layout.createParallelGroup(
+																				javax.swing.GroupLayout.Alignment.TRAILING)
+																				.addComponent(
+																						jLabel1,
+																						javax.swing.GroupLayout.Alignment.LEADING,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						389,
+																						Short.MAX_VALUE)
+																				.addComponent(
+																						jSeparator1,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						389,
+																						Short.MAX_VALUE))
 																.addContainerGap()))));
 		layout.setVerticalGroup(layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,25 +160,23 @@ public class LoginPanel2 extends javax.swing.JPanel {
 										javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGap(10, 10, 10)
 								.addComponent(jSeparator1,
 										javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGap(10, 10, 10)
 								.addGroup(
 										layout.createParallelGroup(
 												javax.swing.GroupLayout.Alignment.LEADING)
 												.addComponent(
 														jButton2,
 														javax.swing.GroupLayout.DEFAULT_SIZE,
-														47, Short.MAX_VALUE)
+														46, Short.MAX_VALUE)
 												.addComponent(
 														jButton1,
 														javax.swing.GroupLayout.DEFAULT_SIZE,
-														47, Short.MAX_VALUE))
+														46, Short.MAX_VALUE))
 								.addContainerGap()));
 	}// </editor-fold>
 	//GEN-END:initComponents
@@ -186,17 +188,6 @@ public class LoginPanel2 extends javax.swing.JPanel {
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		client.login(jTextField1.getText(), jTextField2.getText(), "Online");
 	}
-
-	/**
-	 * @param args the command line arguments
-	 */
-	/*public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new LoginPanel2().setVisible(true);
-			}
-		});
-	}*/
 
 	private Client client;
 	//GEN-BEGIN:variables

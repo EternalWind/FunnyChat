@@ -9,8 +9,8 @@ public class ReleasePluginEvent extends Event {
 	private byte[] mPlugins;
 	
 	public ReleasePluginEvent() {
-		mPlugins = null;
 		mPluginInfo = new PluginInfo();
+		mPlugins = null;
 	}
 
 	public PluginInfo getPluginInfo() {

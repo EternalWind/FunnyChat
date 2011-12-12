@@ -8,10 +8,10 @@
  *
  * @author  __USER__
  */
-public class ChatPanel2 extends javax.swing.JPanel {
+public class Chat extends javax.swing.JPanel {
 
 	/** Creates new form ChatPanel2 */
-	public ChatPanel2(Client _client, long _id) {
+	public Chat(Client _client, long _id) {
 		client = _client;
 		Fid = _id;
 		initComponents();
@@ -194,8 +194,8 @@ public class ChatPanel2 extends javax.swing.JPanel {
 	//GEN-END:initComponents
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		jTextArea1
-				.setText(jTextArea1.getText() + "\r\n" + jTextArea2.getText());
+		jTextArea1.setText(jTextArea1.getText() + 
+				"\r\n" + client.getId() + "\r\n" + jTextArea2.getText());
 		client.chat(jTextArea2.getText(), String.valueOf(Fid));
 		jTextArea2.setText("");
 	}

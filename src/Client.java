@@ -1,6 +1,3 @@
-
-
-import java.awt.Panel;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -12,8 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.funnyChat.core.Core;
-import com.funnyChat.core.MainWindow2;
+import com.funnyChat.core.*;
 import com.funnyChat.db.UserInfo;
 import com.funnyChat.event.ChatEvent;
 import com.funnyChat.event.ConnectedEvent;
@@ -43,7 +39,7 @@ public class Client extends Plugin{
 	private String[] stateC = {"ÔÚÏß","Ã¦Âµ","Àë¿ª"};
 	private HashMap<Long,Connection>connections = new HashMap<Long,Connection>();
 //	private Vector<String> chatUsers;
-	public HashMap<Long,ChatPanel>chatPanels = new HashMap<Long,ChatPanel>();
+	public HashMap<Long,Chat>chatPanels = new HashMap<Long,Chat>();
 	private List<UserInfo> friendsInfo;
 	protected Connection serverCon;
 	private Connection _conTemp;
@@ -60,7 +56,7 @@ public class Client extends Plugin{
 		UserInfo u = new UserInfo();
 		uid = "1231312";
 		state="aaa";
-		Panel _panel = new loginPanel(this);
+		LoginPanel3 _panel = new LoginPanel3(this);
 		setPanel(_panel);
 		localIp = new String("123.123.123.13");
 		localPort = 55555;
@@ -81,8 +77,8 @@ public class Client extends Plugin{
 		friendsInfo = new ArrayList<UserInfo>();
 		uid = "1231312";
 		state="aaa";
-		Panel _panel = new loginPanel(this);
-		_panel.setBounds(0, 0, 245, 285);
+		LoginPanel3 _panel = new LoginPanel3(this);
+		_panel.setBounds(0, 0, 413, 270);
 		setPanel(_panel);
 		localIp = new String("123.123.123.123");
 		localPort = 55555;
@@ -123,7 +119,13 @@ public class Client extends Plugin{
 		EventManager.getInstance().register(new AddFriendEvent());
 		EventManager.getInstance().register(new DeleteFriendEvent());
 		EventManager.getInstance().register(new RefreshUserInfoEvent());
-		EventManager.getInstance().register(new GetPasswordEvent());		
+		EventManager.getInstance().register(new GetPasswordEvent());
+		
+		mTestWin.updatePanel(this.getPluginName(), mPanel, _panel);
+		/*mTestWin.validate();
+		mTestWin.repaint();
+		_panel.validate();
+		_panel.repaint();*/
 	}
 
 	@Override
@@ -249,7 +251,7 @@ public class Client extends Plugin{
 			if(mEvent.getEventType().equals("ChatEvent")){
 				System.out.println(((ChatEvent)mEvent).toString());
 				System.out.println(((ChatEvent)mEvent).getEventType()+((ChatEvent)mEvent).getContent());
-				ChatPanel p;
+				Chat p;
 				Connection _c = mEvent.getSource();
 				String _ip = ((_c.getIP()).toString()).substring(1);
 				long _id = 0;
@@ -266,7 +268,7 @@ public class Client extends Plugin{
 					p.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
 				else{
 					JFrame frame = new JFrame("MyFrame");
-					ChatPanel chatPanel = new ChatPanel(this, _id);
+					Chat chatPanel = new Chat(this, _id);
 		            chatPanels.put( _id,chatPanel);
 		            chatPanel.messageShow(((ChatEvent)mEvent).getContent(), String.valueOf(((ChatEvent)mEvent).getSenderId()));
 					frame.add(chatPanel);
@@ -322,7 +324,7 @@ public class Client extends Plugin{
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
-		Panel _panel = new loginPanel(this);
+		JPanel _panel = new LoginPanel3(this);
 		setPanel(_panel);
 	}
 
@@ -416,10 +418,14 @@ public class Client extends Plugin{
 	}		
 
 	public void gotoRegisterPanel(){
-		Panel _panel = new registerPanel(this);
+		JPanel _panel = new RegisterPanel2(this);
 		_panel.setBounds(0, 0, 389, 303);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
-		setPanel(_panel);				
+		setPanel(_panel);	
+		/*mTestWin.validate();
+		mTestWin.repaint();
+		_panel.validate();
+		_panel.repaint();*/
 //		frame.setSize(389,303);
 //		Panel _panel = new registerPanel(this);
 //		frame.remove(mPanel);
@@ -429,10 +435,14 @@ public class Client extends Plugin{
 	}
 
 	public void gotoMainPanel(){
-		Panel _panel = new mainFunnyChatPanel(this);
+		JPanel _panel = new MainPanel(this);
 		_panel.setBounds(0, 0, 228, 457);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
-		setPanel(_panel);			
+		setPanel(_panel);	
+		/*mTestWin.validate();
+		mTestWin.repaint();
+		_panel.validate();
+		_panel.repaint();*/
 //		frame.setSize(228,457);
 //		Panel _panel = new mainFunnyChatPanel(this);
 //		frame.remove(mPanel);
@@ -442,10 +452,14 @@ public class Client extends Plugin{
 	}	
 
 	public void gotoLoginPanel(){
-		Panel _panel = new loginPanel(this);
+		JPanel _panel = new LoginPanel3(this);
 		_panel.setBounds(0, 0, 245, 285);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
 		setPanel(_panel);
+		/*mTestWin.validate();
+		mTestWin.repaint();
+		_panel.validate();
+		_panel.repaint();*/
 //		frame.setSize(245,285);
 //		Panel _panel = new loginPanel(this);
 //		frame.remove(mPanel);
@@ -455,10 +469,14 @@ public class Client extends Plugin{
 	}	
 
 	public void gotoPasswordPanel(String _name){
-		Panel _panel = new PasswordPanel(this);
+		PasswordPanel2 _panel = new PasswordPanel2(this);
 		_panel.setBounds(0, 0, 268, 277);
 		mTestWin.updatePanel(this.getName(), mPanel, _panel);
-		setPanel(_panel);		
+		setPanel(_panel);	
+		/*mTestWin.validate();
+		mTestWin.repaint();
+		_panel.validate();
+		_panel.repaint();*/
 //		frame.setSize(268, 277);
 //		Panel _panel = new PasswordPanel(this);
 //		frame.remove(mPanel);

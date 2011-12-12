@@ -384,8 +384,13 @@ public class PreferenceWindow extends javax.swing.JDialog {
 				_plugin.getPanel().setVisible(true);
 			}
 			else {
-				if(_plugin.getPanel() != null)
+				if(_plugin.getPanel() != null) {
 					Core.getInstance().getMainWindow().remove(_plugin.getPanel());
+					Core.getInstance().getMainWindow().repaint();
+					Core.getInstance().getMainWindow().validate();
+					_plugin.getPanel().repaint();
+					_plugin.getPanel().validate();
+				}
 				_plugin.disable();
 			}
 		}

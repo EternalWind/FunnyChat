@@ -79,7 +79,7 @@ public class NetworkManager extends FCThread{
 			mServerSocketChannel.socket().bind(new InetSocketAddress(_port));
 			mServerSocketChannel.register(mSelector, SelectionKey.OP_ACCEPT);
 			mMaxCount = _max_count;
-			mChecker = new ConnectionChecker(11000, 5000, mConnections);
+			mChecker = new ConnectionChecker(11000, 50000, mConnections);
 		}
 		catch(IOException e){
 			Core.getLogger().addLog("Failed to initialize the NetworkManager.", LogType.ERROR);
@@ -206,13 +206,14 @@ public class NetworkManager extends FCThread{
 				}*/
 			}
 			catch(IOException e){
-				Core.getLogger().addLog("Failed to connect " + _ip.toString() + " : " + _port + ".", LogType.WARNING);
+				Core.getLogger().addLog("Failed to connect " + _ip.toString().substring(1) + " : " + _port + ".", LogType.WARNING);
 			}
 		}
 	}
 	
 	public void send(Event _event){
 		try{
+			//Connection _connection = mConnections.get(_event.getTarget());
 			Connection _connection = _event.getTarget();
 			if(_connection != null){
 				byte[] _data = _event.serialize();

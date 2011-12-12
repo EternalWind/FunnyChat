@@ -35,8 +35,7 @@ public class FriendDAO {
 		try {
 			String sql = "insert into friend(uid1,uid2) values("+ uid1
 					+ " , " + uid2 +")";
-			stmt.execute(sql);
-			return true;
+			return stmt.execute(sql);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -45,8 +44,7 @@ public class FriendDAO {
 	public boolean delete(long fid) {
 		try {
 			String sql = "delete from friend where fid = "+fid;
-			stmt.execute(sql);
-			return true;
+			return stmt.execute(sql);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -58,8 +56,7 @@ public class FriendDAO {
 			String sql = "delete from friend where uid1 = "+uid1 +" and uid2 = "+ uid2;
 			stmt.execute(sql);
 			sql = "delete from friend where uid1 = "+uid2 +" and uid2 = "+ uid1;
-			stmt.execute(sql);
-			return true;
+			return stmt.execute(sql);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;

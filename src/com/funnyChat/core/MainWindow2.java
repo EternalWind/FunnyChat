@@ -94,6 +94,7 @@ public class MainWindow2 extends javax.swing.JFrame {
 		this.add(_panel);
 		_panel.setVisible(true);
 		mLayoutInfo.registerPanel(_plugin_name, _panel);
+		this.repaint();
 	}
 
 	public void updatePanel(String _plugin_name, JPanel _old_panel,
@@ -105,6 +106,7 @@ public class MainWindow2 extends javax.swing.JFrame {
 			_new_panel.setVisible(true);
 			mLayoutInfo.registerPanel(_plugin_name, _new_panel);
 		}
+		this.validate();
 	}
 	public void initWindow(String _window_title) {
 		// read windows attributes
