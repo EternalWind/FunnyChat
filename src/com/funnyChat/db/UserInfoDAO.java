@@ -41,6 +41,8 @@ public class UserInfoDAO {
 				userInfo.setIp(rs.getString(5));
 				userInfo.setPort(rs.getString(6));
 			}
+			if(userInfo.getName() == null)
+				return null;
 			return userInfo;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -61,6 +63,8 @@ public class UserInfoDAO {
 				userInfo.setIp(rs.getString(5));
 				userInfo.setPort(rs.getString(6));
 			}
+			if(userInfo.getName() == null)
+				return null;
 			return userInfo;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -75,7 +79,9 @@ public class UserInfoDAO {
 			 +userInfo.getState()+"','"
 			 +userInfo.getIp()+"','"
 			 +userInfo.getPort()+"')";
-			return stmt.execute(sql);
+			System.out.println(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -89,7 +95,8 @@ public class UserInfoDAO {
 			+"ip = '"+userInfo.getIp()+"',"
 			+"port = '"+userInfo.getPort()+"' "
 			+"where uid = "+ userInfo.getUid();
-			return stmt.execute(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
@@ -98,7 +105,8 @@ public class UserInfoDAO {
 	public boolean delete(long uid) {
 		try {
 			String sql = "delete from userinfo where uid = "+uid;
-			return stmt.execute(sql);
+			stmt.execute(sql);
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;

@@ -3,16 +3,16 @@ package com.funnyChat.db;
 import java.sql.*;
 
 public class Conn {
-	private String url = "jdbc:postgresql://localhost:5432/FunnyChat";
-	private String user = "postgres";// 用户名
-	private String password = "feng056113";// 密码
+	private String url = "jdbc:sqlserver://localhost:1433;DatabaseName=FunnyChat";
+	private String user = "sa";// 用户名
+	private String password = "dd917266**";// 密码
 	private static Conn instance = null;
 	private Statement stmt;
 	private Connection conn;
 
 	public boolean conn() {
 		try {
-			Class.forName("org.postgresql.Driver").newInstance();
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
 			conn = DriverManager.getConnection(url, user, password);
 			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
